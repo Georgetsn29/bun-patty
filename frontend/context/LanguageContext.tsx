@@ -29,6 +29,8 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 const LOCAL_STORAGE_LANG_KEY = 'bun_patty_lang_preference';
+// Storage key used before the BUN & PATTY rename (read once for migration only)
+const LEGACY_LANG_STORAGE_KEY = 'peach_patty_lang_preference';
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Default to Georgian ('ka') as requested, initialized lazily from localStorage if present
@@ -37,7 +39,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       try {
         let savedLang = localStorage.getItem(LOCAL_STORAGE_LANG_KEY);
         if (!savedLang) {
-          savedLang = localStorage.getItem('peach_patty_lang_preference');
+          savedLang = localStorage.getItem(LEGACY_LANG_STORAGE_KEY);
           if (savedLang) {
             try {
               localStorage.setItem(LOCAL_STORAGE_LANG_KEY, savedLang);

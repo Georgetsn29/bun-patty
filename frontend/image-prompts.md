@@ -1,6 +1,6 @@
-# Food & Beverage Photography Prompts for Peach & Patty
+# Food & Beverage Photography Prompts for BUN & PATTY
 
-This document specifies the exact art direction and studio prompts used for the Peach & Patty menu photography.
+This document specifies the exact art direction and studio prompts used for the BUN & PATTY menu photography.
 
 ## Art Direction Guidelines
 - **Perspective**: 50mm lens at f/4, camera slightly elevated above eye level (~25°), sharp foreground food with creamy background bokeh.
@@ -13,8 +13,8 @@ This document specifies the exact art direction and studio prompts used for the 
 ---
 
 ### 1. Burgers
-- **The Peach Blossom Smash (`peach-blossom-smash.jpg`)**:
-  `Professional food photography of a double smash cheeseburger with lacy caramelized crispy beef edges, melted cheddar cheese dripping down, slow-cooked peach-bourbon bacon jam, glossy brioche bun, centered on a dark wooden serving tray with dark greaseproof liner. Background is a dark restaurant interior with red booth seating and softly blurred neon bokeh. 50mm lens at f/4, warm studio lighting, rich shadows, realistic textures, no hands, no people, no text, no watermarks.`
+- **The Bun & Patty Smash (`bun-patty-smash.jpg`)**:
+  `Professional food photography of a double smash cheeseburger with lacy caramelized crispy beef edges, melted Havarti, wild arugula, and a glossy slow-cooked smoky onion and bourbon bacon jam on a sesame brioche bun, served on a dark slate board in a moody candle-lit restaurant with warm bokeh. 50mm lens at f/4, warm lighting, rich shadows, realistic textures, no fruit, no hands, no text, no watermarks.`
 
 - **Classic Double Cheeseburger (`golden-double-classic.jpg`)**:
   `Professional food photography of a classic double smash cheeseburger with double yellow American-style sharp cheddar melted over crisp lacy patties, thinly sliced pickles and onions, toasted brioche bun, centered on a dark wooden serving tray with dark printed liner. Background is a dark restaurant interior with red booth seating and softly blurred neon bokeh. 50mm lens at f/4, warm studio lighting, rich shadows, realistic textures, no hands, no people, no text, no watermarks.`
@@ -31,9 +31,6 @@ This document specifies the exact art direction and studio prompts used for the 
 - **24-Hour Buttermilk Fried Bird (`buttermilk-crispy-chicken.jpg`)**:
   `Professional food photography of a buttermilk fried chicken sandwich with ultra-crispy craggy golden crust, purple and green cabbage slaw, bread and butter pickles on a glossy toasted brioche bun, centered on a dark wooden serving tray with dark printed liner. Background is a dark restaurant interior with red booth seating and warm neon bokeh. 50mm lens at f/4, no hands, no text.`
 
-- **Smoky Peach BBQ & Gouda (`bbq-gouda-burger.jpg`)**:
-  `Professional food photography of a double Angus smash burger layered with melted Dutch smoked gouda, thick applewood bacon, a beer-battered onion ring, and glossy dark peach barbecue sauce, on a dark wooden tray with liner in a moody red-booth burger bar.`
-
 ---
 
 ### 2. Side Dishes
@@ -47,7 +44,7 @@ This document specifies the exact art direction and studio prompts used for the 
   `Professional food photography of wide beer-battered sweet Vidalia onion rings with golden blistered crust on dark greaseproof paper on a wooden tray in a dimly lit restaurant interior.`
 
 - **Cast-Iron Street Fries (`loaded-fries.jpg`)**:
-  `Cast-iron skillet loaded with crinkle fries blanketed in melted sharp cheddar cheese sauce, crisped beef brisket bits, peach bacon jam, and snipped fresh garden chives on a dark wooden table.`
+  `Cast-iron skillet loaded with crinkle fries blanketed in melted sharp cheddar cheese sauce, crisped beef brisket bits, smoky bacon jam, and snipped fresh garden chives on a dark wooden table.`
 
 - **Waffle-Cut Sweet Potatoes (`sweet-potato-waffles.jpg`)**:
   `Crispy deep orange waffle-cut sweet potato fries with whipped maple butter in a ceramic dipping cup, shot on a dark wooden serving tray with dark restaurant backdrop.`
@@ -55,8 +52,8 @@ This document specifies the exact art direction and studio prompts used for the 
 ---
 
 ### 3. Sauces (Studio Isolated Style)
-- **Peach Bourbon Bacon Jam (`sauce-peach-bourbon-jam.jpg`)**:
-  `Studio product photography of an artisanal dipping sauce in a small minimalist dark matte ceramic dipping ramekin, filled with rich glistening amber-dark peach bourbon bacon jam, isolated centered on a clean dark charcoal-black background #0B1416, subtle directional rim lighting, sharp macro details, no logo, no branding, no text.`
+- **Smoky Bourbon Bacon Jam (`smoky-bourbon-bacon-jam.jpg`)**:
+  `Food photography of a dark ceramic ramekin filled with chunky glistening smoky bourbon bacon jam made from caramelized onions, crispy bacon, and bourbon, with a wooden paddle beside it on a dark slate board on a rustic wooden table, warm ambient restaurant lighting, no fruit, no text.`
 
 - **House Plancha Secret Sauce (`sauce-house-secret.jpg`)**:
   `Studio product photography of artisan burger sauce in a small minimalist matte ceramic dipping ramekin, filled with creamy coral-orange secret burger sauce with herb flecks, isolated centered on a clean dark green-black background #0B1416, clean directional rim lighting, macro focus, no logo, no branding, no text.`
@@ -76,8 +73,8 @@ This document specifies the exact art direction and studio prompts used for the 
 ---
 
 ### 4. Drinks (Studio Isolated Style)
-- **Cold-Steeped Peach Ceylon Tea (`peach-blossom-iced-tea.jpg`)**:
-  `Studio product photography of an artisanal iced peach Ceylon tea in a ribbed highball glass with clear ice cubes, fresh mint sprig and lemon slice, cold condensation, isolated centered on a dark green-black background #0B1416, clean studio rim lighting, no logo, no text.`
+- **Cold-Steeped Lemon Ceylon Tea (`cold-steeped-lemon-ceylon-tea.jpg`)**:
+  `Food photography of an iced cold-steeped Ceylon black tea in a tall ribbed highball glass with clear ice cubes, a fresh lemon wheel, and a lemon thyme sprig, cold condensation, on a dark wooden bar counter with warm blurred bar lights, no text.`
 
 - **Madagascar Vanilla Bean Custard Shake (`roasted-vanilla-bean-shake.jpg`)**:
   `Studio product photography of a thick creamy Madagascar vanilla bean custard milkshake in a tall clear chilled glass with whipped cream and vanilla bean specks, isolated centered on a clean dark green-black background #0B1416, soft rim lighting, frosty glass condensation droplets, unbranded, no logo, no text.`
@@ -97,9 +94,6 @@ This document specifies the exact art direction and studio prompts used for the 
 - **Skillet Dark Chocolate Brownie (`warm-bourbon-caramel-brownie.jpg`)**:
   `Professional food photography of a warm dark chocolate fudge brownie baked in an individual mini cast-iron skillet, drizzled with amber bourbon caramel and flaky sea salt crystals, served on a dark wooden serving tray. Background is a dark restaurant interior with red booth seating and warm neon bokeh. 50mm lens at f/4, no hands, no text.`
 
-- **Cast-Iron Peach Crisp Sundae (`peach-sundae.jpg`)**:
-  `Glass dessert coupe with cold dense vanilla bean custard, warm spiced caramelized peach compote, golden oat crumble, and toasted pecans on a dark wooden table in ambient restaurant light.`
-
 ---
 
 ### 6. Combos
@@ -108,3 +102,27 @@ This document specifies the exact art direction and studio prompts used for the 
 
 - **The Plancha Supper For Two (`patio-feast.jpg`)**:
   `Feast spread on a dark wooden table: two double smash cheeseburgers, a cast iron skillet of loaded street fries, beer-battered onion rings, and two craft drinks in glassware, with warm red neon ambiance.`
+
+---
+
+### 7. New Items (BUN & PATTY menu update)
+All new photos use the same dark, moody restaurant setting as the existing menu: dark slate board on a rustic wooden table or bar counter, warm ambient lighting, softly blurred bar interior with warm bokeh. Wide 16:9, subject fills the frame with no border or padding, photorealistic, no added text.
+
+- **Bowl Mix (`bowl-mix.jpg`)**:
+  `A dark bowl of crispy golden fries loaded with a chopped smashed beef patty, crispy bacon pieces, shredded iceberg lettuce, hot cheddar cheese sauce, BBQ sauce drizzle, and grated parmesan, every topping clearly visible, on a dark slate board.`
+- **Cheese Sauce (`cheese-sauce.jpg`)**:
+  `Close-up of a small ceramic cup of smooth, hot, glossy cheddar cheese sauce on dark slate, filling the frame.`
+- **Coca-Cola (`coca-cola.jpg`)**:
+  `A realistic chilled red 330 ml Coca-Cola can with cold condensation droplets beside a cut-crystal glass of cola over ice with a lemon slice.`
+- **Coca-Cola Zero Sugar (`coca-cola-zero-sugar.jpg`)**:
+  `A chilled 330 ml Coca-Cola Zero Sugar can in its current design (bright red can, Coca-Cola script logo in black, "ZERO SUGAR" in bold black capitals, small "ZERO CALORIE COLA"), with condensation, beside a cut-crystal glass of cola over ice with a lemon wheel.`
+- **Pepsi Zero Sugar (`pepsi-zero-sugar.jpg`)**:
+  `A chilled 330 ml Pepsi Zero Sugar can with its real black label (round red, white, and blue globe, lowercase "pepsi", "ZERO SUGAR") and condensation, beside a cut-crystal glass of ice with a lemon wedge.`
+- **Natural Juice (`natural-juice.jpg`)**:
+  `A tall glass of freshly squeezed orange-amber juice with ice and a mint sprig, surrounded by an orange, a green apple, an open pomegranate, a pineapple wedge, fresh cherries, and a halved lime with mint. Fruit only, no vegetables.`
+- **Espresso (`espresso.jpg`)** — dark ceramic cup with golden crema on a saucer, coffee beans on slate.
+- **Americano (`americano.jpg`)** — dark mug of americano on slate.
+- **Cappuccino (`cappuccino.jpg`)** — cappuccino with thick milk foam in a dark ceramic cup.
+- **Latte (`latte.jpg`)** — latte with latte art.
+- **Iced Coffee (`iced-coffee.jpg`)** — tall glass of iced coffee with milk swirling over ice.
+- **Iced Coffee with Ice Cream (`glace.jpg`)** — glass of chilled coffee topped with a scoop of vanilla ice cream.

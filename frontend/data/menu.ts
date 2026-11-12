@@ -1,22 +1,45 @@
 /**
  * MENU DEFINITIONS & INGREDIENT CUSTOMIZATION CONFIGURATION
  * Localized for Georgia (Tbilisi). All prices are in Georgian Lari (₾).
- * 
+ *
  * Strict Category Order:
  * 1. Burgers
  * 2. Side Dishes
  * 3. Sauces
  * 4. Desserts
- * 5. Drinks
- * 
+ * 5. Drinks (soft drinks first, then the "Coffee" subgroup)
+ *
  * In every category: original items first, followed by newly added items.
  * Each item has an explicit sortOrder for default 'Recommended' sort.
+ *
+ * NUTRITION [Placeholder]
+ * Every nutrition value in this file is an approximate kitchen estimate per
+ * serving and is marked `isPlaceholder: true` via `placeholderNutrition()`.
+ * Values must be verified before being presented as final (see nutrition-review.md).
+ *
+ * How nutrition is calculated for a customized item (see computeNutrition):
+ *   base item nutrition
+ *   + selected choice option nutrition (e.g. juice flavor)
+ *   - nutrition of each removed included ingredient
+ *   + nutrition of each extra × quantity
+ * Item base values are built by summing the component values below, so removing
+ * an ingredient subtracts exactly what it contributed.
  */
+
+export interface Nutrition {
+  calories: number; // kcal
+  netCarbs: number; // g (total carbohydrates minus fiber)
+  fat: number; // g
+  protein: number; // g
+  isPlaceholder?: boolean;
+}
 
 export interface IncludedIngredient {
   id: string;
   name: string;
   isRequired?: boolean;
+  /** Nutrition this ingredient contributes to the base item (subtracted when removed) */
+  nutrition?: Nutrition;
 }
 
 export interface ExtraCustomizationOption {
@@ -24,13 +47,17 @@ export interface ExtraCustomizationOption {
   name: string;
   price: number; // in Georgian Lari (₾)
   maxQuantity?: number; // Defaults to 3
+  /** Nutrition added per unit of this extra */
+  nutrition: Nutrition;
 }
 
 export interface ChoiceOption {
-  id: string; // e.g. "still", "sparkling", "orange", "apple", "pomegranate", "carrot", "orange-carrot"
+  id: string; // e.g. "still", "sparkling", "orange", "apple", "pomegranate", "pineapple", "cherry", "mojito"
   name: string; // English display name
   priceAdjustment?: number; // Defaults to 0.00 ₾
   color?: string; // Optional flavor dot color
+  /** Nutrition added on top of the item's base nutrition when this option is selected */
+  nutrition: Nutrition;
 }
 
 export interface RequiredChoiceGroup {
@@ -40,10 +67,16 @@ export interface RequiredChoiceGroup {
   options: ChoiceOption[];
 }
 
+export type MenuCategory = 'Burgers' | 'Side Dishes' | 'Sauces' | 'Desserts' | 'Drinks';
+
+/** Optional visual subgroup inside a category (rendered under its own small subheading) */
+export type MenuSubgroup = 'coffee';
+
 export interface MenuItem {
   id: string;
   name: string;
-  category: 'Burgers' | 'Side Dishes' | 'Sauces' | 'Desserts' | 'Drinks';
+  category: MenuCategory;
+  subgroup?: MenuSubgroup;
   price: number; // in Georgian Lari (₾)
   sortOrder: number; // Explicit sort order within category and menu
   estimatedMinutes: number;
@@ -55,7 +88,8 @@ export interface MenuItem {
   allergens: string[];
   badge?: string;
   tags: string[];
-  calories: number;
+  /** Base nutrition per serving, with all included ingredients and no extras [Placeholder] */
+  nutrition: Nutrition;
   prepTime: string;
   isBestseller?: boolean;
   isChefSpecial?: boolean;
@@ -70,53 +104,246 @@ export interface MenuItem {
   requiredChoice?: RequiredChoiceGroup;
 }
 
+// =============================================================================
+// NUTRITION HELPERS & COMPONENT ESTIMATES [Placeholder]
+// =============================================================================
+
+/** Creates a nutrition record flagged as a placeholder estimate. */
+export function placeholderNutrition(
+  calories: number,
+  netCarbs: number,
+  fat: number,
+  protein: number
+): Nutrition {
+  return { calories, netCarbs, fat, protein, isPlaceholder: true };
+}
+
+const ZERO_NUTRITION: Nutrition = placeholderNutrition(0, 0, 0, 0);
+
+/** Sums nutrition records (keeps the placeholder flag if any part is a placeholder). */
+export function sumNutrition(...parts: Array<Nutrition | undefined>): Nutrition {
+  return parts.reduce<Nutrition>(
+    (acc, p) =>
+      p
+        ? {
+            calories: acc.calories + p.calories,
+            netCarbs: acc.netCarbs + p.netCarbs,
+            fat: acc.fat + p.fat,
+            protein: acc.protein + p.protein,
+            isPlaceholder: acc.isPlaceholder || p.isPlaceholder,
+          }
+        : acc,
+    { calories: 0, netCarbs: 0, fat: 0, protein: 0, isPlaceholder: false }
+  );
+}
+
+function scaleNutrition(n: Nutrition, factor: number): Nutrition {
+  return {
+    calories: n.calories * factor,
+    netCarbs: n.netCarbs * factor,
+    fat: n.fat * factor,
+    protein: n.protein * factor,
+    isPlaceholder: n.isPlaceholder,
+  };
+}
+
+/**
+ * Approximate per-portion component values used to build every item [Placeholder].
+ * calories (kcal), net carbs (g), fat (g), protein (g)
+ */
+const N = {
+  // Breads
+  briocheBun: placeholderNutrition(230, 38, 5, 7), // ~75 g milk brioche
+  sesameBriocheBun: placeholderNutrition(240, 38, 6, 8), // ~78 g sesame brioche
+  largeSesameBun: placeholderNutrition(380, 62, 8, 12), // ~120 g oversized bun
+  // Proteins
+  patty90: placeholderNutrition(230, 0, 18, 16), // 90 g raw 80/20 beef
+  beef750: placeholderNutrition(1900, 0, 150, 128), // 750 g raw 80/20 beef
+  friedChickenThigh: placeholderNutrition(400, 18, 22, 30), // ~150 g battered thigh
+  grilledChicken: placeholderNutrition(200, 0, 5, 37), // 120 g grilled breast
+  halloumi: placeholderNutrition(320, 2, 25, 22), // 100 g halloumi
+  crispyBacon: placeholderNutrition(80, 0, 6, 6), // 2 crispy strips (~16 g)
+  baconBits: placeholderNutrition(100, 0, 8, 7), // ~20 g chopped crispy bacon
+  baconLayers2: placeholderNutrition(240, 0, 18, 18), // 6 strips
+  // Cheese
+  cheddarSlice: placeholderNutrition(80, 0, 7, 5), // 20 g
+  cheddarDouble: placeholderNutrition(160, 1, 13, 10), // 2 × 20 g
+  cheddar6Layers: placeholderNutrition(480, 2, 40, 30), // 6 × 20 g
+  havarti: placeholderNutrition(95, 0, 8, 6), // 25 g
+  gruyere: placeholderNutrition(105, 0, 8, 7), // 25 g
+  pepperJack: placeholderNutrition(80, 0, 7, 5), // 20 g
+  parmesanSnow: placeholderNutrition(60, 0, 4, 5), // 15 g
+  parmesanGrated: placeholderNutrition(40, 0, 3, 4), // 10 g
+  cheeseSauce60: placeholderNutrition(135, 5, 11, 5), // 60 g hot cheddar sauce
+  cheeseSauce80: placeholderNutrition(180, 7, 14, 7), // 80 g hot cheddar sauce
+  // Sauces & spreads
+  baconJam30: placeholderNutrition(100, 12, 5, 2), // 30 g smoky onion & bacon jam
+  baconJam80: placeholderNutrition(270, 33, 13, 6), // 80 g cup
+  secretSauce20: placeholderNutrition(110, 2, 11, 0), // 20 g mayo-based sauce
+  secretSauceCup: placeholderNutrition(160, 3, 16, 0), // 30 g side cup
+  secretSauce80: placeholderNutrition(430, 8, 44, 1), // 80 ml cup
+  specialSauce40: placeholderNutrition(220, 4, 22, 0), // 40 g
+  truffleAioli20: placeholderNutrition(140, 0, 15, 0), // 20 g
+  truffleAioliCup: placeholderNutrition(210, 1, 22, 0), // 30 g side cup
+  truffleAioli80: placeholderNutrition(500, 2, 55, 1), // 80 ml cup
+  garlicAioli20: placeholderNutrition(140, 1, 15, 0), // 20 g
+  tahiniCrema: placeholderNutrition(90, 2, 8, 2), // 25 g
+  caesarDressing: placeholderNutrition(200, 2, 21, 1), // 40 g
+  bbqSauce: placeholderNutrition(40, 9, 0, 0), // 25 g
+  hotHoney: placeholderNutrition(45, 12, 0, 0), // 15 g
+  truffleOil: placeholderNutrition(40, 0, 5, 0), // 5 ml
+  // Vegetables & garnish
+  arugula: placeholderNutrition(5, 1, 0, 0),
+  shavedOnion: placeholderNutrition(6, 1, 0, 0),
+  pickles: placeholderNutrition(3, 0, 0, 0),
+  jalapenos: placeholderNutrition(4, 0, 0, 0),
+  crispyShallots: placeholderNutrition(50, 4, 3, 1),
+  sauteedMushrooms: placeholderNutrition(60, 2, 5, 2),
+  cabbageSlaw: placeholderNutrition(60, 5, 4, 1),
+  roastedPeppers: placeholderNutrition(25, 3, 1, 0),
+  mint: placeholderNutrition(2, 0, 0, 0),
+  avocadoMash: placeholderNutrition(80, 1, 7, 1),
+  saperaviOnions: placeholderNutrition(40, 8, 0, 1),
+  iceberg: placeholderNutrition(4, 1, 0, 0),
+  romaine: placeholderNutrition(25, 2, 0, 2),
+  croutons: placeholderNutrition(110, 14, 5, 3),
+  chives: placeholderNutrition(1, 0, 0, 0),
+  lemonWedge: placeholderNutrition(0, 0, 0, 0), // negligible (<2 kcal)
+  // Potatoes
+  fries170: placeholderNutrition(490, 60, 23, 6), // 170 g fried potatoes
+  onionRings180: placeholderNutrition(590, 62, 34, 8),
+  // Desserts
+  fudgeBrownie: placeholderNutrition(480, 54, 26, 6),
+  bourbonCaramel: placeholderNutrition(110, 20, 3, 0), // 30 g
+  vanillaCustardScoop: placeholderNutrition(160, 17, 9, 3), // 70 g
+  vanillaIceCreamScoop: placeholderNutrition(150, 17, 8, 3), // 70 g
+  lavaCake: placeholderNutrition(460, 45, 28, 7),
+  cocoaDusting: placeholderNutrition(5, 0, 0, 0),
+  basqueCheesecake: placeholderNutrition(510, 27, 40, 9), // 150 g slice
+  strawberryCompote: placeholderNutrition(50, 12, 0, 0),
+  whippedCream: placeholderNutrition(100, 2, 10, 1), // 30 g
+  // Drinks
+  coldBrewTeaHoney: placeholderNutrition(70, 17, 0, 0), // 400 ml tea with honey syrup
+  lemonJuice: placeholderNutrition(5, 1, 0, 0),
+  honeyPump: placeholderNutrition(30, 8, 0, 0),
+  frozenCustardShake: placeholderNutrition(560, 62, 30, 12),
+  pepsi330: placeholderNutrition(140, 36, 0, 0),
+  cocaCola330: placeholderNutrition(139, 35, 0, 0),
+  zeroSugar330: placeholderNutrition(1, 0, 0, 0),
+  espressoShot: placeholderNutrition(2, 0, 0, 0),
+  sideMilk: placeholderNutrition(20, 1, 1, 1), // 30 ml whole milk
+  milk150: placeholderNutrition(95, 7, 5, 5), // 150 ml steamed whole milk
+  milk250: placeholderNutrition(155, 12, 8, 8), // 250 ml steamed whole milk
+  milkFoam: placeholderNutrition(15, 1, 1, 1),
+  syrupShot: placeholderNutrition(30, 8, 0, 0), // 10 ml flavored syrup
+};
+
+/**
+ * Calculates nutrition for an item with a given customization [Placeholder values].
+ */
+export function computeNutrition(
+  item: MenuItem,
+  customization?: {
+    selectedChoiceId?: string;
+    removedIngredientIds?: string[];
+    extraQuantities?: Record<string, number>;
+  }
+): Nutrition {
+  let total = sumNutrition(item.nutrition);
+
+  if (customization?.selectedChoiceId && item.requiredChoice) {
+    const opt = item.requiredChoice.options.find((o) => o.id === customization.selectedChoiceId);
+    if (opt) total = sumNutrition(total, opt.nutrition);
+  }
+
+  (customization?.removedIngredientIds || []).forEach((id) => {
+    const ing = item.includedIngredients.find((i) => i.id === id);
+    if (ing?.nutrition && !ing.isRequired) {
+      total = sumNutrition(total, scaleNutrition(ing.nutrition, -1));
+    }
+  });
+
+  Object.entries(customization?.extraQuantities || {}).forEach(([extraId, qty]) => {
+    if (qty <= 0) return;
+    const extra = item.availableExtras.find((e) => e.id === extraId);
+    if (extra) total = sumNutrition(total, scaleNutrition(extra.nutrition, qty));
+  });
+
+  return {
+    calories: Math.max(0, Math.round(total.calories)),
+    netCarbs: Math.max(0, Math.round(total.netCarbs)),
+    fat: Math.max(0, Math.round(total.fat)),
+    protein: Math.max(0, Math.round(total.protein)),
+    isPlaceholder: total.isPlaceholder,
+  };
+}
+
+/**
+ * Calorie range for the menu card. Items with a required choice (Natural Juice, Water)
+ * can vary by option; everything else returns a single value (min === max).
+ */
+export function getCalorieRange(item: MenuItem): { min: number; max: number } {
+  if (!item.requiredChoice || item.requiredChoice.options.length === 0) {
+    const kcal = computeNutrition(item).calories;
+    return { min: kcal, max: kcal };
+  }
+  const values = item.requiredChoice.options.map(
+    (o) => computeNutrition(item, { selectedChoiceId: o.id }).calories
+  );
+  return { min: Math.min(...values), max: Math.max(...values) };
+}
+
+// =============================================================================
+// MENU ITEMS
+// =============================================================================
+
 export const MENU_ITEMS: MenuItem[] = [
   // =========================================================================
   // 1. BURGERS (Originals 1-6, then Double Smashed Bacon, then The Big One)
   // =========================================================================
 
-  // 1. The Peach Blossom Smash (Original)
+  // 1. The Bun & Patty Smash (Original)
   {
-    id: 'peach-blossom-smash',
+    id: 'bun-patty-smash',
     estimatedMinutes: 30,
-    name: 'The Peach Blossom Smash',
+    name: 'The Bun & Patty Smash',
     category: 'Burgers',
     sortOrder: 1,
     price: 24.90,
-    description: 'Double 90 g dry-aged patties, slow-cooked peach-bourbon bacon jam, melted Havarti, and wild arugula on griddled milk brioche.',
-    longDescription: 'Our beloved house signature burger combining savory smoke and subtle orchard sweetness. Two 90 g beef patties smashed on 260°C carbon steel for maximum crust, layered with melted Danish Havarti, peppery wild arugula, and our slow-simmered Georgian peach bourbon bacon jam on butter-griddled milk brioche.',
+    description: 'Double 90 g dry-aged patties, slow-cooked smoky onion and bourbon bacon jam, melted Havarti, and wild arugula on griddled milk brioche.',
+    longDescription: 'Our beloved house signature burger combining savory smoke and deep caramelized onion sweetness. Two 90 g beef patties smashed on 260°C carbon steel for maximum crust, layered with melted Danish Havarti, peppery wild arugula, and our slow-simmered smoky onion and bourbon bacon jam on butter-griddled milk brioche.',
     mainIngredients: [
       'Griddled Milk Brioche Bun',
       'Two Smashed Angus Patties (90 g each)',
       'Melted Danish Havarti Cheese',
-      'House Peach Bourbon Bacon Jam [Placeholder]',
+      'House Smoky Onion & Bourbon Bacon Jam [Placeholder]',
       'Fresh Wild Arugula',
     ],
     beefWeight: '180 g beef (2 × 90 g patties) [Placeholder]',
     allergens: ['Gluten', 'Dairy', 'Eggs [Placeholder]'],
     tags: ['House Signature', 'Dry-Aged'],
-    calories: 780,
+    nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.havarti, N.baconJam30, N.arugula),
     prepTime: '6 min',
     isBestseller: true,
     isChefSpecial: true,
-    imageSlot: '/images/menu/peach-blossom-smash.jpg',
-    imageLabel: 'Cheeseburger close-up with peach bacon jam dripping down lacy crust',
+    imageSlot: '/images/menu/bun-patty-smash.jpg',
+    imageLabel: 'Double smash burger with smoky onion bacon jam, melted Havarti, and arugula',
     imageStyle: 'scene',
     includedIngredients: [
       { id: 'patty-primary', name: 'First Smashed Patty (90 g)', isRequired: true },
-      { id: 'patty-second', name: 'Second Smashed Patty (90 g)', isRequired: false },
-      { id: 'havarti-cheese', name: 'Melted Danish Havarti', isRequired: false },
-      { id: 'peach-bacon-jam', name: 'Peach Bourbon Bacon Jam', isRequired: false },
-      { id: 'wild-arugula', name: 'Wild Arugula', isRequired: false },
+      { id: 'patty-second', name: 'Second Smashed Patty (90 g)', isRequired: false, nutrition: N.patty90 },
+      { id: 'havarti-cheese', name: 'Melted Danish Havarti', isRequired: false, nutrition: N.havarti },
+      { id: 'bacon-jam', name: 'Smoky Onion & Bourbon Bacon Jam', isRequired: false, nutrition: N.baconJam30 },
+      { id: 'wild-arugula', name: 'Wild Arugula', isRequired: false, nutrition: N.arugula },
       { id: 'brioche-bun', name: 'Griddled Milk Brioche Bun', isRequired: true },
     ],
     availableExtras: [
-      { id: 'extra-patty', name: 'Extra Smashed Patty (90 g)', price: 5.50, maxQuantity: 3 },
-      { id: 'extra-havarti', name: 'Extra Melted Havarti', price: 2.00, maxQuantity: 3 },
-      { id: 'smoked-bacon', name: 'Crispy Bacon Strip', price: 2.50, maxQuantity: 3 },
-      { id: 'extra-jam', name: 'Extra Peach Bacon Jam', price: 2.00, maxQuantity: 3 },
-      { id: 'dill-pickles', name: 'Pickled Cucumbers', price: 1.00, maxQuantity: 3 },
-      { id: 'charred-jalapeno', name: 'Charred Jalapeños', price: 1.50, maxQuantity: 3 },
+      { id: 'extra-patty', name: 'Extra Smashed Patty (90 g)', price: 5.50, maxQuantity: 3, nutrition: N.patty90 },
+      { id: 'extra-havarti', name: 'Extra Melted Havarti', price: 2.00, maxQuantity: 3, nutrition: N.havarti },
+      { id: 'smoked-bacon', name: 'Crispy Bacon Strip', price: 2.50, maxQuantity: 3, nutrition: N.crispyBacon },
+      { id: 'extra-jam', name: 'Extra Smoky Bacon Jam', price: 2.00, maxQuantity: 3, nutrition: N.baconJam30 },
+      { id: 'dill-pickles', name: 'Pickled Cucumbers', price: 1.00, maxQuantity: 3, nutrition: N.pickles },
+      { id: 'charred-jalapeno', name: 'Charred Jalapeños', price: 1.50, maxQuantity: 3, nutrition: N.jalapenos },
     ],
   },
 
@@ -141,7 +368,7 @@ export const MENU_ITEMS: MenuItem[] = [
     beefWeight: '180 g beef (2 × 90 g patties) [Placeholder]',
     allergens: ['Gluten', 'Dairy', 'Eggs, Mustard [Placeholder]'],
     tags: ['Standard', 'Popular'],
-    calories: 720,
+    nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.cheddarDouble, N.shavedOnion, N.pickles, N.secretSauce20),
     prepTime: '5 min',
     isBestseller: true,
     imageSlot: '/images/menu/golden-double-classic.jpg',
@@ -149,18 +376,18 @@ export const MENU_ITEMS: MenuItem[] = [
     imageStyle: 'scene',
     includedIngredients: [
       { id: 'patty-primary', name: 'First Smashed Patty (90 g)', isRequired: true },
-      { id: 'patty-second', name: 'Second Smashed Patty (90 g)', isRequired: false },
-      { id: 'sharp-cheddar', name: 'Aged Sharp Cheddar', isRequired: false },
-      { id: 'shaved-onion', name: 'Shaved Sweet Onion', isRequired: false },
-      { id: 'pickled-cucumbers', name: 'Pickled Cucumber Slices', isRequired: false },
-      { id: 'secret-sauce', name: 'House Secret Sauce', isRequired: false },
+      { id: 'patty-second', name: 'Second Smashed Patty (90 g)', isRequired: false, nutrition: N.patty90 },
+      { id: 'sharp-cheddar', name: 'Aged Sharp Cheddar', isRequired: false, nutrition: N.cheddarDouble },
+      { id: 'shaved-onion', name: 'Shaved Sweet Onion', isRequired: false, nutrition: N.shavedOnion },
+      { id: 'pickled-cucumbers', name: 'Pickled Cucumber Slices', isRequired: false, nutrition: N.pickles },
+      { id: 'secret-sauce', name: 'House Secret Sauce', isRequired: false, nutrition: N.secretSauce20 },
       { id: 'brioche-bun', name: 'Toasted Milk Brioche Bun', isRequired: true },
     ],
     availableExtras: [
-      { id: 'extra-patty', name: 'Extra Smashed Patty (90 g)', price: 5.50, maxQuantity: 3 },
-      { id: 'extra-cheddar', name: 'Extra Melted Cheddar', price: 2.00, maxQuantity: 3 },
-      { id: 'smoked-bacon', name: 'Crispy Bacon Strip', price: 2.50, maxQuantity: 3 },
-      { id: 'extra-pickles', name: 'Extra Pickled Cucumbers', price: 1.00, maxQuantity: 3 },
+      { id: 'extra-patty', name: 'Extra Smashed Patty (90 g)', price: 5.50, maxQuantity: 3, nutrition: N.patty90 },
+      { id: 'extra-cheddar', name: 'Extra Melted Cheddar', price: 2.00, maxQuantity: 3, nutrition: N.cheddarSlice },
+      { id: 'smoked-bacon', name: 'Crispy Bacon Strip', price: 2.50, maxQuantity: 3, nutrition: N.crispyBacon },
+      { id: 'extra-pickles', name: 'Extra Pickled Cucumbers', price: 1.00, maxQuantity: 3, nutrition: N.pickles },
     ],
   },
 
@@ -184,7 +411,7 @@ export const MENU_ITEMS: MenuItem[] = [
     beefWeight: '180 g beef (2 × 90 g patties) [Placeholder]',
     allergens: ['Gluten', 'Dairy', 'Eggs [Placeholder]'],
     tags: ['Truffle', 'Gruyère'],
-    calories: 830,
+    nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.gruyere, N.sauteedMushrooms, N.truffleAioli20),
     prepTime: '6 min',
     isChefSpecial: true,
     imageSlot: '/images/menu/truffle-forest-melt.jpg',
@@ -192,17 +419,17 @@ export const MENU_ITEMS: MenuItem[] = [
     imageStyle: 'scene',
     includedIngredients: [
       { id: 'patty-primary', name: 'First Smashed Patty (90 g)', isRequired: true },
-      { id: 'patty-second', name: 'Second Smashed Patty (90 g)', isRequired: false },
-      { id: 'swiss-gruyere', name: 'Melted Swiss Gruyère', isRequired: false },
-      { id: 'sauteed-mushrooms', name: 'Sautéed Beech Mushrooms', isRequired: false },
-      { id: 'truffle-aioli', name: 'Black Truffle Herb Aioli', isRequired: false },
+      { id: 'patty-second', name: 'Second Smashed Patty (90 g)', isRequired: false, nutrition: N.patty90 },
+      { id: 'swiss-gruyere', name: 'Melted Swiss Gruyère', isRequired: false, nutrition: N.gruyere },
+      { id: 'sauteed-mushrooms', name: 'Sautéed Beech Mushrooms', isRequired: false, nutrition: N.sauteedMushrooms },
+      { id: 'truffle-aioli', name: 'Black Truffle Herb Aioli', isRequired: false, nutrition: N.truffleAioli20 },
       { id: 'brioche-bun', name: 'Toasted Brioche Bun', isRequired: true },
     ],
     availableExtras: [
-      { id: 'extra-patty', name: 'Extra Smashed Patty (90 g)', price: 5.50, maxQuantity: 3 },
-      { id: 'extra-gruyere', name: 'Extra Swiss Gruyère', price: 2.50, maxQuantity: 3 },
-      { id: 'extra-mushrooms', name: 'Extra Sautéed Mushrooms', price: 2.00, maxQuantity: 3 },
-      { id: 'truffle-aioli-extra', name: 'Extra Black Truffle Aioli', price: 2.00, maxQuantity: 3 },
+      { id: 'extra-patty', name: 'Extra Smashed Patty (90 g)', price: 5.50, maxQuantity: 3, nutrition: N.patty90 },
+      { id: 'extra-gruyere', name: 'Extra Swiss Gruyère', price: 2.50, maxQuantity: 3, nutrition: N.gruyere },
+      { id: 'extra-mushrooms', name: 'Extra Sautéed Mushrooms', price: 2.00, maxQuantity: 3, nutrition: N.sauteedMushrooms },
+      { id: 'truffle-aioli-extra', name: 'Extra Black Truffle Aioli', price: 2.00, maxQuantity: 3, nutrition: N.truffleAioli20 },
     ],
   },
 
@@ -227,7 +454,7 @@ export const MENU_ITEMS: MenuItem[] = [
     beefWeight: '180 g beef (2 × 90 g patties) [Placeholder]',
     allergens: ['Gluten', 'Dairy [Placeholder]'],
     tags: ['Spicy', 'Hot Honey'],
-    calories: 760,
+    nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.pepperJack, N.jalapenos, N.crispyShallots, N.hotHoney),
     prepTime: '5 min',
     isSpicy: true,
     imageSlot: '/images/menu/sweet-heat-jalapeno.jpg',
@@ -235,18 +462,18 @@ export const MENU_ITEMS: MenuItem[] = [
     imageStyle: 'scene',
     includedIngredients: [
       { id: 'patty-primary', name: 'First Smashed Patty (90 g)', isRequired: true },
-      { id: 'patty-second', name: 'Second Smashed Patty (90 g)', isRequired: false },
-      { id: 'pepper-jack', name: 'Spicy Pepper Jack Cheese', isRequired: false },
-      { id: 'pickled-jalapenos', name: 'Quick-Pickled Jalapeños', isRequired: false },
-      { id: 'crispy-shallots', name: 'Crispy Fried Shallots', isRequired: false },
-      { id: 'hot-honey', name: 'Wildflower Hot Honey Drizzle', isRequired: false },
+      { id: 'patty-second', name: 'Second Smashed Patty (90 g)', isRequired: false, nutrition: N.patty90 },
+      { id: 'pepper-jack', name: 'Spicy Pepper Jack Cheese', isRequired: false, nutrition: N.pepperJack },
+      { id: 'pickled-jalapenos', name: 'Quick-Pickled Jalapeños', isRequired: false, nutrition: N.jalapenos },
+      { id: 'crispy-shallots', name: 'Crispy Fried Shallots', isRequired: false, nutrition: N.crispyShallots },
+      { id: 'hot-honey', name: 'Wildflower Hot Honey Drizzle', isRequired: false, nutrition: N.hotHoney },
       { id: 'brioche-bun', name: 'Toasted Brioche Bun', isRequired: true },
     ],
     availableExtras: [
-      { id: 'extra-patty', name: 'Extra Smashed Patty (90 g)', price: 5.50, maxQuantity: 3 },
-      { id: 'extra-bacon', name: 'Crispy Bacon Strip', price: 2.50, maxQuantity: 3 },
-      { id: 'extra-jalapenos', name: 'Extra Pickled Jalapeños', price: 1.00, maxQuantity: 3 },
-      { id: 'extra-hot-honey', name: 'Side Wildflower Hot Honey', price: 1.50, maxQuantity: 3 },
+      { id: 'extra-patty', name: 'Extra Smashed Patty (90 g)', price: 5.50, maxQuantity: 3, nutrition: N.patty90 },
+      { id: 'extra-bacon', name: 'Crispy Bacon Strip', price: 2.50, maxQuantity: 3, nutrition: N.crispyBacon },
+      { id: 'extra-jalapenos', name: 'Extra Pickled Jalapeños', price: 1.00, maxQuantity: 3, nutrition: N.jalapenos },
+      { id: 'extra-hot-honey', name: 'Side Wildflower Hot Honey', price: 1.50, maxQuantity: 3, nutrition: N.hotHoney },
     ],
   },
 
@@ -269,23 +496,23 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
     allergens: ['Gluten', 'Dairy', 'Eggs, Mustard [Placeholder]'],
     tags: ['Crispy Chicken', 'Customer Favorite'],
-    calories: 740,
+    nutrition: sumNutrition(N.sesameBriocheBun, N.friedChickenThigh, N.cabbageSlaw, N.pickles, N.garlicAioli20),
     prepTime: '7 min',
     imageSlot: '/images/menu/buttermilk-crispy-chicken.jpg',
     imageLabel: 'Craggy golden brown fried chicken sandwich with crunchy purple cabbage slaw',
     imageStyle: 'scene',
     includedIngredients: [
       { id: 'chicken-fillet', name: 'Crispy Buttermilk Chicken Thigh', isRequired: true },
-      { id: 'cabbage-slaw', name: 'Cabbage-Apple Slaw', isRequired: false },
-      { id: 'dill-pickles', name: 'Pickled Cucumber Slices', isRequired: false },
-      { id: 'garlic-aioli', name: 'Smoked Garlic Aioli', isRequired: false },
+      { id: 'cabbage-slaw', name: 'Cabbage-Apple Slaw', isRequired: false, nutrition: N.cabbageSlaw },
+      { id: 'dill-pickles', name: 'Pickled Cucumber Slices', isRequired: false, nutrition: N.pickles },
+      { id: 'garlic-aioli', name: 'Smoked Garlic Aioli', isRequired: false, nutrition: N.garlicAioli20 },
       { id: 'brioche-bun', name: 'Toasted Sesame Brioche Bun', isRequired: true },
     ],
     availableExtras: [
-      { id: 'extra-slaw', name: 'Extra Cabbage-Apple Slaw', price: 1.50, maxQuantity: 2 },
-      { id: 'add-cheese', name: 'Melted Cheddar Cheese', price: 2.00, maxQuantity: 2 },
-      { id: 'add-bacon', name: 'Crispy Smoked Bacon', price: 2.50, maxQuantity: 3 },
-      { id: 'add-jalapenos', name: 'Charred Jalapeños', price: 1.00, maxQuantity: 3 },
+      { id: 'extra-slaw', name: 'Extra Cabbage-Apple Slaw', price: 1.50, maxQuantity: 2, nutrition: N.cabbageSlaw },
+      { id: 'add-cheese', name: 'Melted Cheddar Cheese', price: 2.00, maxQuantity: 2, nutrition: N.cheddarSlice },
+      { id: 'add-bacon', name: 'Crispy Smoked Bacon', price: 2.50, maxQuantity: 3, nutrition: N.crispyBacon },
+      { id: 'add-jalapenos', name: 'Charred Jalapeños', price: 1.00, maxQuantity: 3, nutrition: N.jalapenos },
     ],
   },
 
@@ -309,7 +536,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
     allergens: ['Gluten', 'Dairy', 'Sesame [Placeholder]'],
     tags: ['Vegetarian', 'Mediterranean'],
-    calories: 610,
+    nutrition: sumNutrition(N.briocheBun, N.halloumi, N.roastedPeppers, N.mint, N.arugula, N.tahiniCrema),
     prepTime: '5 min',
     isVegetarian: true,
     imageSlot: '/images/menu/crispy-halloumi-mint.jpg',
@@ -317,16 +544,16 @@ export const MENU_ITEMS: MenuItem[] = [
     imageStyle: 'scene',
     includedIngredients: [
       { id: 'halloumi-slab', name: 'Seared Halloumi Slab', isRequired: true },
-      { id: 'roasted-peppers', name: 'Fire-Roasted Sweet Peppers', isRequired: false },
-      { id: 'fresh-mint', name: 'Fresh Mint Leaves', isRequired: false },
-      { id: 'baby-arugula', name: 'Baby Wild Arugula', isRequired: false },
-      { id: 'tahini-crema', name: 'Lemon-Tahini Crema', isRequired: false },
+      { id: 'roasted-peppers', name: 'Fire-Roasted Sweet Peppers', isRequired: false, nutrition: N.roastedPeppers },
+      { id: 'fresh-mint', name: 'Fresh Mint Leaves', isRequired: false, nutrition: N.mint },
+      { id: 'baby-arugula', name: 'Baby Wild Arugula', isRequired: false, nutrition: N.arugula },
+      { id: 'tahini-crema', name: 'Lemon-Tahini Crema', isRequired: false, nutrition: N.tahiniCrema },
       { id: 'brioche-bun', name: 'Toasted Milk Brioche Bun', isRequired: true },
     ],
     availableExtras: [
-      { id: 'extra-halloumi', name: 'Extra Seared Halloumi Slab', price: 4.50, maxQuantity: 2 },
-      { id: 'avocado-mash', name: 'Crushed Ripe Avocado', price: 2.50, maxQuantity: 2 },
-      { id: 'extra-peppers', name: 'Extra Fire-Roasted Peppers', price: 1.50, maxQuantity: 2 },
+      { id: 'extra-halloumi', name: 'Extra Seared Halloumi Slab', price: 4.50, maxQuantity: 2, nutrition: N.halloumi },
+      { id: 'avocado-mash', name: 'Crushed Ripe Avocado', price: 2.50, maxQuantity: 2, nutrition: N.avocadoMash },
+      { id: 'extra-peppers', name: 'Extra Fire-Roasted Peppers', price: 1.50, maxQuantity: 2, nutrition: N.roastedPeppers },
     ],
   },
 
@@ -352,7 +579,7 @@ export const MENU_ITEMS: MenuItem[] = [
     beefWeight: '180 g beef (2 × 90 g patties) [Placeholder]',
     allergens: ['Gluten', 'Dairy', 'Eggs, Mustard [Placeholder]'],
     tags: ['Double Smashed', 'Smoked Bacon', 'New'],
-    calories: 840,
+    nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.crispyBacon, N.cheddarSlice, N.pickles, N.shavedOnion, N.secretSauce20),
     prepTime: '6 min',
     isBestseller: true,
     imageSlot: '/images/menu/double-smashed-bacon.jpg',
@@ -361,20 +588,20 @@ export const MENU_ITEMS: MenuItem[] = [
     imagePosition: 'center 55%',
     includedIngredients: [
       { id: 'patty-90g-1', name: 'First Smashed Patty (90 g)', isRequired: true },
-      { id: 'patty-90g-2', name: 'Second Smashed Patty (90 g)', isRequired: false },
-      { id: 'crispy-bacon', name: 'Crispy Smoked Bacon', isRequired: false },
-      { id: 'melted-cheddar', name: 'Melted Cheddar Cheese', isRequired: false },
-      { id: 'pickled-cucumbers', name: 'Pickled Cucumber Rounds', isRequired: false },
-      { id: 'shaved-onion', name: 'Shaved Sweet Onion', isRequired: false },
-      { id: 'burger-sauce', name: 'Creamy Burger Sauce', isRequired: false },
+      { id: 'patty-90g-2', name: 'Second Smashed Patty (90 g)', isRequired: false, nutrition: N.patty90 },
+      { id: 'crispy-bacon', name: 'Crispy Smoked Bacon', isRequired: false, nutrition: N.crispyBacon },
+      { id: 'melted-cheddar', name: 'Melted Cheddar Cheese', isRequired: false, nutrition: N.cheddarSlice },
+      { id: 'pickled-cucumbers', name: 'Pickled Cucumber Rounds', isRequired: false, nutrition: N.pickles },
+      { id: 'shaved-onion', name: 'Shaved Sweet Onion', isRequired: false, nutrition: N.shavedOnion },
+      { id: 'burger-sauce', name: 'Creamy Burger Sauce', isRequired: false, nutrition: N.secretSauce20 },
       { id: 'brioche-bun', name: 'Toasted Brioche Bun', isRequired: true },
     ],
     availableExtras: [
-      { id: 'extra-patty-90g', name: 'Extra Smashed Patty (90 g)', price: 5.50, maxQuantity: 3 },
-      { id: 'extra-bacon', name: 'Extra Crispy Bacon Strips', price: 2.50, maxQuantity: 3 },
-      { id: 'extra-cheddar', name: 'Extra Melted Cheddar', price: 2.00, maxQuantity: 3 },
-      { id: 'extra-pickles', name: 'Extra Pickled Cucumbers', price: 1.00, maxQuantity: 3 },
-      { id: 'extra-sauce', name: 'Extra House Burger Sauce', price: 1.50, maxQuantity: 3 },
+      { id: 'extra-patty-90g', name: 'Extra Smashed Patty (90 g)', price: 5.50, maxQuantity: 3, nutrition: N.patty90 },
+      { id: 'extra-bacon', name: 'Extra Crispy Bacon Strips', price: 2.50, maxQuantity: 3, nutrition: N.crispyBacon },
+      { id: 'extra-cheddar', name: 'Extra Melted Cheddar', price: 2.00, maxQuantity: 3, nutrition: N.cheddarSlice },
+      { id: 'extra-pickles', name: 'Extra Pickled Cucumbers', price: 1.00, maxQuantity: 3, nutrition: N.pickles },
+      { id: 'extra-sauce', name: 'Extra House Burger Sauce', price: 1.50, maxQuantity: 3, nutrition: N.secretSauce20 },
     ],
   },
 
@@ -402,7 +629,7 @@ export const MENU_ITEMS: MenuItem[] = [
     allergens: ['Gluten', 'Dairy', 'Eggs, Mustard, Sulphites (Saperavi wine marinade) [Placeholder]'],
     badge: 'Made for sharing',
     tags: ['Made for sharing', '750 g Beef', 'New'],
-    calories: 1980,
+    nutrition: sumNutrition(N.largeSesameBun, N.beef750, N.cheddar6Layers, N.baconLayers2, N.saperaviOnions, N.iceberg, N.pickles, N.specialSauce40),
     prepTime: '10 min',
     isBestseller: true,
     isChefSpecial: true,
@@ -412,25 +639,25 @@ export const MENU_ITEMS: MenuItem[] = [
     imagePosition: 'center 45%',
     includedIngredients: [
       { id: 'beef-750g-core', name: '750 g Smashed Beef Patties', isRequired: true },
-      { id: 'cheddar-6-layers', name: 'Melted Cheddar (6 layers)', isRequired: false },
-      { id: 'bacon-2-layers', name: 'Crispy Smoked Bacon (2 layers)', isRequired: false },
-      { id: 'saperavi-onions', name: 'Saperavi Wine Marinated Onions', isRequired: false },
-      { id: 'iceberg-crisp', name: 'Crisp Iceberg Lettuce', isRequired: false },
-      { id: 'pickled-cucumbers', name: 'Pickled Cucumber Slices', isRequired: false },
-      { id: 'special-burger-sauce', name: 'Special Burger Sauce', isRequired: false },
+      { id: 'cheddar-6-layers', name: 'Melted Cheddar (6 layers)', isRequired: false, nutrition: N.cheddar6Layers },
+      { id: 'bacon-2-layers', name: 'Crispy Smoked Bacon (2 layers)', isRequired: false, nutrition: N.baconLayers2 },
+      { id: 'saperavi-onions', name: 'Saperavi Wine Marinated Onions', isRequired: false, nutrition: N.saperaviOnions },
+      { id: 'iceberg-crisp', name: 'Crisp Iceberg Lettuce', isRequired: false, nutrition: N.iceberg },
+      { id: 'pickled-cucumbers', name: 'Pickled Cucumber Slices', isRequired: false, nutrition: N.pickles },
+      { id: 'special-burger-sauce', name: 'Special Burger Sauce', isRequired: false, nutrition: N.specialSauce40 },
       { id: 'large-sesame-bun', name: 'Large Toasted Sesame Bun', isRequired: true },
     ],
     availableExtras: [
-      { id: 'extra-cheddar-ribbon', name: 'Extra Cheddar Cheese Layer', price: 2.50, maxQuantity: 3 },
-      { id: 'extra-bacon-strip', name: 'Extra Crispy Bacon Strips', price: 3.00, maxQuantity: 3 },
-      { id: 'extra-saperavi-onion', name: 'Extra Saperavi Wine Onions', price: 1.50, maxQuantity: 3 },
-      { id: 'cheese-injection-shot', name: 'Cheese Injection Syringe Refill', price: 6.50, maxQuantity: 2 },
-      { id: 'extra-special-sauce', name: 'Extra Special Burger Sauce', price: 1.50, maxQuantity: 3 },
+      { id: 'extra-cheddar-ribbon', name: 'Extra Cheddar Cheese Layer', price: 2.50, maxQuantity: 3, nutrition: N.cheddarSlice },
+      { id: 'extra-bacon-strip', name: 'Extra Crispy Bacon Strips', price: 3.00, maxQuantity: 3, nutrition: placeholderNutrition(120, 0, 9, 9) },
+      { id: 'extra-saperavi-onion', name: 'Extra Saperavi Wine Onions', price: 1.50, maxQuantity: 3, nutrition: N.saperaviOnions },
+      { id: 'cheese-injection-shot', name: 'Cheese Injection Syringe Refill', price: 6.50, maxQuantity: 2, nutrition: N.cheeseSauce60 },
+      { id: 'extra-special-sauce', name: 'Extra Special Burger Sauce', price: 1.50, maxQuantity: 3, nutrition: N.secretSauce20 },
     ],
   },
 
   // =========================================================================
-  // 2. SIDE DISHES (Originals 1-3, then Fries with Cheese & Bacon, then Caesar Salad)
+  // 2. SIDE DISHES (Originals 1-3, then Fries with Cheese & Bacon, Caesar Salad, Bowl Mix)
   // =========================================================================
 
   // 1. Rosemary Russet Crinkle Fries (Original)
@@ -451,7 +678,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
     allergens: ['None (Dedicated Fryer) [Placeholder]'],
     tags: ['Vegan', 'Gluten-Free'],
-    calories: 380,
+    nutrition: sumNutrition(N.fries170),
     prepTime: '4 min',
     isVegetarian: true,
     imageSlot: '/images/menu/golden-crinkle-fries.jpg',
@@ -459,11 +686,11 @@ export const MENU_ITEMS: MenuItem[] = [
     imageStyle: 'isolated',
     includedIngredients: [
       { id: 'crinkle-fries', name: 'Thick-Cut Crinkle Fries', isRequired: true },
-      { id: 'rosemary-salt', name: 'Rosemary & Thyme Salt', isRequired: false },
+      { id: 'rosemary-salt', name: 'Rosemary & Thyme Salt', isRequired: false, nutrition: ZERO_NUTRITION },
     ],
     availableExtras: [
-      { id: 'side-secret-sauce', name: 'Side Secret Sauce Cup', price: 1.50, maxQuantity: 3 },
-      { id: 'side-truffle-aioli', name: 'Side Truffle Aioli Cup', price: 2.00, maxQuantity: 3 },
+      { id: 'side-secret-sauce', name: 'Side Secret Sauce Cup', price: 1.50, maxQuantity: 3, nutrition: N.secretSauceCup },
+      { id: 'side-truffle-aioli', name: 'Side Truffle Aioli Cup', price: 2.00, maxQuantity: 3, nutrition: N.truffleAioliCup },
     ],
   },
 
@@ -485,7 +712,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
     allergens: ['Dairy [Placeholder]'],
     tags: ['Truffle', 'Customer Favorite'],
-    calories: 460,
+    nutrition: sumNutrition(N.fries170, N.parmesanSnow, N.truffleOil),
     prepTime: '4 min',
     isVegetarian: true,
     imageSlot: '/images/menu/parmesan-truffle-fries.jpg',
@@ -493,13 +720,13 @@ export const MENU_ITEMS: MenuItem[] = [
     imageStyle: 'isolated',
     includedIngredients: [
       { id: 'hand-cut-fries', name: 'Hand-Cut Skin-On Fries', isRequired: true },
-      { id: 'parmesan-dust', name: '24-Month Aged Parmesan', isRequired: false },
-      { id: 'white-truffle-oil', name: 'White Truffle Oil Drizzle', isRequired: false },
-      { id: 'black-pepper', name: 'Cracked Tellicherry Pepper', isRequired: false },
+      { id: 'parmesan-dust', name: '24-Month Aged Parmesan', isRequired: false, nutrition: N.parmesanSnow },
+      { id: 'white-truffle-oil', name: 'White Truffle Oil Drizzle', isRequired: false, nutrition: N.truffleOil },
+      { id: 'black-pepper', name: 'Cracked Tellicherry Pepper', isRequired: false, nutrition: ZERO_NUTRITION },
     ],
     availableExtras: [
-      { id: 'extra-parmesan', name: 'Extra Parmesan Snowfall', price: 2.00, maxQuantity: 3 },
-      { id: 'side-truffle-aioli', name: 'Side Black Truffle Aioli', price: 2.00, maxQuantity: 3 },
+      { id: 'extra-parmesan', name: 'Extra Parmesan Snowfall', price: 2.00, maxQuantity: 3, nutrition: N.parmesanSnow },
+      { id: 'side-truffle-aioli', name: 'Side Black Truffle Aioli', price: 2.00, maxQuantity: 3, nutrition: N.truffleAioliCup },
     ],
   },
 
@@ -521,7 +748,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
     allergens: ['Gluten', 'Dairy [Placeholder]'],
     tags: ['Vegetarian', 'Crispy'],
-    calories: 420,
+    nutrition: sumNutrition(N.onionRings180),
     prepTime: '4 min',
     isVegetarian: true,
     imageSlot: '/images/menu/onion-rings.jpg',
@@ -529,11 +756,11 @@ export const MENU_ITEMS: MenuItem[] = [
     imageStyle: 'isolated',
     includedIngredients: [
       { id: 'onion-rings-core', name: 'Panko Onion Rings', isRequired: true },
-      { id: 'paprika-salt', name: 'Smoked Paprika Seasoning', isRequired: false },
+      { id: 'paprika-salt', name: 'Smoked Paprika Seasoning', isRequired: false, nutrition: ZERO_NUTRITION },
     ],
     availableExtras: [
-      { id: 'side-secret-sauce', name: 'Side Secret Sauce Cup', price: 1.50, maxQuantity: 3 },
-      { id: 'side-peach-jam', name: 'Side Peach Bacon Jam Cup', price: 2.00, maxQuantity: 3 },
+      { id: 'side-secret-sauce', name: 'Side Secret Sauce Cup', price: 1.50, maxQuantity: 3, nutrition: N.secretSauceCup },
+      { id: 'side-bacon-jam', name: 'Side Smoky Bacon Jam Cup', price: 2.00, maxQuantity: 3, nutrition: N.baconJam30 },
     ],
   },
 
@@ -555,7 +782,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
     allergens: ['Dairy [Placeholder]'],
     tags: ['Loaded Fries', 'Bacon & Cheese', 'New'],
-    calories: 680,
+    nutrition: sumNutrition(N.fries170, N.cheeseSauce80, N.baconBits, N.chives),
     prepTime: '4 min',
     isBestseller: true,
     imageSlot: '/images/menu/fries-cheese-bacon.jpg',
@@ -563,14 +790,14 @@ export const MENU_ITEMS: MenuItem[] = [
     imageStyle: 'scene',
     includedIngredients: [
       { id: 'crispy-fries', name: 'Crispy Hand-Cut Fries', isRequired: true },
-      { id: 'hot-cheese-sauce', name: 'Hot Cheddar Cheese Sauce', isRequired: false },
-      { id: 'chopped-bacon', name: 'Chopped Crispy Bacon', isRequired: false },
-      { id: 'fresh-chives', name: 'Fresh Chopped Chives', isRequired: false },
+      { id: 'hot-cheese-sauce', name: 'Hot Cheddar Cheese Sauce', isRequired: false, nutrition: N.cheeseSauce80 },
+      { id: 'chopped-bacon', name: 'Chopped Crispy Bacon', isRequired: false, nutrition: N.baconBits },
+      { id: 'fresh-chives', name: 'Fresh Chopped Chives', isRequired: false, nutrition: N.chives },
     ],
     availableExtras: [
-      { id: 'extra-cheese-sauce', name: 'Extra Hot Cheese Sauce Ladle', price: 2.50, maxQuantity: 3 },
-      { id: 'extra-bacon-bits', name: 'Extra Crispy Bacon Bits', price: 2.50, maxQuantity: 3 },
-      { id: 'pickled-jalapenos', name: 'Sliced Pickled Jalapeños', price: 1.00, maxQuantity: 3 },
+      { id: 'extra-cheese-sauce', name: 'Extra Hot Cheese Sauce Ladle', price: 2.50, maxQuantity: 3, nutrition: N.cheeseSauce60 },
+      { id: 'extra-bacon-bits', name: 'Extra Crispy Bacon Bits', price: 2.50, maxQuantity: 3, nutrition: N.baconBits },
+      { id: 'pickled-jalapenos', name: 'Sliced Pickled Jalapeños', price: 1.00, maxQuantity: 3, nutrition: N.jalapenos },
     ],
   },
 
@@ -593,42 +820,86 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
     allergens: ['Dairy', 'Gluten', 'Fish (anchovy dressing)', 'Eggs [Placeholder]'],
     tags: ['Salad', 'Grilled Chicken', 'New'],
-    calories: 460,
+    nutrition: sumNutrition(N.romaine, N.grilledChicken, N.parmesanSnow, N.croutons, N.caesarDressing),
     prepTime: '5 min',
     imageSlot: '/images/menu/caesar-salad.jpg',
     imageLabel: 'Elegant Caesar salad bowl with grilled chicken slices and shaved parmesan',
     imageStyle: 'scene',
     includedIngredients: [
       { id: 'romaine-hearts', name: 'Crisp Romaine Hearts', isRequired: true },
-      { id: 'grilled-chicken-slices', name: 'Grilled Chicken Breast Slices', isRequired: false },
-      { id: 'shaved-parmesan', name: 'Shaved Aged Parmesan', isRequired: false },
-      { id: 'brioche-croutons', name: 'Brioche Garlic Croutons', isRequired: false },
-      { id: 'caesar-dressing', name: 'Creamy Caesar Dressing', isRequired: false },
+      { id: 'grilled-chicken-slices', name: 'Grilled Chicken Breast Slices', isRequired: false, nutrition: N.grilledChicken },
+      { id: 'shaved-parmesan', name: 'Shaved Aged Parmesan', isRequired: false, nutrition: N.parmesanSnow },
+      { id: 'brioche-croutons', name: 'Brioche Garlic Croutons', isRequired: false, nutrition: N.croutons },
+      { id: 'caesar-dressing', name: 'Creamy Caesar Dressing', isRequired: false, nutrition: N.caesarDressing },
     ],
     availableExtras: [
-      { id: 'extra-grilled-chicken', name: 'Extra Grilled Chicken Portion', price: 5.00, maxQuantity: 2 },
-      { id: 'extra-parmesan', name: 'Extra Shaved Parmesan', price: 2.50, maxQuantity: 3 },
-      { id: 'extra-croutons', name: 'Extra Garlic Croutons', price: 1.00, maxQuantity: 2 },
-      { id: 'side-caesar-dressing', name: 'Side Caesar Dressing Cup', price: 1.50, maxQuantity: 2 },
+      { id: 'extra-grilled-chicken', name: 'Extra Grilled Chicken Portion', price: 5.00, maxQuantity: 2, nutrition: N.grilledChicken },
+      { id: 'extra-parmesan', name: 'Extra Shaved Parmesan', price: 2.50, maxQuantity: 3, nutrition: N.parmesanSnow },
+      { id: 'extra-croutons', name: 'Extra Garlic Croutons', price: 1.00, maxQuantity: 2, nutrition: N.croutons },
+      { id: 'side-caesar-dressing', name: 'Side Caesar Dressing Cup', price: 1.50, maxQuantity: 2, nutrition: N.caesarDressing },
+    ],
+  },
+
+  // 6. Bowl Mix (New - after Caesar Salad)
+  {
+    id: 'bowl-mix',
+    estimatedMinutes: 20,
+    name: 'Bowl Mix',
+    category: 'Side Dishes',
+    sortOrder: 6,
+    price: 22.90,
+    description: 'A loaded bowl of crispy fries topped with a chopped 90 g smashed beef patty, crispy bacon, shredded iceberg, hot cheese sauce, BBQ sauce, and grated parmesan.',
+    longDescription: 'Our loaded plancha comfort bowl: a generous base of hot, crispy golden fries topped with a freshly chopped 90 g smashed beef patty, crispy smoked bacon pieces, shredded crunchy iceberg lettuce, hot cheddar cheese sauce, smoky BBQ sauce, and a dusting of grated parmesan.',
+    mainIngredients: [
+      'Crispy Golden Fries',
+      'Chopped 90 g Smashed Beef Patty',
+      'Crispy Bacon',
+      'Shredded Iceberg Lettuce',
+      'Hot Cheese Sauce',
+      'BBQ Sauce',
+      'Grated Parmesan',
+    ],
+    beefWeight: '90 g beef (1 chopped patty) [Placeholder]',
+    allergens: ['Dairy', 'Mustard (BBQ sauce) [Placeholder]'],
+    tags: ['Loaded Bowl', 'Smashed Beef', 'New'],
+    nutrition: sumNutrition(N.fries170, N.patty90, N.baconBits, N.iceberg, N.cheeseSauce60, N.bbqSauce, N.parmesanGrated),
+    prepTime: '6 min',
+    imageSlot: '/images/menu/bowl-mix.jpg',
+    imageLabel: 'Dark bowl of crispy fries loaded with chopped beef, bacon, iceberg, cheese sauce, BBQ sauce, and parmesan',
+    imageStyle: 'scene',
+    includedIngredients: [
+      { id: 'crispy-fries', name: 'Crispy Fries', isRequired: false, nutrition: N.fries170 },
+      { id: 'chopped-patty', name: 'Chopped Smashed Beef Patty (90 g)', isRequired: false, nutrition: N.patty90 },
+      { id: 'crispy-bacon', name: 'Crispy Bacon', isRequired: false, nutrition: N.baconBits },
+      { id: 'shredded-iceberg', name: 'Shredded Iceberg Lettuce', isRequired: false, nutrition: N.iceberg },
+      { id: 'hot-cheese-sauce', name: 'Hot Cheese Sauce', isRequired: false, nutrition: N.cheeseSauce60 },
+      { id: 'bbq-sauce', name: 'BBQ Sauce', isRequired: false, nutrition: N.bbqSauce },
+      { id: 'grated-parmesan', name: 'Grated Parmesan', isRequired: false, nutrition: N.parmesanGrated },
+    ],
+    availableExtras: [
+      { id: 'extra-patty', name: 'Extra Smashed Patty (90 g)', price: 5.50, maxQuantity: 3, nutrition: N.patty90 },
+      { id: 'extra-bowl-bacon', name: 'Extra Crispy Bacon', price: 2.50, maxQuantity: 3, nutrition: N.baconBits },
+      { id: 'extra-bowl-cheese-sauce', name: 'Extra Hot Cheese Sauce', price: 2.50, maxQuantity: 3, nutrition: N.cheeseSauce60 },
+      { id: 'extra-grated-parmesan', name: 'Extra Grated Parmesan', price: 2.00, maxQuantity: 3, nutrition: N.parmesanGrated },
     ],
   },
 
   // =========================================================================
-  // 3. SAUCES (Originals 1-3, then Cheese Injection)
+  // 3. SAUCES (Originals 1-3, then Cheese Injection, then Cheese Sauce)
   // =========================================================================
 
-  // 1. Peach Bourbon Bacon Jam (Original)
+  // 1. Smoky Bourbon Bacon Jam (Original)
   {
-    id: 'sauce-peach-bourbon-jam',
+    id: 'smoky-bourbon-bacon-jam',
     estimatedMinutes: 5,
-    name: 'Peach Bourbon Bacon Jam',
+    name: 'Smoky Bourbon Bacon Jam',
     category: 'Sauces',
     sortOrder: 1,
     price: 4.50,
-    description: 'House-made savory-sweet jam of slow-cooked ripe peaches, smoked bacon bits, bourbon, shallots, and dark molasses.',
-    longDescription: 'Our signature condiment cooked low and slow for six hours. Ripe peaches break down naturally with caramelized shallots, diced smoked bacon, and a splash of bourbon into an amber, deeply savory spread.',
+    description: 'House-made savory jam of slow-cooked caramelized onions, smoked bacon, bourbon, shallots, and dark molasses.',
+    longDescription: 'Our signature condiment cooked low and slow for six hours. Caramelized onions break down with shallots, diced smoked bacon, and a splash of bourbon into an amber, deeply savory spread.',
     mainIngredients: [
-      'Ripe Peaches [Placeholder]',
+      'Slow-Caramelized Onions',
       'Smoked Applewood Bacon',
       'Kentucky Bourbon',
       'Caramelized Shallots',
@@ -637,14 +908,14 @@ export const MENU_ITEMS: MenuItem[] = [
     volume: '80 ml jar',
     allergens: ['None [Placeholder]'],
     tags: ['House Specialty', 'Small Batch'],
-    calories: 140,
+    nutrition: sumNutrition(N.baconJam80),
     prepTime: '1 min',
     isBestseller: true,
-    imageSlot: '/images/menu/sauce-peach-bourbon-jam.jpg',
-    imageLabel: 'Glass ramekin of chunky amber peach bourbon bacon jam with wooden paddle',
+    imageSlot: '/images/menu/smoky-bourbon-bacon-jam.jpg',
+    imageLabel: 'Dark ramekin of chunky smoky onion and bourbon bacon jam with wooden paddle',
     imageStyle: 'isolated',
     includedIngredients: [
-      { id: 'peach-jam-tub', name: '80 ml Peach Bacon Jam Cup', isRequired: true },
+      { id: 'bacon-jam-tub', name: '80 ml Smoky Bacon Jam Cup', isRequired: true },
     ],
     availableExtras: [],
   },
@@ -669,7 +940,7 @@ export const MENU_ITEMS: MenuItem[] = [
     volume: '80 ml cup',
     allergens: ['Eggs [Placeholder]'],
     tags: ['Vegetarian', 'Gourmet'],
-    calories: 180,
+    nutrition: sumNutrition(N.truffleAioli80),
     prepTime: '1 min',
     isVegetarian: true,
     imageSlot: '/images/menu/sauce-truffle-aioli.jpg',
@@ -701,7 +972,7 @@ export const MENU_ITEMS: MenuItem[] = [
     volume: '80 ml cup',
     allergens: ['Eggs', 'Mustard [Placeholder]'],
     tags: ['Standard', 'Everyday Dip'],
-    calories: 120,
+    nutrition: sumNutrition(N.secretSauce80),
     prepTime: '1 min',
     isVegetarian: true,
     imageSlot: '/images/menu/sauce-house-secret.jpg',
@@ -730,7 +1001,7 @@ export const MENU_ITEMS: MenuItem[] = [
     volume: '60 ml cheese sauce fill',
     allergens: ['Dairy [Placeholder]'],
     tags: ['Hot Cheese', 'Kitchen Syringe', 'Interactive', 'New'],
-    calories: 190,
+    nutrition: sumNutrition(N.cheeseSauce60),
     prepTime: '2 min',
     isBestseller: true,
     imageSlot: '/images/menu/cheese-injection.jpg',
@@ -742,9 +1013,37 @@ export const MENU_ITEMS: MenuItem[] = [
       { id: 'hot-cheddar-fill', name: 'Hot Melted Cheddar Fill (60 ml)', isRequired: true },
     ],
     availableExtras: [
-      { id: 'extra-cheese-refill', name: 'Extra Hot Cheese Syringe Refill', price: 4.00, maxQuantity: 2 },
-      { id: 'jalapeno-cheese-refill', name: 'Jalapeño Hot Cheese Refill', price: 4.50, maxQuantity: 2 },
+      { id: 'extra-cheese-refill', name: 'Extra Hot Cheese Syringe Refill', price: 4.00, maxQuantity: 2, nutrition: N.cheeseSauce60 },
+      { id: 'jalapeno-cheese-refill', name: 'Jalapeño Hot Cheese Refill', price: 4.50, maxQuantity: 2, nutrition: sumNutrition(N.cheeseSauce60, N.jalapenos) },
     ],
+  },
+
+  // 5. Cheese Sauce (New - after Cheese Injection)
+  {
+    id: 'cheese-sauce',
+    estimatedMinutes: 2,
+    name: 'Cheese Sauce',
+    category: 'Sauces',
+    sortOrder: 5,
+    price: 3.90,
+    description: 'A small cup of smooth, hot cheddar cheese sauce for dipping.',
+    longDescription: 'A small cup of smooth, velvety hot cheddar cheese sauce, made for dipping fries, onion rings, or the crispy edges of your burger.',
+    mainIngredients: [
+      'Hot Cheddar Cheese Sauce',
+    ],
+    volume: '80 ml cup',
+    allergens: ['Dairy [Placeholder]'],
+    tags: ['Hot Cheese', 'Dip', 'New'],
+    nutrition: sumNutrition(N.cheeseSauce80),
+    prepTime: '1 min',
+    isVegetarian: true,
+    imageSlot: '/images/menu/cheese-sauce.jpg',
+    imageLabel: 'Small ceramic cup of smooth hot cheddar cheese sauce on dark slate',
+    imageStyle: 'isolated',
+    includedIngredients: [
+      { id: 'cheese-sauce-tub', name: '80 ml Hot Cheese Sauce Cup', isRequired: true },
+    ],
+    availableExtras: [],
   },
 
   // =========================================================================
@@ -768,7 +1067,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
     allergens: ['Gluten', 'Dairy', 'Eggs [Placeholder]'],
     tags: ['Skillet Baked', 'Warm Dessert'],
-    calories: 520,
+    nutrition: sumNutrition(N.fudgeBrownie, N.bourbonCaramel),
     prepTime: '4 min',
     isVegetarian: true,
     imageSlot: '/images/menu/warm-bourbon-caramel-brownie.jpg',
@@ -776,12 +1075,12 @@ export const MENU_ITEMS: MenuItem[] = [
     imageStyle: 'scene',
     includedIngredients: [
       { id: 'fudge-brownie', name: 'Skillet Fudge Brownie Core', isRequired: true },
-      { id: 'bourbon-caramel', name: 'Warm Bourbon Caramel Drizzle', isRequired: false },
-      { id: 'flaky-sea-salt', name: 'Flaky Sea Salt Crystals', isRequired: false },
+      { id: 'bourbon-caramel', name: 'Warm Bourbon Caramel Drizzle', isRequired: false, nutrition: N.bourbonCaramel },
+      { id: 'flaky-sea-salt', name: 'Flaky Sea Salt Crystals', isRequired: false, nutrition: ZERO_NUTRITION },
     ],
     availableExtras: [
-      { id: 'vanilla-scoop', name: 'Vanilla Custard Scoop', price: 3.50, maxQuantity: 2 },
-      { id: 'extra-caramel', name: 'Extra Bourbon Caramel', price: 1.50, maxQuantity: 2 },
+      { id: 'vanilla-scoop', name: 'Vanilla Custard Scoop', price: 3.50, maxQuantity: 2, nutrition: N.vanillaCustardScoop },
+      { id: 'extra-caramel', name: 'Extra Bourbon Caramel', price: 1.50, maxQuantity: 2, nutrition: N.bourbonCaramel },
     ],
   },
 
@@ -804,7 +1103,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
     allergens: ['Gluten', 'Dairy', 'Eggs [Placeholder]'],
     tags: ['Warm Dessert', 'Molten Core', 'New'],
-    calories: 580,
+    nutrition: sumNutrition(N.lavaCake, N.cocoaDusting),
     prepTime: '5 min',
     isVegetarian: true,
     imageSlot: '/images/menu/lava-cake.jpg',
@@ -813,15 +1112,15 @@ export const MENU_ITEMS: MenuItem[] = [
     imagePosition: 'center 60%',
     includedIngredients: [
       { id: 'warm-lava-cake', name: 'Molten Chocolate Lava Cake', isRequired: true },
-      { id: 'cocoa-dusting', name: 'Dutch Cocoa Powder Dusting', isRequired: false },
+      { id: 'cocoa-dusting', name: 'Dutch Cocoa Powder Dusting', isRequired: false, nutrition: N.cocoaDusting },
     ],
     availableExtras: [
-      { id: 'vanilla-ice-cream', name: 'Vanilla Ice Cream Scoop', price: 3.50, maxQuantity: 2 },
-      { id: 'warm-caramel-shot', name: 'Warm Bourbon Caramel Drizzle', price: 2.00, maxQuantity: 2 },
+      { id: 'vanilla-ice-cream', name: 'Vanilla Ice Cream Scoop', price: 3.50, maxQuantity: 2, nutrition: N.vanillaIceCreamScoop },
+      { id: 'warm-caramel-shot', name: 'Warm Bourbon Caramel Drizzle', price: 2.00, maxQuantity: 2, nutrition: N.bourbonCaramel },
     ],
   },
 
-  // 3. Basque Cheesecake (New - renamed and updated with Basque reference)
+  // 3. Basque Cheesecake (New)
   {
     id: 'cheesecake',
     estimatedMinutes: 10,
@@ -839,7 +1138,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
     allergens: ['Dairy', 'Gluten', 'Eggs [Placeholder]'],
     tags: ['Basque Burnt', 'Velvety', 'New'],
-    calories: 510,
+    nutrition: sumNutrition(N.basqueCheesecake),
     prepTime: '3 min',
     isVegetarian: true,
     imageSlot: '/images/menu/cheesecake.jpg',
@@ -851,48 +1150,49 @@ export const MENU_ITEMS: MenuItem[] = [
       { id: 'biscuit-crust', name: 'Caramelized Rustic Edges', isRequired: true },
     ],
     availableExtras: [
-      { id: 'strawberry-sauce', name: 'Wild Strawberry Compote', price: 2.00, maxQuantity: 2 },
-      { id: 'whipped-cream', name: 'Cultured Whipped Cream', price: 1.50, maxQuantity: 2 },
+      { id: 'strawberry-sauce', name: 'Wild Strawberry Compote', price: 2.00, maxQuantity: 2, nutrition: N.strawberryCompote },
+      { id: 'whipped-cream', name: 'Cultured Whipped Cream', price: 1.50, maxQuantity: 2, nutrition: N.whippedCream },
     ],
   },
 
   // =========================================================================
-  // 5. DRINKS (Originals 1-2, then Pepsi)
+  // 5. DRINKS (Originals 1-2, Pepsi, Coca-Cola, Water, Natural Juice,
+  //    Pepsi Zero Sugar, Coca-Cola Zero Sugar, then the Coffee subgroup)
   // =========================================================================
 
-  // 1. Cold-Steeped Peach Ceylon Tea (Original)
+  // 1. Cold-Steeped Lemon Ceylon Tea (Original)
   {
-    id: 'peach-blossom-iced-tea',
+    id: 'cold-steeped-lemon-ceylon-tea',
     estimatedMinutes: 2,
-    name: 'Cold-Steeped Peach Ceylon Tea',
+    name: 'Cold-Steeped Lemon Ceylon Tea',
     category: 'Drinks',
     sortOrder: 1,
     price: 6.50,
-    description: '18-hour cold brew Ceylon black tea, fresh white peach puree, and crushed lemon thyme over hand-cut ice.',
-    longDescription: 'We steep high-grown single-origin Ceylon black tea leaves in cold filtered water for 18 hours to extract clean floral tannins without bitterness. Shaken with white peach puree and poured over hand-cut ice with fresh lemon thyme.',
+    description: '18-hour cold brew Ceylon black tea, fresh lemon juice, and crushed lemon thyme over hand-cut ice.',
+    longDescription: 'We steep high-grown single-origin Ceylon black tea leaves in cold filtered water for 18 hours to extract clean floral tannins without bitterness. Shaken with fresh lemon juice and a touch of honey, then poured over hand-cut ice with fresh lemon thyme.',
     mainIngredients: [
       '18-Hour Cold Brew Ceylon Black Tea',
-      'White Peach Puree',
+      'Fresh Lemon Juice',
       'Lemon Thyme Sprig',
       'Pure Clover Honey Syrup',
     ],
     volume: '400 ml glass',
     allergens: ['None [Placeholder]'],
     tags: ['House Brewed', 'Botanical'],
-    calories: 110,
+    nutrition: sumNutrition(N.coldBrewTeaHoney, N.lemonJuice),
     prepTime: '2 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/peach-blossom-iced-tea.jpg',
-    imageLabel: 'Tall ribbed glassware filled with amber peach tea, ice sphere, and thyme sprig',
+    imageSlot: '/images/menu/cold-steeped-lemon-ceylon-tea.jpg',
+    imageLabel: 'Tall ribbed glass of amber iced Ceylon tea with lemon wheel and thyme sprig',
     imageStyle: 'isolated',
     includedIngredients: [
-      { id: 'peach-tea-base', name: 'Cold-Steeped Ceylon Tea', isRequired: true },
-      { id: 'peach-puree', name: 'White Peach Puree', isRequired: false },
-      { id: 'fresh-thyme', name: 'Fresh Lemon Thyme Sprig', isRequired: false },
-      { id: 'hand-cut-ice', name: 'Hand-Cut Ice', isRequired: false },
+      { id: 'tea-base', name: 'Cold-Steeped Ceylon Tea', isRequired: true },
+      { id: 'lemon-juice', name: 'Fresh Lemon Juice', isRequired: false, nutrition: N.lemonJuice },
+      { id: 'fresh-thyme', name: 'Fresh Lemon Thyme Sprig', isRequired: false, nutrition: ZERO_NUTRITION },
+      { id: 'hand-cut-ice', name: 'Hand-Cut Ice', isRequired: false, nutrition: ZERO_NUTRITION },
     ],
     availableExtras: [
-      { id: 'extra-sweetness', name: 'Add Honey Syrup Pump', price: 0.50, maxQuantity: 2 },
+      { id: 'extra-sweetness', name: 'Add Honey Syrup Pump', price: 0.50, maxQuantity: 2, nutrition: N.honeyPump },
     ],
   },
 
@@ -914,7 +1214,7 @@ export const MENU_ITEMS: MenuItem[] = [
     volume: '450 ml tumbler',
     allergens: ['Dairy', 'Eggs [Placeholder]'],
     tags: ['Hand-Spun', 'Fresh Dairy'],
-    calories: 590,
+    nutrition: sumNutrition(N.frozenCustardShake, N.whippedCream),
     prepTime: '3 min',
     isVegetarian: true,
     imageSlot: '/images/menu/roasted-vanilla-bean-shake.jpg',
@@ -924,11 +1224,11 @@ export const MENU_ITEMS: MenuItem[] = [
     includedIngredients: [
       { id: 'frozen-custard', name: 'Frozen Dairy Custard Base', isRequired: true },
       { id: 'vanilla-caviar', name: 'Madagascar Vanilla Bean Caviar', isRequired: true },
-      { id: 'whipped-cream', name: 'Cultured Whipped Cream Crown', isRequired: false },
+      { id: 'whipped-cream', name: 'Cultured Whipped Cream Crown', isRequired: false, nutrition: N.whippedCream },
     ],
     availableExtras: [
-      { id: 'caramel-swirl', name: 'Bourbon Caramel Swirl', price: 1.50, maxQuantity: 3 },
-      { id: 'fudge-swirl', name: 'Dark Chocolate Fudge Swirl', price: 1.50, maxQuantity: 3 },
+      { id: 'caramel-swirl', name: 'Bourbon Caramel Swirl', price: 1.50, maxQuantity: 3, nutrition: N.bourbonCaramel },
+      { id: 'fudge-swirl', name: 'Dark Chocolate Fudge Swirl', price: 1.50, maxQuantity: 3, nutrition: placeholderNutrition(100, 15, 4, 1) },
     ],
   },
 
@@ -950,7 +1250,7 @@ export const MENU_ITEMS: MenuItem[] = [
     volume: '330 ml can',
     allergens: ['None [Placeholder]'],
     tags: ['Chilled Soda', 'Classic Cola', 'New'],
-    calories: 140,
+    nutrition: sumNutrition(N.pepsi330, N.lemonWedge),
     prepTime: '1 min',
     isVegetarian: true,
     imageSlot: '/images/menu/pepsi.jpg',
@@ -959,11 +1259,11 @@ export const MENU_ITEMS: MenuItem[] = [
     imagePosition: 'center 60%',
     includedIngredients: [
       { id: 'pepsi-can-unit', name: 'Chilled Pepsi 330 ml Can', isRequired: true },
-      { id: 'glass-of-ice', name: 'Tumbler of Ice', isRequired: false },
-      { id: 'lemon-slice', name: 'Fresh Lemon Wedge', isRequired: false },
+      { id: 'glass-of-ice', name: 'Tumbler of Ice', isRequired: false, nutrition: ZERO_NUTRITION },
+      { id: 'lemon-slice', name: 'Fresh Lemon Wedge', isRequired: false, nutrition: N.lemonWedge },
     ],
     availableExtras: [
-      { id: 'extra-lemon-wedge', name: 'Extra Fresh Lemon Wedges', price: 0.50, maxQuantity: 2 },
+      { id: 'extra-lemon-wedge', name: 'Extra Fresh Lemon Wedges', price: 0.50, maxQuantity: 2, nutrition: N.lemonWedge },
     ],
   },
 
@@ -985,19 +1285,19 @@ export const MENU_ITEMS: MenuItem[] = [
     volume: '330 ml can',
     allergens: ['None [Placeholder]'],
     tags: ['Chilled Soda', 'Classic Cola', 'New'],
-    calories: 140,
+    nutrition: sumNutrition(N.cocaCola330, N.lemonWedge),
     prepTime: '1 min',
     isVegetarian: true,
     imageSlot: '/images/menu/coca-cola.jpg',
-    imageLabel: 'Chilled 330 ml Coca-Cola can with condensation droplets',
+    imageLabel: 'Chilled red 330 ml Coca-Cola can with condensation beside a glass of ice and lemon',
     imageStyle: 'isolated',
     includedIngredients: [
       { id: 'coca-cola-can-unit', name: 'Chilled Coca-Cola 330 ml Can', isRequired: true },
-      { id: 'glass-of-ice', name: 'Tumbler of Ice', isRequired: false },
-      { id: 'lemon-slice', name: 'Fresh Lemon Wedge', isRequired: false },
+      { id: 'glass-of-ice', name: 'Tumbler of Ice', isRequired: false, nutrition: ZERO_NUTRITION },
+      { id: 'lemon-slice', name: 'Fresh Lemon Wedge', isRequired: false, nutrition: N.lemonWedge },
     ],
     availableExtras: [
-      { id: 'extra-lemon-wedge', name: 'Extra Fresh Lemon Wedges', price: 0.50, maxQuantity: 2 },
+      { id: 'extra-lemon-wedge', name: 'Extra Fresh Lemon Wedges', price: 0.50, maxQuantity: 2, nutrition: N.lemonWedge },
     ],
   },
 
@@ -1019,7 +1319,7 @@ export const MENU_ITEMS: MenuItem[] = [
     volume: '500 ml bottle',
     allergens: ['None [Placeholder]'],
     tags: ['Mineral Water', 'Hydration', 'New'],
-    calories: 0,
+    nutrition: sumNutrition(N.lemonWedge),
     prepTime: '1 min',
     isVegetarian: true,
     imageSlot: '/images/menu/water.jpg',
@@ -1027,19 +1327,19 @@ export const MENU_ITEMS: MenuItem[] = [
     imageStyle: 'isolated',
     includedIngredients: [
       { id: 'water-bottle-unit', name: '500 ml Glass Water Bottle', isRequired: true },
-      { id: 'glass-of-ice', name: 'Tumbler of Ice', isRequired: false },
-      { id: 'lemon-slice', name: 'Fresh Lemon Wedge', isRequired: false },
+      { id: 'glass-of-ice', name: 'Tumbler of Ice', isRequired: false, nutrition: ZERO_NUTRITION },
+      { id: 'lemon-slice', name: 'Fresh Lemon Wedge', isRequired: false, nutrition: N.lemonWedge },
     ],
     availableExtras: [
-      { id: 'extra-lemon-wedge', name: 'Extra Fresh Lemon Wedges', price: 0.50, maxQuantity: 2 },
+      { id: 'extra-lemon-wedge', name: 'Extra Fresh Lemon Wedges', price: 0.50, maxQuantity: 2, nutrition: N.lemonWedge },
     ],
     requiredChoice: {
       id: 'water-type',
       title: 'Choose water type',
       defaultOptionId: 'still',
       options: [
-        { id: 'still', name: 'Still', priceAdjustment: 0.00, color: '#38BDF8' },
-        { id: 'sparkling', name: 'Sparkling', priceAdjustment: 0.00, color: '#818CF8' },
+        { id: 'still', name: 'Still', priceAdjustment: 0.00, color: '#38BDF8', nutrition: placeholderNutrition(0, 0, 0, 0) },
+        { id: 'sparkling', name: 'Sparkling', priceAdjustment: 0.00, color: '#818CF8', nutrition: placeholderNutrition(0, 0, 0, 0) },
       ],
     },
   },
@@ -1053,41 +1353,304 @@ export const MENU_ITEMS: MenuItem[] = [
     sortOrder: 6,
     price: 7.50,
     description: '300 ml glass of freshly squeezed natural juice, with no added sugar.',
-    longDescription: '300 ml glass of freshly squeezed natural juice, with no added sugar. Prepared fresh to order from seasonal fruit and vegetables. Choose your favorite flavor.',
+    longDescription: '300 ml glass of freshly squeezed natural juice, with no added sugar. Prepared fresh to order from seasonal fruit. Choose your favorite flavor: orange, apple, pomegranate, pineapple, cherry, or a non-alcoholic mojito blend of fresh lime and mint.',
     mainIngredients: [
       'Freshly Squeezed 100% Natural Juice',
-      'Whole Fruit & Vegetables',
+      'Whole Fresh Fruit',
       'No Added Sugar',
       'Optional Hand-Cut Ice',
     ],
     volume: '300 ml glass',
     allergens: ['None [Placeholder]'],
     tags: ['Freshly Squeezed', 'No Added Sugar', 'New'],
-    calories: 120,
+    // Base is zero: each flavor option carries the full juice nutrition
+    nutrition: placeholderNutrition(0, 0, 0, 0),
     prepTime: '2 min',
     isVegetarian: true,
     imageSlot: '/images/menu/natural-juice.jpg',
-    imageLabel: 'Freshly squeezed natural fruit juice in tall glass with whole fresh fruit',
+    imageLabel: 'Freshly squeezed natural fruit juice in tall glass with orange, apple, and pomegranate',
     imageStyle: 'scene',
     includedIngredients: [
       { id: 'fresh-juice-base', name: 'Freshly Squeezed Natural Juice 300 ml', isRequired: true },
-      { id: 'hand-cut-ice', name: 'Hand-Cut Ice', isRequired: false },
+      { id: 'hand-cut-ice', name: 'Hand-Cut Ice', isRequired: false, nutrition: ZERO_NUTRITION },
     ],
     availableExtras: [
-      { id: 'extra-mint-sprig', name: 'Fresh Wild Mint Sprig', price: 0.50, maxQuantity: 2 },
+      { id: 'extra-mint-sprig', name: 'Fresh Wild Mint Sprig', price: 0.50, maxQuantity: 2, nutrition: placeholderNutrition(0, 0, 0, 0) },
     ],
     requiredChoice: {
       id: 'juice-flavor',
       title: 'Choose a flavor',
       defaultOptionId: undefined, // Nothing preselected!
       options: [
-        { id: 'orange', name: 'Orange', priceAdjustment: 0.00, color: '#F97316' },
-        { id: 'apple', name: 'Apple', priceAdjustment: 0.00, color: '#84CC16' },
-        { id: 'pomegranate', name: 'Pomegranate', priceAdjustment: 0.00, color: '#991B1B' },
-        { id: 'carrot', name: 'Carrot', priceAdjustment: 0.00, color: '#EA580C' },
-        { id: 'orange-carrot', name: 'Orange & Carrot', priceAdjustment: 0.00, color: '#FB923C' },
+        { id: 'orange', name: 'Orange', priceAdjustment: 0.00, color: '#F97316', nutrition: placeholderNutrition(135, 30, 0, 2) },
+        { id: 'apple', name: 'Apple', priceAdjustment: 0.00, color: '#84CC16', nutrition: placeholderNutrition(138, 33, 0, 0) },
+        { id: 'pomegranate', name: 'Pomegranate', priceAdjustment: 0.00, color: '#991B1B', nutrition: placeholderNutrition(162, 39, 1, 0) },
+        { id: 'pineapple', name: 'Pineapple', priceAdjustment: 0.00, color: '#FACC15', nutrition: placeholderNutrition(150, 37, 0, 1) },
+        { id: 'cherry', name: 'Cherry', priceAdjustment: 0.00, color: '#BE123C', nutrition: placeholderNutrition(165, 38, 0, 1) },
+        { id: 'mojito', name: 'Mojito (non-alcoholic)', priceAdjustment: 0.00, color: '#4ADE80', nutrition: placeholderNutrition(60, 15, 0, 0) },
       ],
     },
+  },
+
+  // 7. Pepsi Zero Sugar (New - after existing drinks)
+  {
+    id: 'pepsi-zero-sugar',
+    estimatedMinutes: 2,
+    name: 'Pepsi Zero Sugar',
+    category: 'Drinks',
+    sortOrder: 7,
+    price: 3.50,
+    description: 'Chilled 330 ml can, zero sugar.',
+    longDescription: 'Ice-cold 330 ml can of Pepsi Zero Sugar, served chilled from our beverage coolers. Served upon request with a glass tumbler of ice and a fresh slice of lemon.',
+    mainIngredients: [
+      'Chilled Pepsi Zero Sugar (330 ml Can)',
+      'Optional Tumbler of Ice',
+      'Optional Lemon Wedge',
+    ],
+    volume: '330 ml can',
+    allergens: ['None (contains phenylalanine) [Placeholder]'],
+    tags: ['Chilled Soda', 'Zero Sugar', 'New'],
+    nutrition: sumNutrition(N.zeroSugar330, N.lemonWedge),
+    prepTime: '1 min',
+    isVegetarian: true,
+    imageSlot: '/images/menu/pepsi-zero-sugar.jpg',
+    imageLabel: 'Chilled black 330 ml Pepsi Zero Sugar can with condensation beside a glass of ice and lemon',
+    imageStyle: 'isolated',
+    includedIngredients: [
+      { id: 'pepsi-zero-can-unit', name: 'Chilled Pepsi Zero Sugar 330 ml Can', isRequired: true },
+      { id: 'glass-of-ice', name: 'Tumbler of Ice', isRequired: false, nutrition: ZERO_NUTRITION },
+      { id: 'lemon-slice', name: 'Fresh Lemon Wedge', isRequired: false, nutrition: N.lemonWedge },
+    ],
+    availableExtras: [
+      { id: 'extra-lemon-wedge', name: 'Extra Fresh Lemon Wedges', price: 0.50, maxQuantity: 2, nutrition: N.lemonWedge },
+    ],
+  },
+
+  // 8. Coca-Cola Zero Sugar (New)
+  {
+    id: 'coca-cola-zero-sugar',
+    estimatedMinutes: 2,
+    name: 'Coca-Cola Zero Sugar',
+    category: 'Drinks',
+    sortOrder: 8,
+    price: 3.50,
+    description: 'Chilled 330 ml can, zero sugar.',
+    longDescription: 'Ice-cold 330 ml can of Coca-Cola Zero Sugar, served chilled from our beverage coolers. Served upon request with a glass tumbler of ice and a fresh slice of lemon.',
+    mainIngredients: [
+      'Chilled Coca-Cola Zero Sugar (330 ml Can)',
+      'Optional Tumbler of Ice',
+      'Optional Lemon Wedge',
+    ],
+    volume: '330 ml can',
+    allergens: ['None (contains phenylalanine) [Placeholder]'],
+    tags: ['Chilled Soda', 'Zero Sugar', 'New'],
+    nutrition: sumNutrition(N.zeroSugar330, N.lemonWedge),
+    prepTime: '1 min',
+    isVegetarian: true,
+    imageSlot: '/images/menu/coca-cola-zero-sugar.jpg',
+    imageLabel: 'Chilled red 330 ml Coca-Cola Zero Sugar can with black logo and condensation beside a glass of cola over ice',
+    imageStyle: 'isolated',
+    includedIngredients: [
+      { id: 'coca-cola-zero-can-unit', name: 'Chilled Coca-Cola Zero Sugar 330 ml Can', isRequired: true },
+      { id: 'glass-of-ice', name: 'Tumbler of Ice', isRequired: false, nutrition: ZERO_NUTRITION },
+      { id: 'lemon-slice', name: 'Fresh Lemon Wedge', isRequired: false, nutrition: N.lemonWedge },
+    ],
+    availableExtras: [
+      { id: 'extra-lemon-wedge', name: 'Extra Fresh Lemon Wedges', price: 0.50, maxQuantity: 2, nutrition: N.lemonWedge },
+    ],
+  },
+
+  // ---------------------------- COFFEE subgroup ----------------------------
+
+  // 9. Espresso
+  {
+    id: 'espresso',
+    estimatedMinutes: 5,
+    name: 'Espresso',
+    category: 'Drinks',
+    subgroup: 'coffee',
+    sortOrder: 9,
+    price: 4.50,
+    description: 'A single shot of rich espresso.',
+    longDescription: 'A single shot of rich, freshly pulled specialty espresso with a thick golden crema and balanced chocolate-caramel notes.',
+    mainIngredients: ['Single Shot of Specialty Espresso'],
+    volume: '30 ml cup',
+    allergens: ['None [Placeholder]'],
+    tags: ['Coffee', 'Hot', 'New'],
+    nutrition: sumNutrition(N.espressoShot),
+    prepTime: '2 min',
+    isVegetarian: true,
+    imageSlot: '/images/menu/espresso.jpg',
+    imageLabel: 'Dark ceramic espresso cup with golden crema on a slate board with coffee beans',
+    imageStyle: 'scene',
+    includedIngredients: [
+      { id: 'espresso-shot', name: 'Espresso Shot', isRequired: true },
+    ],
+    availableExtras: [
+      { id: 'extra-shot', name: 'Extra Espresso Shot', price: 1.50, maxQuantity: 2, nutrition: N.espressoShot },
+      { id: 'side-milk', name: 'Splash of Milk', price: 0.50, maxQuantity: 2, nutrition: N.sideMilk },
+    ],
+  },
+
+  // 10. Americano
+  {
+    id: 'americano',
+    estimatedMinutes: 5,
+    name: 'Americano',
+    category: 'Drinks',
+    subgroup: 'coffee',
+    sortOrder: 10,
+    price: 5.50,
+    description: 'Espresso with hot water.',
+    longDescription: 'Freshly pulled espresso lengthened with hot filtered water for a clean, aromatic cup of coffee.',
+    mainIngredients: ['Specialty Espresso', 'Hot Filtered Water'],
+    volume: '250 ml cup',
+    allergens: ['None [Placeholder]'],
+    tags: ['Coffee', 'Hot', 'New'],
+    nutrition: sumNutrition(N.espressoShot, N.espressoShot),
+    prepTime: '2 min',
+    isVegetarian: true,
+    imageSlot: '/images/menu/americano.jpg',
+    imageLabel: 'Dark mug of americano coffee on a slate board',
+    imageStyle: 'scene',
+    includedIngredients: [
+      { id: 'espresso-shot', name: 'Espresso Shot', isRequired: true },
+      { id: 'hot-water', name: 'Hot Filtered Water', isRequired: true },
+    ],
+    availableExtras: [
+      { id: 'extra-shot', name: 'Extra Espresso Shot', price: 1.50, maxQuantity: 2, nutrition: N.espressoShot },
+      { id: 'side-milk', name: 'Splash of Milk', price: 0.50, maxQuantity: 2, nutrition: N.sideMilk },
+    ],
+  },
+
+  // 11. Cappuccino
+  {
+    id: 'cappuccino',
+    estimatedMinutes: 5,
+    name: 'Cappuccino',
+    category: 'Drinks',
+    subgroup: 'coffee',
+    sortOrder: 11,
+    price: 6.50,
+    description: 'Espresso with steamed milk and thick milk foam.',
+    longDescription: 'Rich espresso topped with sweet steamed whole milk and a thick, silky layer of milk foam.',
+    mainIngredients: ['Specialty Espresso', 'Steamed Whole Milk', 'Thick Milk Foam'],
+    volume: '250 ml cup',
+    allergens: ['Dairy [Placeholder]'],
+    tags: ['Coffee', 'Hot', 'New'],
+    nutrition: sumNutrition(N.espressoShot, N.milk150, N.milkFoam),
+    prepTime: '3 min',
+    isVegetarian: true,
+    imageSlot: '/images/menu/cappuccino.jpg',
+    imageLabel: 'Cappuccino with thick milk foam in a dark ceramic cup',
+    imageStyle: 'scene',
+    includedIngredients: [
+      { id: 'espresso-shot', name: 'Espresso Shot', isRequired: true },
+      { id: 'steamed-milk', name: 'Steamed Whole Milk', isRequired: true },
+      { id: 'milk-foam', name: 'Milk Foam', isRequired: false, nutrition: N.milkFoam },
+    ],
+    availableExtras: [
+      { id: 'extra-shot', name: 'Extra Espresso Shot', price: 1.50, maxQuantity: 2, nutrition: N.espressoShot },
+      { id: 'vanilla-syrup', name: 'Vanilla Syrup', price: 1.00, maxQuantity: 2, nutrition: N.syrupShot },
+      { id: 'caramel-syrup', name: 'Caramel Syrup', price: 1.00, maxQuantity: 2, nutrition: N.syrupShot },
+    ],
+  },
+
+  // 12. Latte
+  {
+    id: 'latte',
+    estimatedMinutes: 5,
+    name: 'Latte',
+    category: 'Drinks',
+    subgroup: 'coffee',
+    sortOrder: 12,
+    price: 7.00,
+    description: 'Espresso with plenty of steamed milk and a thin layer of foam.',
+    longDescription: 'Smooth espresso with a generous pour of silky steamed whole milk, finished with a thin layer of milk foam.',
+    mainIngredients: ['Specialty Espresso', 'Steamed Whole Milk', 'Thin Milk Foam'],
+    volume: '300 ml cup',
+    allergens: ['Dairy [Placeholder]'],
+    tags: ['Coffee', 'Hot', 'New'],
+    nutrition: sumNutrition(N.espressoShot, N.milk250, N.milkFoam),
+    prepTime: '3 min',
+    isVegetarian: true,
+    imageSlot: '/images/menu/latte.jpg',
+    imageLabel: 'Latte with latte art in a tall glass',
+    imageStyle: 'scene',
+    includedIngredients: [
+      { id: 'espresso-shot', name: 'Espresso Shot', isRequired: true },
+      { id: 'steamed-milk', name: 'Steamed Whole Milk', isRequired: true },
+      { id: 'milk-foam', name: 'Milk Foam', isRequired: false, nutrition: N.milkFoam },
+    ],
+    availableExtras: [
+      { id: 'extra-shot', name: 'Extra Espresso Shot', price: 1.50, maxQuantity: 2, nutrition: N.espressoShot },
+      { id: 'vanilla-syrup', name: 'Vanilla Syrup', price: 1.00, maxQuantity: 2, nutrition: N.syrupShot },
+      { id: 'caramel-syrup', name: 'Caramel Syrup', price: 1.00, maxQuantity: 2, nutrition: N.syrupShot },
+    ],
+  },
+
+  // 13. Iced Coffee
+  {
+    id: 'iced-coffee',
+    estimatedMinutes: 5,
+    name: 'Iced Coffee',
+    category: 'Drinks',
+    subgroup: 'coffee',
+    sortOrder: 13,
+    price: 7.50,
+    description: 'Chilled espresso with milk over ice.',
+    longDescription: 'Freshly pulled espresso, chilled and poured over ice with cold whole milk.',
+    mainIngredients: ['Chilled Specialty Espresso', 'Cold Whole Milk', 'Ice'],
+    volume: '350 ml glass',
+    allergens: ['Dairy [Placeholder]'],
+    tags: ['Coffee', 'Iced', 'New'],
+    nutrition: sumNutrition(N.espressoShot, N.espressoShot, N.milk150),
+    prepTime: '3 min',
+    isVegetarian: true,
+    imageSlot: '/images/menu/iced-coffee.jpg',
+    imageLabel: 'Tall glass of iced coffee with milk swirling over ice',
+    imageStyle: 'scene',
+    includedIngredients: [
+      { id: 'espresso-shot', name: 'Espresso Shot', isRequired: true },
+      { id: 'cold-milk', name: 'Cold Whole Milk', isRequired: false, nutrition: N.milk150 },
+      { id: 'ice-cubes', name: 'Ice Cubes', isRequired: false, nutrition: ZERO_NUTRITION },
+    ],
+    availableExtras: [
+      { id: 'extra-shot', name: 'Extra Espresso Shot', price: 1.50, maxQuantity: 2, nutrition: N.espressoShot },
+      { id: 'vanilla-syrup', name: 'Vanilla Syrup', price: 1.00, maxQuantity: 2, nutrition: N.syrupShot },
+      { id: 'caramel-syrup', name: 'Caramel Syrup', price: 1.00, maxQuantity: 2, nutrition: N.syrupShot },
+    ],
+  },
+
+  // 14. Iced Coffee with Ice Cream (Glace)
+  {
+    id: 'glace',
+    estimatedMinutes: 5,
+    name: 'Iced Coffee with Ice Cream',
+    category: 'Drinks',
+    subgroup: 'coffee',
+    sortOrder: 14,
+    price: 9.00,
+    description: 'Chilled coffee topped with a scoop of vanilla ice cream.',
+    longDescription: 'Chilled freshly brewed coffee topped with a generous scoop of vanilla ice cream that slowly melts into the glass.',
+    mainIngredients: ['Chilled Coffee', 'Vanilla Ice Cream Scoop'],
+    volume: '350 ml glass',
+    allergens: ['Dairy', 'Eggs [Placeholder]'],
+    tags: ['Coffee', 'Iced', 'New'],
+    nutrition: sumNutrition(N.espressoShot, N.espressoShot, N.vanillaIceCreamScoop),
+    prepTime: '3 min',
+    isVegetarian: true,
+    imageSlot: '/images/menu/glace.jpg',
+    imageLabel: 'Tall glass of iced coffee topped with a scoop of vanilla ice cream',
+    imageStyle: 'scene',
+    includedIngredients: [
+      { id: 'chilled-coffee', name: 'Chilled Coffee', isRequired: true },
+      { id: 'ice-cream-scoop', name: 'Vanilla Ice Cream Scoop', isRequired: false, nutrition: N.vanillaIceCreamScoop },
+    ],
+    availableExtras: [
+      { id: 'extra-ice-cream-scoop', name: 'Extra Vanilla Ice Cream Scoop', price: 3.00, maxQuantity: 2, nutrition: N.vanillaIceCreamScoop },
+      { id: 'caramel-syrup', name: 'Caramel Syrup', price: 1.00, maxQuantity: 2, nutrition: N.syrupShot },
+    ],
   },
 ];
 
@@ -1102,6 +1665,86 @@ export const CATEGORIES = [
   'Drinks',
 ] as const;
 
+// =============================================================================
+// LEGACY ID MIGRATION
+// Earlier versions of the menu used different stable IDs for three products and
+// some of their ingredients/extras. Carts and orders saved in a browser before
+// the rename still contain those IDs, so they are mapped to the current ones here.
+// These legacy strings exist ONLY for migration and are never displayed.
+// =============================================================================
+
+const LEGACY_ITEM_IDS: Record<string, string> = {
+  'peach-blossom-smash': 'bun-patty-smash',
+  'sauce-peach-bourbon-jam': 'smoky-bourbon-bacon-jam',
+  'peach-blossom-iced-tea': 'cold-steeped-lemon-ceylon-tea',
+};
+
+const LEGACY_INGREDIENT_IDS: Record<string, string> = {
+  'peach-bacon-jam': 'bacon-jam',
+  'peach-jam-tub': 'bacon-jam-tub',
+  'peach-tea-base': 'tea-base',
+  'peach-puree': 'lemon-juice',
+};
+
+const LEGACY_EXTRA_IDS: Record<string, string> = {
+  'side-peach-jam': 'side-bacon-jam',
+};
+
+/** Maps a possibly-legacy item ID to the current one. */
+export function resolveMenuItemId(itemId: string): string {
+  return LEGACY_ITEM_IDS[itemId] || itemId;
+}
+
+/** Finds a menu item by ID, accepting legacy IDs from older saved carts/orders. */
+export function getMenuItemById(itemId: string): MenuItem | undefined {
+  const id = resolveMenuItemId(itemId);
+  return MENU_ITEMS.find((m) => m.id === id);
+}
+
+export interface MigratableCustomization {
+  selectedChoiceId?: string;
+  removedIngredientIds?: string[];
+  extraQuantities?: Record<string, number>;
+  notes?: string;
+}
+
+/**
+ * Migrates a saved customization to current IDs and drops anything the item no
+ * longer offers (e.g. a juice flavor that was removed from the menu).
+ * Returns `null` when the item requires a choice and the saved choice no longer exists.
+ */
+export function migrateCustomization<T extends MigratableCustomization>(
+  item: MenuItem,
+  customization: T | undefined
+): T | null {
+  const c = (customization || {}) as T;
+
+  const removedIngredientIds = (c.removedIngredientIds || [])
+    .map((id) => LEGACY_INGREDIENT_IDS[id] || id)
+    .filter((id) => item.includedIngredients.some((ing) => ing.id === id && !ing.isRequired));
+
+  const extraQuantities: Record<string, number> = {};
+  Object.entries(c.extraQuantities || {}).forEach(([id, qty]) => {
+    const newId = LEGACY_EXTRA_IDS[id] || id;
+    if (qty > 0 && item.availableExtras.some((e) => e.id === newId)) {
+      extraQuantities[newId] = (extraQuantities[newId] || 0) + qty;
+    }
+  });
+
+  let selectedChoiceId = c.selectedChoiceId;
+  if (item.requiredChoice) {
+    const valid = item.requiredChoice.options.some((o) => o.id === selectedChoiceId);
+    if (!valid) {
+      selectedChoiceId = item.requiredChoice.defaultOptionId;
+      if (!selectedChoiceId) return null;
+    }
+  } else {
+    selectedChoiceId = undefined;
+  }
+
+  return { ...c, selectedChoiceId, removedIngredientIds, extraQuantities };
+}
+
 export function calculateOrderEstimatedMinutes(
   items: Array<{ itemId: string }>,
   orderType: "delivery" | "pickup" = "pickup",
@@ -1110,7 +1753,7 @@ export function calculateOrderEstimatedMinutes(
   if (!items || items.length === 0) return 30;
   let maxMinutes = 0;
   for (const it of items) {
-    const menuItem = MENU_ITEMS.find((m) => m.id === it.itemId);
+    const menuItem = getMenuItemById(it.itemId);
     const itemEst = menuItem ? menuItem.estimatedMinutes : 30;
     if (itemEst > maxMinutes) {
       maxMinutes = itemEst;

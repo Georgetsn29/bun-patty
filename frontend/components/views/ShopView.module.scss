@@ -442,6 +442,39 @@
   text-transform: none;
 }
 
+// Small subheading for a subgroup inside a category (e.g. "Coffee" in Drinks)
+.subgroup {
+  margin-top: 40px;
+}
+
+.subgroupTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: $color-text-muted;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 20px;
+
+  // Georgian: no forced uppercase (would switch to Mtavruli letters)
+  :global(html[lang='ka']) & {
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: $color-border;
+  }
+}
+
 // -----------------------------------------------------------------------------
 // Unified Item Grid for EVERY category (including sauces and drinks)
 // - Desktop, 1024px and wider: 3 items per row (repeat(3, minmax(0, 1fr)), gap 24px)

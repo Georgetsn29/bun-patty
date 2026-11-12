@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import { MenuItem } from '@/data/menu';
+import { MenuItem, getMenuItemById, migrateCustomization } from '@/data/menu';
 import { STORE_SETTINGS } from '@/data/settings';
 
 export interface ItemCustomization {
@@ -51,6 +51,47 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const LOCAL_STORAGE_KEY = 'bun_patty_cart_v2';
+// Storage key used before the BUN & PATTY rename (read once for migration only)
+const LEGACY_CART_STORAGE_KEY = 'peach_patty_cart_v2';
+
+/**
+ * Rebuilds saved cart lines from the current menu data so renamed items, legacy IDs,
+ * updated prices, images, and nutrition are always current. Lines whose item was
+ * removed (or whose required choice no longer exists, e.g. a retired juice flavor)
+ * are dropped; identical lines are merged.
+ */
+function migrateSavedCart(saved: unknown[]): CartItem[] {
+  const result: CartItem[] = [];
+  saved.forEach((raw) => {
+    const line = raw as Partial<CartItem> & { item?: { id?: string } };
+    const menuItem = line?.item?.id ? getMenuItemById(line.item.id) : undefined;
+    const quantity = Math.max(1, Math.floor(Number(line?.quantity) || 1));
+    if (!menuItem) return;
+    const customization = migrateCustomization<ItemCustomization>(menuItem, {
+      removedIngredientIds: [],
+      extraQuantities: {},
+      ...(line.customization || {}),
+    });
+    if (!customization) return;
+    const cartItemId = computeCartItemId(menuItem.id, customization);
+    const unitPrice = computeUnitPrice(menuItem, customization);
+    const existing = result.find((r) => r.cartItemId === cartItemId);
+    if (existing) {
+      existing.quantity += quantity;
+      existing.totalPrice = existing.unitPrice * existing.quantity;
+      return;
+    }
+    result.push({
+      cartItemId,
+      item: menuItem,
+      quantity,
+      customization,
+      unitPrice,
+      totalPrice: unitPrice * quantity,
+    });
+  });
+  return result;
+}
 
 /**
  * Computes a normalized unique key for cart items so that identical
@@ -110,19 +151,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         let saved = localStorage.getItem(LOCAL_STORAGE_KEY);
         if (!saved) {
-          saved = localStorage.getItem('peach_patty_cart_v2');
-          if (saved) {
-            try {
-              localStorage.setItem(LOCAL_STORAGE_KEY, saved);
-            } catch {
-              // ignore
-            }
-          }
+          saved = localStorage.getItem(LEGACY_CART_STORAGE_KEY);
         }
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed)) {
-            return parsed;
+            return migrateSavedCart(parsed);
           }
         }
       } catch (e) {

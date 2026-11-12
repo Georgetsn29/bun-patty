@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { MenuItem } from '@/data/menu';
+import { MenuItem, computeNutrition } from '@/data/menu';
 import { useCart, ItemCustomization } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { IngredientToggleIcon } from './IngredientToggleIcon';
@@ -140,6 +140,20 @@ const ProductModalContent: React.FC<{
 
   const hasRequiredChoice = Boolean(item.requiredChoice);
   const isChoiceSelected = Boolean(selectedChoiceId);
+
+  // Live nutrition per serving (approximate placeholder values from menu data)
+  const nutrition = computeNutrition(item, {
+    selectedChoiceId,
+    removedIngredientIds,
+    extraQuantities,
+  });
+  const showNutritionValues = !hasRequiredChoice || isChoiceSelected;
+  const nutritionStats = [
+    { key: 'calories', label: t('nutrition.calories'), value: nutrition.calories, unit: t('common.calories') },
+    { key: 'netCarbs', label: t('nutrition.netCarbs'), value: nutrition.netCarbs, unit: t('nutrition.grams') },
+    { key: 'fat', label: t('nutrition.fat'), value: nutrition.fat, unit: t('nutrition.grams') },
+    { key: 'protein', label: t('nutrition.protein'), value: nutrition.protein, unit: t('nutrition.grams') },
+  ].map((stat) => (showNutritionValues ? stat : { ...stat, value: '–' as string | number, unit: '' }));
   const canSubmit = !hasRequiredChoice || isChoiceSelected;
 
   const handleSubmit = () => {
@@ -221,15 +235,31 @@ const ProductModalContent: React.FC<{
               <span className={styles.itemPrice}>{unitPrice.toFixed(2)} ₾</span>
             </div>
 
-            {/* 3. Small line with prep time and calories (NO separate "Base" price line) */}
-            <p className={styles.prepCalLine}>
-              {item.prepTime && <span>{t('common.prepTime')}: {item.prepTime}</span>}
-              {item.prepTime && item.calories && <span className={styles.prepDot}>·</span>}
-              {item.calories && (
-                <span>
-                  {item.calories} {t('common.calories')}
-                </span>
-              )}
+            {/* 3. Small line with prep time (calories live in the nutrition row below) */}
+            {item.prepTime && (
+              <p className={styles.prepCalLine}>
+                <span>{t('common.prepTime')}: {item.prepTime}</span>
+              </p>
+            )}
+          </div>
+
+          {/* Nutrition per serving, recalculated live for choice, removals, and extras */}
+          <div className={styles.nutritionBlock} aria-live="polite">
+            <dl className={styles.nutritionGrid}>
+              {nutritionStats.map((stat) => (
+                <div key={stat.key} className={styles.nutritionBox}>
+                  <dt className={styles.nutritionLabel}>{stat.label}</dt>
+                  <dd className={styles.nutritionValue}>
+                    {stat.value}
+                    <span className={styles.nutritionUnit}> {stat.unit}</span>
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            <p className={styles.nutritionNote}>
+              {!isChoiceSelected && hasRequiredChoice
+                ? t('nutrition.chooseOptionNote')
+                : t('nutrition.approximateNote')}
             </p>
           </div>
 

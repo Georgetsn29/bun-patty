@@ -115,6 +115,18 @@
   }
 }
 
+.calories {
+  font-size: 0.75rem;
+  color: $color-text-subtle;
+  font-variant-numeric: tabular-nums;
+  margin: -4px 0 4px;
+  text-align: left;
+
+  @include respond-to('md') {
+    text-align: center;
+  }
+}
+
 .shortDescription {
   font-size: 0.85rem;
   color: #8A9698;

@@ -11,7 +11,7 @@ import {
   format24HourTime,
 } from '@/services/orders';
 import { ORDER_TRACKING_CONFIG } from '@/services/orderConfig';
-import { MENU_ITEMS } from '@/data/menu';
+import { getMenuItemById } from '@/data/menu';
 import { useLanguage } from '@/context/LanguageContext';
 import { Copy, Check, ChevronDown, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
@@ -92,7 +92,7 @@ export const ActiveOrderCard: React.FC<ActiveOrderCardProps> = ({ onNavigate }) 
 
   // Main item image
   const firstItemId = currentOrder.items[0]?.itemId;
-  const mainMenuItem = MENU_ITEMS.find((m) => m.id === firstItemId);
+  const mainMenuItem = (firstItemId ? getMenuItemById(firstItemId) : undefined);
   const mainItemImage = mainMenuItem?.imageSlot || '/images/menu/bun-patty-smash.jpg';
 
   // SVG circular countdown constants

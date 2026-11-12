@@ -209,13 +209,13 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
                   onClick={() => handleNav(trackRoute)}
                   className={`${styles.desktopTrackBtn} ${currentRoute.startsWith('track') ? styles.trackActive : ''}`}
                   aria-label={t('nav.track')}
+                  title={t('nav.track')}
                   initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: 8 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: 8 }}
                   transition={{ duration: shouldReduceMotion ? 0 : 0.2, ease: 'easeOut' }}
                 >
-                  <Clock size={16} aria-hidden="true" />
-                  <span>{t('nav.track')}</span>
+                  <Clock size={20} aria-hidden="true" />
                   {hasInProgressOrder && (
                     <span className={styles.desktopTrackAccentDot} aria-hidden="true" />
                   )}

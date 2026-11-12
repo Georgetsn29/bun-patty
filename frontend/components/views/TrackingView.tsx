@@ -14,7 +14,7 @@ import {
   useSavedOrders,
 } from '@/services/orders';
 import { ORDER_TRACKING_CONFIG } from '@/services/orderConfig';
-import { MENU_ITEMS } from '@/data/menu';
+import { getMenuItemById } from '@/data/menu';
 import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
 import {
@@ -115,7 +115,7 @@ export const TrackingView: React.FC<TrackingViewProps> = ({
     if (!order) return;
 
     order.items.forEach((itemRecord) => {
-      const menuItem = MENU_ITEMS.find((m) => m.id === itemRecord.itemId);
+      const menuItem = getMenuItemById(itemRecord.itemId);
       if (menuItem) {
         const cust = itemRecord.customization;
         addItem(
@@ -184,7 +184,7 @@ export const TrackingView: React.FC<TrackingViewProps> = ({
           lines.push(
             language === 'ka'
               ? `დამატება: ${name}${qty > 1 ? ` x${qty}` : ''}`
-              : `Extra ${name}${qty > 1 ? ` x${qty}` : ''}`
+              : `${/^extra\b/i.test(name) ? name : `Extra ${name}`}${qty > 1 ? ` x${qty}` : ''}`
           );
         }
       });

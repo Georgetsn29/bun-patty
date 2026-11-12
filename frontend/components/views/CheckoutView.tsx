@@ -65,7 +65,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
           lines.push(
             language === 'ka'
               ? `დამატება: ${extraName}${count > 1 ? ` x${count}` : ''}`
-              : `Extra ${extraName}${count > 1 ? ` x${count}` : ''}`
+              : `${/^extra\b/i.test(extraName) ? extraName : `Extra ${extraName}`}${count > 1 ? ` x${count}` : ''}`
           );
         }
       });
@@ -106,7 +106,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
 
     setIsSubmitting(true);
     setTimeout(() => {
-      const orderId = generateOrderNumber(); // Short readable order number e.g. PP-4827
+      const orderId = generateOrderNumber(); // Short readable order number e.g. BP-4827
       const startTime = Date.now();
       const estimatedMinutes = calculateOrderEstimatedMinutes(
         items.map((cartItem) => ({ itemId: cartItem.item.id })),
