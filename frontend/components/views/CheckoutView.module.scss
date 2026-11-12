@@ -165,18 +165,25 @@
   }
 }
 
+.selectWrap {
+  position: relative;
+}
+
 .select {
+  appearance: none;
+  -webkit-appearance: none;
   background-color: #131E21;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: $mobile-radius;
   height: $mobile-control-min-height; // 48px
-  padding: 0 14px;
+  padding: 0 40px 0 14px;
   font-family: $font-fira;
   font-size: 16px;
   color: #FFFFFF;
   outline: none;
   box-sizing: border-box;
   cursor: pointer;
+  width: 100%;
 
   &:focus {
     border-color: #E27344;
@@ -187,6 +194,20 @@
     color: #FFFFFF;
   }
 }
+
+.selectWrap::after {
+  content: '▾';
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #E27344;
+  pointer-events: none;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+
 
 .errorText {
   font-size: 0.725rem;

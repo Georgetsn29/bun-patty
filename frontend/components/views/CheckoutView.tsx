@@ -416,17 +416,19 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onNavigate }) => {
                   <label className={styles.formLabel}>
                     {language === 'ka' ? 'გატანის ლოკაცია' : 'Pickup Location'}
                   </label>
-                  <select
-                    value={formData.pickupLocation}
-                    onChange={(e) => setFormData({ ...formData, pickupLocation: e.target.value })}
-                    className={styles.select}
-                  >
-                    {LOCATIONS.map((l) => (
-                      <option key={l.id} value={l.id}>
-                        {l.name} — {cleanPlaceholder(l.address)}
-                      </option>
-                    ))}
-                  </select>
+                  <div className={styles.selectWrap}>
+                    <select
+                      value={formData.pickupLocation}
+                      onChange={(e) => setFormData({ ...formData, pickupLocation: e.target.value })}
+                      className={styles.select}
+                    >
+                      {LOCATIONS.map((l) => (
+                        <option key={l.id} value={l.id}>
+                          {l.name} — {cleanPlaceholder(l.address)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               )}
             </div>
