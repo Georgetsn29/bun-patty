@@ -1,0 +1,572 @@
+@use '@/src/styles/abstracts' as *;
+
+.cardWrapper {
+  width: 100%;
+  margin-top: 1.25rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 20;
+}
+
+.orderCard {
+  width: 100%;
+  background: #0E1A1D;
+  border: 1px solid rgba(226, 115, 68, 0.28);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+
+  &:hover {
+    border-color: rgba(226, 115, 68, 0.45);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), 0 0 16px rgba(226, 115, 68, 0.12);
+  }
+
+  &.cardReady {
+    border-color: rgba(34, 197, 94, 0.4);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 16px rgba(34, 197, 94, 0.12);
+
+    &:hover {
+      border-color: rgba(34, 197, 94, 0.6);
+    }
+  }
+}
+
+// Collapsed Header Row (Button)
+.summaryBar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 1.125rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #FFFFFF;
+  text-align: left;
+  min-height: 64px;
+
+  &:focus-visible {
+    outline: 2px solid #E27344;
+    outline-offset: -2px;
+  }
+}
+
+.summaryLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.itemThumbWrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #080F11;
+  flex-shrink: 0;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.summaryInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.orderNumber {
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: #FFFFFF;
+  letter-spacing: 0.03em;
+}
+
+.dividerDot {
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 0.875rem;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #E27344;
+
+  &.statusReadyBadge {
+    color: #22C55E;
+  }
+}
+
+.pulseDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #E27344;
+  box-shadow: 0 0 8px rgba(226, 115, 68, 0.8);
+  animation: pulseAnimation 2s infinite ease-in-out;
+}
+
+.readyStaticDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #22C55E;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.8);
+}
+
+@keyframes pulseAnimation {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 0.45;
+  }
+}
+
+.remainingTag {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #E27344;
+  background: rgba(226, 115, 68, 0.12);
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+
+  &.remainingTagReady {
+    color: #22C55E;
+    background: rgba(34, 197, 94, 0.12);
+  }
+}
+
+.summaryRight {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.chevronIcon {
+  color: rgba(255, 255, 255, 0.6);
+  transition: transform 0.25s ease;
+}
+
+.chevronRotated {
+  transform: rotate(180deg);
+}
+
+// Progress Bar along bottom of the card
+.progressBarTrack {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  position: relative;
+}
+
+.progressBarFill {
+  height: 100%;
+  background: #E27344;
+  transition: width 0.6s linear, background-color 0.3s ease;
+}
+
+.progressBarReady {
+  background: #22C55E;
+}
+
+// Expanded Viewport Body
+.expandedContent {
+  padding: 1.25rem 1.25rem 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(8, 15, 17, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+// Clock & ETA Section
+.clockSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.5rem 0 0.25rem;
+}
+
+.clockRingWrap {
+  width: 136px;
+  height: 136px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.875rem;
+}
+
+.clockSvg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.clockBgCircle {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.07);
+  stroke-width: 7;
+}
+
+.clockProgressCircle {
+  fill: none;
+  stroke: #E27344;
+  stroke-width: 7;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s linear, stroke 0.3s ease;
+}
+
+.clockProgressReady {
+  stroke: #22C55E;
+}
+
+.clockCenter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.clockDigits {
+  font-family: monospace, inherit;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.readyCheckWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #22C55E;
+}
+
+.etaNotice {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.readyNoticeWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.readyTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #22C55E;
+  margin: 0;
+}
+
+.gotItBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1.25rem;
+  background: #22C55E;
+  color: #080F11;
+  font-weight: 700;
+  font-size: 0.875rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+
+  &:hover {
+    background: #1eb354;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Ordered Items List
+.itemsSection {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 0.875rem 1rem;
+}
+
+.itemsHeading {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 0.625rem;
+}
+
+.itemsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.itemRow {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.875rem;
+}
+
+.itemMainLine {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  color: #FFFFFF;
+}
+
+.itemName {
+  font-weight: 600;
+}
+
+.itemQty {
+  color: #E27344;
+  margin-right: 0.3rem;
+}
+
+.itemCustomizations {
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 0.15rem;
+  padding-left: 0.75rem;
+  border-left: 2px solid rgba(226, 115, 68, 0.4);
+}
+
+// Order Footer Actions
+.expandedFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.875rem;
+  padding-top: 0.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.footerLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.orderNumberTag {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: #FFFFFF;
+}
+
+.copyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.75rem;
+  padding: 0.3rem 0.55rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #FFFFFF;
+  }
+}
+
+.copyBtnSuccess {
+  border-color: rgba(34, 197, 94, 0.4);
+  color: #22C55E;
+}
+
+.grandTotal {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.trackLinkBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #E27344;
+  color: #080F11;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+
+  &:hover {
+    background: #ea8558;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Multiple Orders Footer Bar
+.multipleOrdersBar {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.moreOrdersLink {
+  background: none;
+  border: none;
+  color: #E27344;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: rgba(226, 115, 68, 0.12);
+    color: #f08f65;
+  }
+}
+
+.otherOrdersList {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 0.625rem;
+  background: rgba(14, 26, 29, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}
+
+.otherOrderItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.8125rem;
+  color: #FFFFFF;
+}
+
+.otherOrderLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.switchOrderBtn {
+  background: rgba(226, 115, 68, 0.15);
+  border: 1px solid rgba(226, 115, 68, 0.3);
+  color: #E27344;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: rgba(226, 115, 68, 0.25);
+  }
+}
+
+// Media Queries for Phone
+@media (max-width: 640px) {
+  .summaryBar {
+    padding: 0.75rem 0.875rem;
+    gap: 0.75rem;
+  }
+
+  .summaryInfo {
+    gap: 0.4rem;
+  }
+
+  .orderNumber {
+    font-size: 0.875rem;
+  }
+
+  .statusBadge {
+    font-size: 0.75rem;
+  }
+
+  .remainingTag {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.45rem;
+  }
+
+  .expandedContent {
+    padding: 1rem 0.875rem 1.25rem;
+    gap: 1.25rem;
+  }
+
+  .clockDigits {
+    font-size: 1.5rem;
+  }
+
+  .expandedFooter {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .footerLeft {
+    justify-content: space-between;
+  }
+
+  .trackLinkBtn {
+    justify-content: center;
+  }
+}

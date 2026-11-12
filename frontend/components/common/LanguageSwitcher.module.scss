@@ -1,0 +1,82 @@
+@use '@/src/styles/abstracts' as *;
+
+.container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 4px;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  font-family: $font-fira;
+  user-select: none;
+}
+
+.desktopVariant {
+  width: 92px;
+  height: 36px;
+  min-height: 36px;
+  flex-shrink: 0;
+}
+
+.mobileVariant {
+  width: 100%;
+  height: 44px;
+  min-height: 44px;
+}
+
+// Sliding white active pill inside the control, 4px inset
+.activePill {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  background-color: #FFFFFF;
+  border-radius: 9999px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  z-index: 1;
+  pointer-events: none;
+}
+
+// Half-width text buttons
+.optionBtn {
+  @include button-reset;
+  position: relative;
+  z-index: 2;
+  flex: 1 1 50%;
+  width: 50%;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $font-fira;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 9999px;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  transition: color 200ms ease-out;
+
+  &:focus-visible {
+    outline: 2px solid #E27344;
+    outline-offset: 2px;
+  }
+}
+
+.activeText {
+  color: #0B1416;
+  font-weight: 600;
+}
+
+.inactiveText {
+  color: #8A9698;
+  font-weight: 500;
+
+  &:hover {
+    color: #FFFFFF;
+  }
+}

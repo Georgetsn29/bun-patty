@@ -1,0 +1,532 @@
+@use '@/src/styles/abstracts' as *;
+
+.checkout {
+  max-width: 930px;
+  margin: 0 auto;
+  padding: 24px $mobile-pad 80px;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: $font-fira;
+  color: #FFFFFF;
+
+  @include respond-to('md') {
+    padding: 32px 16px 80px;
+  }
+}
+
+.header {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.kicker {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #E27344;
+}
+
+.title {
+  font-size: $mobile-title; // 32px
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #FFFFFF;
+  margin: 6px 0 0;
+  line-height: 1.15;
+
+  @include respond-to('md') {
+    font-size: 1.75rem;
+  }
+}
+
+.checkoutGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+
+  @include respond-to('md') {
+    grid-template-columns: 1.4fr 1fr;
+    gap: 40px;
+  }
+}
+
+.formCol {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sectionHeader {
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #FFFFFF;
+  display: block;
+}
+
+.toggleGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background-color: #131E21;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: $mobile-radius;
+  overflow: hidden;
+}
+
+.toggleBtn {
+  @include button-reset;
+  height: $mobile-control-min-height; // 48px
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  color: #8A9698;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &.active {
+    background-color: #E27344;
+    color: #FFFFFF;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+// 1-column on mobile
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+
+  @include respond-to('sm') {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.formRow3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+
+  @include respond-to('sm') {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formGroupSpan2 {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formLabel {
+  font-size: 0.775rem;
+  font-weight: 700;
+  color: #8A9698;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+// 16px input font size to prevent mobile browser zoom!
+.input {
+  background-color: #131E21;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: $mobile-radius;
+  height: $mobile-control-min-height; // 48px
+  padding: 0 14px;
+  font-family: $font-fira;
+  font-size: 16px; // Crucial for iOS Safari non-zoom
+  color: #FFFFFF;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    border-color: #E27344;
+  }
+
+  &::placeholder {
+    color: #616F71;
+  }
+}
+
+.select {
+  background-color: #131E21;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: $mobile-radius;
+  height: $mobile-control-min-height; // 48px
+  padding: 0 14px;
+  font-family: $font-fira;
+  font-size: 16px;
+  color: #FFFFFF;
+  outline: none;
+  box-sizing: border-box;
+  cursor: pointer;
+
+  &:focus {
+    border-color: #E27344;
+  }
+
+  option {
+    background-color: #131E21;
+    color: #FFFFFF;
+  }
+}
+
+.errorText {
+  font-size: 0.725rem;
+  color: #EF4444;
+  margin: 0;
+}
+
+.tipWrap {
+  background-color: #131E21;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: $mobile-radius;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tipHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #8A9698;
+}
+
+.tipGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.tipBtn {
+  @include button-reset;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: #E27344;
+  }
+
+  &.active {
+    background-color: #E27344;
+    border-color: #E27344;
+    color: #FFFFFF;
+  }
+}
+
+.policyNoticeBox {
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $mobile-radius;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.policyRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.policyIcon {
+  font-size: 14px;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.policyText {
+  margin: 0;
+  font-size: 0.775rem;
+  line-height: 1.45;
+  color: #B0BABC;
+
+  strong {
+    color: #FFFFFF;
+  }
+}
+
+.sandboxBox {
+  background-color: rgba(226, 115, 68, 0.08);
+  border: 1px solid rgba(226, 115, 68, 0.25);
+  border-radius: $mobile-radius;
+  padding: 12px 16px;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: #8A9698;
+}
+
+// Sticky "Place Order" button on mobile
+.submitOrderBtn {
+  @include button-reset;
+  width: 100%;
+  height: $mobile-control-min-height; // 48px
+  min-height: $mobile-control-min-height;
+  padding: 0 16px;
+  background-color: #E27344;
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: $mobile-radius;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+
+  @media (max-width: 767px) {
+    position: sticky;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    z-index: 20;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+  }
+
+  &:hover:not(:disabled) {
+    background-color: #F28555;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
+}
+
+// Right Summary Column
+.summaryCol {
+  background-color: #131E21;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: fit-content;
+}
+
+.summaryTitle {
+  font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #FFFFFF;
+  margin: 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.itemsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.itemRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.itemRowHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.85rem;
+  color: #FFFFFF;
+}
+
+.customizationBullet {
+  font-size: 0.75rem;
+  color: #E27344;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.totalsBox {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.totalLine {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #8A9698;
+}
+
+.grandTotalLine {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+// Confirmation
+.confirmationWrap {
+  max-width: 640px;
+  margin: 40px auto 80px;
+  padding: 0 16px;
+  font-family: $font-fira;
+}
+
+.ticketCard {
+  background-color: #131E21;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ticketHeader {
+  text-align: center;
+}
+
+.ticketTitle {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 8px 0 0;
+}
+
+.ticketMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.825rem;
+  color: #8A9698;
+  background-color: rgba(255, 255, 255, 0.03);
+  padding: 12px 16px;
+  border-radius: 8px;
+}
+
+.ticketActions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  @include respond-to('sm') {
+    flex-direction: row;
+  }
+}
+
+.ticketPrimaryBtn {
+  @include button-reset;
+  flex: 1;
+  padding: 12px;
+  background-color: #E27344;
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #F28555;
+  }
+}
+
+.ticketSecondaryBtn {
+  @include button-reset;
+  flex: 1;
+  padding: 12px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.emptyState {
+  max-width: 500px;
+  margin: 80px auto;
+  text-align: center;
+  padding: 0 16px;
+  font-family: $font-fira;
+}
+
+.emptyTitle {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 8px;
+}
+
+.emptyBtn {
+  @include button-reset;
+  margin-top: 20px;
+  padding: 12px 24px;
+  background-color: #E27344;
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  border-radius: 8px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #F28555;
+  }
+}

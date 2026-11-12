@@ -1,0 +1,259 @@
+@use '@/src/styles/abstracts' as *;
+
+.about {
+  @include container;
+  padding-top: 24px;
+  padding-bottom: $mobile-section-spacing;
+  padding-left: $mobile-pad;
+  padding-right: $mobile-pad;
+  color: $color-text;
+  display: flex;
+  flex-direction: column;
+  gap: $mobile-section-spacing;
+
+  @include respond-to('md') {
+    padding-top: $space-16;
+    padding-bottom: $space-24;
+    gap: $space-24;
+  }
+}
+
+.essayHeader {
+  max-width: 56rem;
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.kicker {
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: $color-tomato;
+  display: block;
+}
+
+.title {
+  font-family: $font-serif;
+  font-size: $mobile-title; // 32px
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: $color-text;
+  line-height: 1.05;
+
+  @include respond-to('sm') {
+    font-size: 3.75rem;
+  }
+
+  @include respond-to('lg') {
+    font-size: 4.5rem;
+  }
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: rgba($color-text, 0.85);
+  font-family: $font-sans;
+  line-height: 1.6;
+
+  @include respond-to('sm') {
+    font-size: 1.125rem;
+  }
+}
+
+.photoCaptionRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: $space-2;
+  font-family: $font-mono;
+  font-size: 11px;
+  color: $color-text-muted;
+}
+
+.argumentsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $space-8;
+  align-items: flex-start;
+
+  @include respond-to('lg') {
+    grid-template-columns: repeat(12, 1fr);
+    gap: $space-16;
+  }
+}
+
+.sidebar {
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: $color-text-muted;
+
+  @include respond-to('lg') {
+    grid-column: span 4;
+    position: sticky;
+    top: 7rem;
+  }
+}
+
+.sidebarTag {
+  display: block;
+  margin-bottom: $space-2;
+  color: $color-tomato;
+}
+
+.argumentsContent {
+  display: flex;
+  flex-direction: column;
+  gap: $space-12;
+
+  @include respond-to('lg') {
+    grid-column: span 8;
+  }
+}
+
+.argumentBlock {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  padding-bottom: $space-8;
+  border-bottom: 1px solid rgba($color-text, 0.15);
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.argumentTitle {
+  font-family: $font-serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: $color-text;
+
+  @include respond-to('sm') {
+    font-size: 1.875rem;
+  }
+}
+
+.argumentBody {
+  font-size: 0.875rem;
+  color: rgba($color-text, 0.85);
+  font-family: $font-sans;
+  line-height: 1.6;
+}
+
+.quoteBanner {
+  background-color: #131E21;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: $space-8;
+  display: flex;
+  flex-direction: column;
+  gap: $space-8;
+
+  @include respond-to('sm') {
+    padding: 3.5rem;
+  }
+}
+
+.quoteText {
+  font-family: $font-serif;
+  font-style: italic;
+  font-size: 1.5rem;
+  color: $color-text;
+  font-weight: 400;
+  line-height: 1.3;
+  max-width: 56rem;
+
+  @include respond-to('sm') {
+    font-size: 1.875rem;
+  }
+
+  @include respond-to('lg') {
+    font-size: 2.25rem;
+  }
+}
+
+.teamGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $space-8;
+  padding-top: $space-6;
+  border-top: 1px solid rgba($color-text, 0.15);
+  align-items: center;
+
+  @include respond-to('md') {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.teamContent {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  font-family: $font-sans;
+  font-size: 0.875rem;
+  color: rgba($color-text, 0.85);
+  line-height: 1.6;
+}
+
+.teamTitle {
+  font-family: $font-serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: $color-text;
+}
+
+.closingSection {
+  text-align: center;
+  max-width: 36rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  padding-top: $space-6;
+}
+
+.closingTitle {
+  font-family: $font-serif;
+  font-size: 1.875rem;
+  font-weight: 400;
+  color: $color-text;
+}
+
+.closingText {
+  font-size: 0.75rem;
+  font-family: $font-mono;
+  color: $color-text-muted;
+}
+
+.orderCta {
+  @include button-reset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: $mobile-control-min-height; // 48px
+  min-height: $mobile-control-min-height;
+  padding: 0 $space-6;
+  background-color: $color-tomato;
+  color: #fff;
+  border-radius: $mobile-radius;
+  font-family: $font-fira;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+  transition: background-color 0.2s ease;
+
+  @include respond-to('sm') {
+    width: auto;
+  }
+
+  &:hover {
+    background-color: $color-tomato-hover;
+  }
+}

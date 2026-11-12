@@ -1,0 +1,346 @@
+@use '@/src/styles/abstracts' as *;
+
+.overlayRoot {
+  position: fixed;
+  inset: 0;
+  z-index: $z-menu;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(5, 10, 11, 0.78);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1;
+}
+
+.drawer {
+  position: relative;
+  z-index: 2;
+  width: 86%;
+  max-width: 360px;
+  height: 100dvh;
+  background-color: #0E181B;
+  color: #FFFFFF;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: -12px 0 32px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  font-family: $font-fira;
+  overflow: hidden;
+}
+
+.topRow {
+  height: 56px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: #0B1416;
+}
+
+.logoBtn {
+  @include button-reset;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+  &:focus-visible {
+    outline: 2px solid #E27344;
+    outline-offset: 2px;
+  }
+}
+
+.logoText {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
+  white-space: nowrap;
+}
+
+.closeBtn {
+  @include button-reset;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #8A9698;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: transparent;
+  transition: color 0.15s ease, background-color 0.15s ease;
+
+  &:hover {
+    color: #FFFFFF;
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #E27344;
+    outline-offset: 2px;
+  }
+}
+
+.scrollContent {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0 20px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+  }
+}
+
+.navList {
+  display: flex;
+  flex-direction: column;
+}
+
+.navItem {
+  @include button-reset;
+  height: 52px;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #FFFFFF;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-left: 3px solid transparent;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+    color: #FFFFFF;
+  }
+
+  &Active {
+    color: #E27344;
+    font-weight: 600;
+    border-left-color: #E27344;
+    background-color: rgba(226, 115, 68, 0.07);
+
+    .chevron {
+      color: #E27344;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid #E27344;
+    outline-offset: -2px;
+  }
+}
+
+.navLabel {
+  @include truncate;
+  letter-spacing: -0.01em;
+}
+
+.chevron {
+  color: #616F71;
+  flex-shrink: 0;
+  transition: color 0.15s ease, transform 0.15s ease;
+
+  .navItem:hover & {
+    color: #FFFFFF;
+    transform: translateX(2px);
+  }
+}
+
+.orderCtaWrap {
+  padding: 16px;
+}
+
+.orderNowBtn {
+  @include button-reset;
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #E27344;
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(226, 115, 68, 0.35);
+  transition: background-color 0.15s ease, transform 0.1s ease;
+
+  &:hover {
+    background-color: #F28555;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #FFFFFF;
+    outline-offset: 3px;
+  }
+}
+
+.infoCard {
+  margin: 4px 16px 16px;
+  padding: 14px;
+  background-color: #131E21;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.infoRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.infoIcon {
+  color: #E27344;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.infoTextGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.infoTitle {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #8A9698;
+}
+
+.infoDesc {
+  color: #FFFFFF;
+  font-size: 13px;
+}
+
+.infoLink {
+  color: #FFFFFF;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+
+  &:hover {
+    color: #E27344;
+  }
+}
+
+.directionsBtn {
+  @include button-reset;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #E27344;
+  cursor: pointer;
+  text-align: left;
+  line-height: 1.2;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.navLabelGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.trackMenuAccentDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #E27344;
+  box-shadow: 0 0 6px rgba(226, 115, 68, 0.85);
+  flex-shrink: 0;
+  animation: accentDotPulse 2s infinite ease-in-out;
+}
+
+.bottomArea {
+  padding: 14px 16px;
+  padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: #0B1416;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.socialGroup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.socialIconBtn {
+  @include button-reset;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #8A9698;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease;
+
+  &:hover {
+    color: #FFFFFF;
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #E27344;
+    outline-offset: 2px;
+  }
+}
+
+@keyframes accentDotPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.22);
+    opacity: 0.85;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trackMenuAccentDot {
+    animation: none;
+  }
+}

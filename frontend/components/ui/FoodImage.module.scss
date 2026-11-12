@@ -1,0 +1,106 @@
+@use '@/src/styles/abstracts' as *;
+
+.wrapper {
+  position: relative;
+  overflow: hidden;
+  background-color: $color-bg-alt;
+  border: 1px solid $color-border;
+  width: 100%;
+}
+
+.aspect43 {
+  aspect-ratio: 4 / 3;
+}
+
+.aspect169 {
+  aspect-ratio: 16 / 9;
+}
+
+.aspect1610 {
+  aspect-ratio: 16 / 10;
+}
+
+.aspect219 {
+  aspect-ratio: 21 / 9;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &:hover {
+    transform: scale(1.02);
+  }
+}
+
+.placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: $space-4;
+  user-select: none;
+  background-color: $color-bg-alt;
+
+  @include respond-to('sm') {
+    padding: $space-5;
+  }
+}
+
+.placeholderTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-family: $font-mono;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: $color-text-subtle;
+}
+
+.placeholderFile {
+  color: $color-text-muted;
+}
+
+.placeholderCenter {
+  margin-top: auto;
+  margin-bottom: auto;
+  padding: $space-3 0;
+}
+
+.placeholderLabel {
+  font-family: $font-serif;
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.3;
+  color: rgba($color-text, 0.85);
+
+  @include respond-to('sm') {
+    font-size: 1.125rem;
+  }
+}
+
+.placeholderSpec {
+  font-family: $font-mono;
+  font-size: 10px;
+  color: $color-text-muted;
+  margin-top: $space-1;
+}
+
+.placeholderBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: $font-mono;
+  font-size: 10px;
+  color: $color-text-subtle;
+  border-top: 1px solid $color-border;
+  padding-top: $space-2;
+}
+
+.placeholderPath {
+  text-transform: lowercase;
+}

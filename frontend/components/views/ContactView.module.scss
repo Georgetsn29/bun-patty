@@ -1,0 +1,280 @@
+@use '@/src/styles/abstracts' as *;
+
+.contact {
+  @include container;
+  padding-top: $space-8;
+  padding-bottom: $space-24;
+  color: $color-text;
+  display: flex;
+  flex-direction: column;
+  gap: $space-16;
+
+  @include respond-to('sm') {
+    padding-top: $space-16;
+  }
+}
+
+.header {
+  max-width: 48rem;
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  padding-bottom: $space-8;
+  border-bottom: 1px solid rgba($color-text, 0.15);
+}
+
+.kicker {
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: $color-text-muted;
+  display: block;
+}
+
+.title {
+  font-family: $font-serif;
+  font-size: 2.25rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: $color-text;
+
+  @include respond-to('sm') {
+    font-size: 3rem;
+  }
+
+  @include respond-to('lg') {
+    font-size: 3.75rem;
+  }
+}
+
+.headerNote {
+  font-size: 0.875rem;
+  font-family: $font-sans;
+  color: rgba($color-text, 0.8);
+  line-height: 1.6;
+  max-width: 36rem;
+}
+
+.contactGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $space-12;
+  align-items: flex-start;
+
+  @include respond-to('lg') {
+    grid-template-columns: repeat(12, 1fr);
+  }
+}
+
+.directoryCol {
+  display: flex;
+  flex-direction: column;
+  gap: $space-8;
+  font-family: $font-mono;
+  font-size: 0.75rem;
+
+  @include respond-to('lg') {
+    grid-column: span 5;
+  }
+}
+
+.dirSection {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  border-bottom: 1px solid rgba($color-text, 0.15);
+  padding-bottom: $space-8;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.dirLabel {
+  color: rgba($color-text, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 10px;
+  display: block;
+}
+
+.dirBody {
+  font-family: $font-sans;
+  font-size: 0.875rem;
+  color: $color-text;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.addressSub {
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  color: $color-text-muted;
+  padding-top: 4px;
+}
+
+.contactList {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.contactLink {
+  text-decoration: underline;
+  font-weight: 600;
+  color: $color-text;
+
+  &:hover {
+    color: $color-tomato;
+  }
+}
+
+.contactSubLink {
+  text-decoration: underline;
+  color: $color-text-muted;
+
+  &:hover {
+    color: $color-text;
+  }
+}
+
+.scheduleList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: $color-text-muted;
+}
+
+.formCard {
+  border: 1px solid rgba($color-text, 0.2);
+  padding: $space-8;
+  background-color: rgba($color-bg-alt, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+
+  @include respond-to('sm') {
+    padding: 2.5rem;
+  }
+
+  @include respond-to('lg') {
+    grid-column: span 7;
+  }
+}
+
+.formHeader {
+  border-bottom: 1px solid rgba($color-text, 0.15);
+  padding-bottom: $space-4;
+}
+
+.formTitle {
+  font-family: $font-serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: $color-text;
+}
+
+.formNote {
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  color: $color-text-muted;
+  margin-top: 4px;
+}
+
+.successAlert {
+  padding: $space-4;
+  background-color: rgba($color-sage, 0.4);
+  border: 1px solid rgba($color-text, 0.2);
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  color: $color-text;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $space-5;
+  font-family: $font-mono;
+  font-size: 0.75rem;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $space-4;
+
+  @include respond-to('sm') {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formLabel {
+  display: block;
+  color: $color-text;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  padding: 10px;
+  background-color: transparent;
+  border: 1px solid rgba($color-text, 0.3);
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  color: $color-text;
+
+  &:focus {
+    border-color: $color-text;
+    outline: none;
+  }
+
+  &::placeholder {
+    color: rgba($color-text, 0.45);
+  }
+}
+
+.select {
+  cursor: pointer;
+}
+
+.errorText {
+  color: $color-tomato;
+  font-size: 10px;
+  margin-top: 4px;
+}
+
+.submitBtn {
+  @include button-reset;
+  width: 100%;
+  padding: 14px;
+  background-color: $color-text;
+  color: $color-bg;
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  text-align: center;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $color-tomato;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}

@@ -1,0 +1,245 @@
+@use '@/src/styles/abstracts' as *;
+
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+
+  // On desktop: center-aligned cards
+  @include respond-to('md') {
+    align-items: center;
+    text-align: center;
+  }
+}
+
+.imageContainer {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: $mobile-radius; // 12px
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  background-color: #111A1D;
+  margin-bottom: 12px;
+  contain: layout paint;
+}
+
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+  .imageContainer:hover & {
+    transform: scale(1.04);
+  }
+}
+
+.badgeTag {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background-color: rgba(226, 115, 68, 0.95);
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  z-index: 2;
+  letter-spacing: 0.02em;
+}
+
+.infoWrap {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: $font-fira;
+
+  @include respond-to('md') {
+    align-items: center;
+  }
+}
+
+// Mobile: Name left-aligned, price right-aligned on the SAME row!
+.namePriceLine {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  width: 100%;
+  cursor: pointer;
+
+  @include respond-to('md') {
+    justify-content: center;
+    gap: 8px;
+  }
+}
+
+.title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+  line-height: 1.25;
+  text-align: left;
+  transition: color 0.15s ease;
+
+  @include respond-to('md') {
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  &:hover {
+    color: #E27344;
+  }
+}
+
+.price {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+
+  @include respond-to('md') {
+    font-size: 1rem;
+    font-weight: 700;
+  }
+}
+
+.shortDescription {
+  font-size: 0.85rem;
+  color: #8A9698;
+  margin: 4px 0 6px;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-align: left;
+
+  @include respond-to('md') {
+    font-size: 0.8rem;
+    text-align: center;
+    max-width: 95%;
+  }
+}
+
+// Desktop Customize Link & small pill button
+.desktopCustomizeLink {
+  display: none;
+
+  @include respond-to('md') {
+    @include button-reset;
+    display: inline-block;
+    font-size: 0.775rem;
+    color: #8A9698;
+    cursor: pointer;
+    margin-top: 4px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: #E27344;
+    }
+  }
+}
+
+.desktopActionsRow {
+  display: none;
+
+  @include respond-to('md') {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 8px;
+  }
+}
+
+.addToCartBtn {
+  @include button-reset;
+  padding: 5px 14px;
+  font-size: 0.775rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #8A9698;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    color: #FFFFFF;
+    border-color: #E27344;
+    background-color: rgba(226, 115, 68, 0.12);
+  }
+
+  &.added {
+    color: #E27344;
+    border-color: #E27344;
+    background-color: rgba(226, 115, 68, 0.1);
+  }
+}
+
+// Mobile Full-Width Button (at least 48px high)
+.mobileActionButtonWrap {
+  width: 100%;
+  margin-top: auto;
+  padding-top: 8px;
+
+  @include respond-to('md') {
+    display: none;
+  }
+}
+
+.mobilePrimaryBtn {
+  @include button-reset;
+  width: 100%;
+  height: $mobile-control-min-height; // 48px
+  min-height: $mobile-control-min-height;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $mobile-radius; // 12px
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background-color: #E27344;
+    border-color: #E27344;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &.added {
+    background-color: #16A34A;
+    border-color: #16A34A;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #E27344;
+    outline-offset: 2px;
+  }
+}

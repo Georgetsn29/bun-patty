@@ -1,0 +1,1059 @@
+@use '@/src/styles/abstracts' as *;
+
+.trackingPage {
+  background-color: #0B1416;
+  color: #FFFFFF;
+  font-family: $font-fira;
+  min-height: calc(100vh - 120px);
+  padding: 32px 0 80px;
+
+  @media (max-width: 767px) {
+    padding: 24px 0 64px;
+  }
+}
+
+.container {
+  max-width: $max-width-site; // 1120px
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+
+  @media (max-width: 639px) {
+    padding: 0 16px;
+  }
+}
+
+// Breadcrumbs and Demo Tag
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.backLink {
+  @include button-reset;
+  color: #8A9698;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 150ms ease;
+
+  &:hover {
+    color: #E27344;
+  }
+}
+
+.demoTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background-color: rgba(226, 115, 68, 0.1);
+  border: 1px solid rgba(226, 115, 68, 0.25);
+  border-radius: 20px;
+  font-size: 11px;
+  color: #E27344;
+  letter-spacing: 0.02em;
+}
+
+// -----------------------------------------------------------------------------
+// 1. Status Hero Section
+// -----------------------------------------------------------------------------
+.statusHero {
+  background-color: #121E21;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $mobile-radius; // 12px
+  padding: 28px 24px;
+  margin-bottom: 32px;
+  box-sizing: border-box;
+
+  @media (max-width: 639px) {
+    padding: 20px 16px;
+  }
+}
+
+.orderNumberRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.orderNumberTitle {
+  font-size: 15px;
+  color: #8A9698;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.orderNumberCode {
+  color: #FFFFFF;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  margin-left: 4px;
+}
+
+.copyBtn {
+  @include button-reset;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #8A9698;
+  cursor: pointer;
+  transition: all 150ms ease;
+
+  &:hover {
+    color: #FFFFFF;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  &.copyBtnSuccess {
+    color: #10B981;
+    border-color: #10B981;
+    background-color: rgba(16, 185, 129, 0.1);
+  }
+}
+
+.statusTitle {
+  font-size: 32px; // Page title mobile foundation
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0 0 8px 0;
+  line-height: 1.25;
+  letter-spacing: 0;
+
+  @media (min-width: 768px) {
+    font-size: 38px;
+  }
+}
+
+.statusMessage {
+  font-size: 16px;
+  color: #8A9698;
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+  max-width: 600px;
+}
+
+.etaBox {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 16px 20px;
+  box-sizing: border-box;
+
+  @media (max-width: 639px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+}
+
+.etaCol {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.etaLabel {
+  font-size: 12px;
+  color: #8A9698;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.etaTime {
+  font-size: 22px;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: 0.02em;
+}
+
+.etaCountdown {
+  font-size: 18px;
+  font-weight: 700;
+  color: #E27344;
+}
+
+.etaDivider {
+  width: 1px;
+  height: 36px;
+  background-color: rgba(255, 255, 255, 0.1);
+
+  @media (max-width: 639px) {
+    display: none;
+  }
+}
+
+// Pickup customer confirmation button
+.pickupActionBanner {
+  margin-top: 20px;
+  padding: 16px 20px;
+  background-color: rgba(226, 115, 68, 0.12);
+  border: 1px solid rgba(226, 115, 68, 0.35);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pickupActionText {
+  margin: 0;
+  font-size: 14px;
+  color: #FFFFFF;
+  line-height: 1.4;
+}
+
+.pickupConfirmBtn {
+  @include button-reset;
+  height: $mobile-control-min-height; // 48px
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #E27344;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 15px;
+  border-radius: $mobile-radius;
+  cursor: pointer;
+  padding: 0 24px;
+  transition: background-color 150ms ease;
+
+  &:hover {
+    background-color: #F28555;
+  }
+}
+
+// Thank You completion banner
+.thankYouBanner {
+  margin-top: 20px;
+  padding: 18px 20px;
+  background-color: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 10px;
+}
+
+.thankYouTitle {
+  margin: 0 0 6px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #10B981;
+}
+
+.thankYouDesc {
+  margin: 0;
+  font-size: 14px;
+  color: #FFFFFF;
+  line-height: 1.5;
+}
+
+// -----------------------------------------------------------------------------
+// 2. Vertical Status Timeline Section
+// -----------------------------------------------------------------------------
+.timelineSection {
+  background-color: #121E21;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $mobile-radius;
+  padding: 32px 28px;
+  margin-bottom: 32px;
+  box-sizing: border-box;
+
+  @media (max-width: 639px) {
+    padding: 24px 16px;
+  }
+}
+
+.timelineList {
+  display: flex;
+  flex-direction: column;
+}
+
+.timelineStep {
+  display: flex;
+  position: relative;
+  min-height: 64px;
+
+  &:last-child {
+    min-height: 36px;
+  }
+}
+
+// Column 1: Time
+.stepTimeCol {
+  width: 54px;
+  padding-top: 2px;
+  text-align: right;
+  flex-shrink: 0;
+  margin-right: 16px;
+
+  @media (max-width: 639px) {
+    width: 44px;
+    margin-right: 12px;
+  }
+}
+
+.stepTime {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: #8A9698;
+  font-weight: 500;
+
+  .stepCurrent & {
+    color: #E27344;
+    font-weight: 700;
+  }
+}
+
+// Column 2: Indicator Dot & Line
+.stepIndicatorCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.stepDot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #121E21;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  z-index: 2;
+  transition: all 250ms ease;
+
+  // Completed Step
+  .stepCompleted & {
+    background-color: #E27344;
+    border-color: #E27344;
+    color: #FFFFFF;
+  }
+
+  // Current Step: softly pulsing accent dot
+  .stepCurrent & {
+    background-color: #121E21;
+    border-color: #E27344;
+    box-shadow: 0 0 0 0 rgba(226, 115, 68, 0.7);
+    animation: pulse-step 2s infinite cubic-bezier(0.45, 0, 0.55, 1);
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+
+  // Upcoming Step
+  .stepUpcoming & {
+    background-color: #0B1416;
+    border-color: rgba(255, 255, 255, 0.16);
+  }
+}
+
+@keyframes pulse-step {
+  0% {
+    box-shadow: 0 0 0 0 rgba(226, 115, 68, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(226, 115, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(226, 115, 68, 0);
+  }
+}
+
+.currentInnerDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #E27344;
+}
+
+.checkMini {
+  color: #FFFFFF;
+}
+
+// Connecting vertical track and animated fill line
+.stepLineTrack {
+  position: absolute;
+  top: 22px;
+  bottom: 0;
+  width: 2px;
+  background-color: rgba(255, 255, 255, 0.1);
+  z-index: 1;
+}
+
+.stepLineFill {
+  width: 100%;
+  background-color: #E27344;
+  height: 0%;
+}
+
+// Column 3: Step Content
+.stepContentCol {
+  padding-left: 16px;
+  padding-bottom: 28px;
+  flex: 1;
+
+  @media (max-width: 639px) {
+    padding-left: 12px;
+    padding-bottom: 24px;
+  }
+}
+
+.stepLabel {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.35;
+  transition: color 200ms ease;
+
+  .stepCompleted & {
+    color: #FFFFFF;
+    font-weight: 500;
+  }
+
+  .stepCurrent & {
+    color: #FFFFFF;
+    font-weight: 800;
+    font-size: 17px;
+  }
+
+  .stepUpcoming & {
+    color: #616F71;
+    font-weight: 400;
+  }
+}
+
+.stepCurrentMessage {
+  margin: 4px 0 0 0;
+  font-size: 13px;
+  color: #E27344;
+  line-height: 1.45;
+}
+
+// Cancellation trigger wrap
+.cancelWrap {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cancelTriggerBtn {
+  @include button-reset;
+  color: #EF4444;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  background-color: rgba(239, 68, 68, 0.06);
+  transition: all 150ms ease;
+
+  &:hover {
+    background-color: rgba(239, 68, 68, 0.15);
+    border-color: #EF4444;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// 3. Below Timeline: Order Summary & Fulfillment Details
+// -----------------------------------------------------------------------------
+.detailsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 3fr 2fr;
+  }
+}
+
+.card {
+  background-color: #121E21;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $mobile-radius;
+  padding: 24px;
+  box-sizing: border-box;
+
+  @media (max-width: 639px) {
+    padding: 20px 16px;
+  }
+}
+
+.cardTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0 0 18px 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.orderItemsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.orderItemRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.orderItemInfo {
+  flex: 1;
+}
+
+.orderItemName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.orderItemQty {
+  color: #E27344;
+  font-weight: 700;
+  margin-right: 2px;
+}
+
+.customizationList {
+  margin: 4px 0 0 0;
+  padding-left: 14px;
+  list-style-type: disc;
+  color: #8A9698;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.orderItemPrice {
+  font-size: 14px;
+  font-weight: 700;
+  color: #FFFFFF;
+  white-space: nowrap;
+}
+
+.breakdown {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.breakdownRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #8A9698;
+}
+
+.discountRow {
+  color: #10B981;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 16px;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.reorderWrap {
+  margin-top: 20px;
+}
+
+.reorderBtn {
+  @include button-reset;
+  width: 100%;
+  height: 48px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: $mobile-radius;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 150ms ease;
+
+  &:hover {
+    background-color: #E27344;
+    border-color: #E27344;
+  }
+
+  &.reorderedSuccess {
+    background-color: #10B981;
+    border-color: #10B981;
+  }
+}
+
+// Fulfillment info
+.fulfillmentInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.infoBlock {
+  display: flex;
+  gap: 12px;
+}
+
+.infoIcon {
+  color: #E27344;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.infoText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.destinationName {
+  font-size: 15px;
+  color: #FFFFFF;
+}
+
+.destinationAddress {
+  font-size: 13px;
+  color: #8A9698;
+  line-height: 1.4;
+}
+
+.directionsLink {
+  color: #E27344;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  margin-top: 4px;
+  display: inline-block;
+
+  &:hover {
+    color: #F28555;
+  }
+}
+
+.phoneLabel {
+  font-size: 12px;
+  color: #8A9698;
+}
+
+.phoneLink {
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+
+  &:hover {
+    color: #E27344;
+    text-decoration: underline;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// 4. Find an Order / Lookup View
+// -----------------------------------------------------------------------------
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.kicker {
+  display: block;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #E27344;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-size: 32px; // Mobile foundation
+  font-weight: 800;
+  margin: 0 0 8px 0;
+  color: #FFFFFF;
+
+  @media (min-width: 768px) {
+    font-size: 38px;
+  }
+}
+
+.subtitle {
+  font-size: 15px;
+  color: #8A9698;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.lookupForm {
+  background-color: #121E21;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $mobile-radius;
+  padding: 24px;
+  margin-bottom: 32px;
+  box-sizing: border-box;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+
+  @media (min-width: 640px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #B0BABC;
+}
+
+.inputWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: $mobile-radius;
+  height: 48px;
+  padding: 0 14px;
+  transition: border-color 150ms ease;
+
+  &:focus-within {
+    border-color: #E27344;
+  }
+}
+
+.inputIcon {
+  color: #8A9698;
+  flex-shrink: 0;
+}
+
+.input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-family: $font-fira;
+  width: 100%;
+
+  &::placeholder {
+    color: #616F71;
+  }
+}
+
+.submitBtn {
+  @include button-reset;
+  width: 100%;
+  height: 48px;
+  min-height: 48px;
+  background-color: #E27344;
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: $mobile-radius;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+
+  &:hover {
+    background-color: #F28555;
+  }
+}
+
+.notFoundAlert {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: $mobile-radius;
+  padding: 16px 20px;
+  margin-bottom: 32px;
+}
+
+.alertIcon {
+  color: #EF4444;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.alertTitle {
+  margin: 0 0 4px 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #EF4444;
+}
+
+.alertDesc {
+  margin: 0;
+  font-size: 13px;
+  color: #B0BABC;
+  line-height: 1.45;
+}
+
+// Recent orders section
+.recentSection {
+  margin-top: 40px;
+}
+
+.sectionTitle {
+  font-size: $mobile-section-title; // 22px
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0 0 16px 0;
+}
+
+.emptyRecent {
+  color: #8A9698;
+  font-size: 14px;
+}
+
+.recentGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.recentCard {
+  background-color: #121E21;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $mobile-radius;
+  padding: 18px 20px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 150ms ease, background-color 150ms ease, transform 150ms ease;
+
+  &:hover {
+    border-color: #E27344;
+    background-color: #152327;
+    transform: translateY(-2px);
+  }
+}
+
+.recentHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.recentNumber {
+  font-size: 16px;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: 0.02em;
+}
+
+.recentStatusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+
+  &.statusActive {
+    background-color: rgba(226, 115, 68, 0.15);
+    color: #E27344;
+  }
+
+  &.statusFinished {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: #8A9698;
+  }
+}
+
+.miniPulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #E27344;
+}
+
+.recentMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #8A9698;
+}
+
+.recentFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.recentTotal {
+  font-size: 15px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.recentViewLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #E27344;
+}
+
+// -----------------------------------------------------------------------------
+// Cancellation Modal
+// -----------------------------------------------------------------------------
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: $z-modal; // 400
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.modalContent {
+  background-color: #121E21;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: $mobile-radius;
+  max-width: 440px;
+  width: 100%;
+  padding: 28px 24px;
+  text-align: center;
+  box-sizing: border-box;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+.modalIconWrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: rgba(239, 68, 68, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+
+.shieldIcon {
+  color: #EF4444;
+}
+
+.modalTitle {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.modalText {
+  margin: 0 0 24px 0;
+  font-size: 14px;
+  color: #8A9698;
+  line-height: 1.5;
+}
+
+.modalActions {
+  display: flex;
+  gap: 12px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+  }
+}
+
+.modalConfirmBtn {
+  @include button-reset;
+  flex: 1;
+  height: 48px;
+  min-height: 48px;
+  background-color: #EF4444;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: $mobile-radius;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+
+  &:hover {
+    background-color: #DC2626;
+  }
+}
+
+.modalCancelBtn {
+  @include button-reset;
+  flex: 1;
+  height: 48px;
+  min-height: 48px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: $mobile-radius;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.14);
+  }
+}

@@ -1,0 +1,305 @@
+@use '@/src/styles/abstracts' as *;
+
+.locations {
+  @include container;
+  padding-top: $space-8;
+  padding-bottom: $space-24;
+  color: $color-text;
+  display: flex;
+  flex-direction: column;
+  gap: $space-16;
+
+  @include respond-to('sm') {
+    padding-top: $space-16;
+  }
+}
+
+.header {
+  max-width: 48rem;
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  padding-bottom: $space-8;
+  border-bottom: 1px solid rgba($color-text, 0.15);
+}
+
+.kicker {
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: $color-text-muted;
+  display: block;
+}
+
+.title {
+  font-family: $font-serif;
+  font-size: 2.25rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: $color-text;
+
+  @include respond-to('sm') {
+    font-size: 3rem;
+  }
+
+  @include respond-to('lg') {
+    font-size: 3.75rem;
+  }
+}
+
+.headerNote {
+  font-size: 0.875rem;
+  font-family: $font-sans;
+  color: rgba($color-text, 0.8);
+  line-height: 1.6;
+  max-width: 36rem;
+}
+
+.locationsList {
+  border-top: 1px solid rgba($color-text, 0.15);
+  border-bottom: 1px solid rgba($color-text, 0.15);
+}
+
+.locationRow {
+  padding: $space-12 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $space-8;
+  align-items: flex-start;
+  border-bottom: 1px solid rgba($color-text, 0.15);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  @include respond-to('lg') {
+    grid-template-columns: repeat(12, 1fr);
+  }
+}
+
+.nameCol {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+
+  @include respond-to('lg') {
+    grid-column: span 4;
+  }
+}
+
+.locationIndex {
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  color: $color-tomato;
+  display: block;
+}
+
+.locationName {
+  font-family: $font-serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: $color-text;
+
+  @include respond-to('sm') {
+    font-size: 1.875rem;
+  }
+}
+
+.flagshipTag {
+  align-self: flex-start;
+  font-family: $font-mono;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background-color: $color-accent;
+  color: $color-text;
+  padding: 2px $space-2;
+  margin-top: 4px;
+}
+
+.detailsCol {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  color: rgba($color-text, 0.85);
+
+  @include respond-to('lg') {
+    grid-column: span 4;
+  }
+}
+
+.detailGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detailLabel {
+  color: rgba($color-text, 0.5);
+  text-transform: uppercase;
+  font-size: 10px;
+  display: block;
+}
+
+.detailAddress {
+  font-family: $font-sans;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: $color-text;
+}
+
+.transitNote {
+  color: $color-text-muted;
+}
+
+.mediaCol {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+
+  @include respond-to('lg') {
+    grid-column: span 4;
+  }
+}
+
+.orderLocationBtn {
+  @include button-reset;
+  width: 100%;
+  padding: 10px $space-4;
+  background-color: $color-text;
+  color: $color-bg;
+  font-size: 0.75rem;
+  font-family: $font-mono;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $color-tomato;
+  }
+}
+
+.cateringBox {
+  padding: $space-8;
+  background-color: rgba($color-bg-alt, 0.4);
+  border: 1px solid rgba($color-text, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+  align-items: flex-start;
+
+  @include respond-to('md') {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.cateringTitle {
+  font-family: $font-serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: $color-text;
+  margin-bottom: 4px;
+}
+
+.cateringText {
+  font-size: 0.75rem;
+  font-family: $font-mono;
+  color: $color-text-muted;
+}
+
+.cateringBtn {
+  @include button-reset;
+  padding: 10px $space-6;
+  border: 1px solid $color-text;
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: $color-text;
+    color: $color-bg;
+  }
+}
+
+// Delivery Coverage & Rates Section
+.deliveryInfoSection {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+  padding: $space-8 0;
+  border-bottom: 1px solid rgba($color-text, 0.15);
+}
+
+.deliverySectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.deliverySectionTitle {
+  font-family: $font-serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: $color-text;
+
+  @include respond-to('md') {
+    font-size: 1.75rem;
+  }
+}
+
+.deliveryGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $space-4;
+
+  @include respond-to('md') {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: $space-6;
+  }
+}
+
+.deliveryCard {
+  background-color: rgba($color-bg-alt, 0.5);
+  border: 1px solid rgba($color-text, 0.12);
+  border-radius: 8px;
+  padding: $space-5;
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.deliveryCardTop {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+}
+
+.cardIcon {
+  color: $color-tomato;
+  flex-shrink: 0;
+}
+
+.cardTitle {
+  font-family: $font-serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.cardText {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: $color-text-muted;
+  margin: 0;
+}
+

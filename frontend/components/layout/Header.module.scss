@@ -1,0 +1,512 @@
+@use '@/src/styles/abstracts' as *;
+
+// 1. Slim Announcement Bar
+.announcementBar {
+  display: none;
+
+  @include respond-to('md') {
+    display: flex;
+    height: 32px;
+    min-height: 32px;
+    background-color: #131E21;
+    color: #8A9698;
+    font-family: $font-fira;
+    font-size: 12px;
+    font-weight: 500;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    text-align: center;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+
+.announcementAccent {
+  color: #E27344;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+// 2. Main Sticky Header (72px on desktop, 56px on mobile)
+.header {
+  position: sticky;
+  top: 0;
+  z-index: $z-header; // 100
+  width: 100%;
+  height: 72px;
+  min-height: 56px;
+  background-color: rgba(11, 20, 22, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: $font-fira;
+  transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+
+  @media (max-width: 767px) {
+    height: $mobile-header-height; // 56px
+  }
+
+  &.scrolled {
+    background-color: rgba(11, 20, 22, 0.96);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+  }
+}
+
+// 1. Stop Overlapping: Three-part CSS grid: logo | navigation | actions
+// grid-template-columns: auto minmax(0, 1fr) auto with a gap of at least 32px.
+// Container aligned to the same width as the page: 1120px
+.inner {
+  max-width: $max-width-site; // 1120px
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 32px; // at least 32px gap
+  align-items: center;
+
+  @media (max-width: 767px) {
+    padding: 0 $mobile-pad; // 16px
+    gap: 16px;
+  }
+}
+
+// Column 1: Logo (Left, single line, does not shrink or wrap)
+.logoButton {
+  @include button-reset;
+  grid-column: 1;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid #E27344;
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+}
+
+.logoText {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+  transition: color 0.15s ease;
+
+  @media (max-width: 767px) {
+    font-size: 18px;
+  }
+
+  &:hover {
+    color: #F4EFE6;
+  }
+}
+
+// Column 2: Center Navigation
+// Center the navigation in its own column, keep every link on one line with white-space: nowrap.
+// Equal spacing between links: 28px.
+.navCenter {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.navCenterHidden {
+  display: none !important;
+}
+
+.navCenterVisible {
+  display: flex !important;
+}
+
+// Nav links: muted grey (#8A9698), white on hover, white with 2px accent underline for current page.
+.navLink {
+  @include button-reset;
+  position: relative;
+  font-size: 15px;
+  font-weight: 500;
+  color: #8A9698;
+  white-space: nowrap;
+  padding: 8px 0;
+  cursor: pointer;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-transform: none;
+  transition: color 180ms ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: transparent;
+    transition: background-color 180ms ease;
+  }
+
+  &:hover {
+    color: #FFFFFF;
+  }
+
+  &[aria-current="page"] {
+    color: #FFFFFF;
+    font-weight: 600;
+
+    &::after {
+      background-color: #E27344;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid #E27344;
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+}
+
+// Column 3: Actions Right
+// Keep the language switcher and cart together on the right with 12px between them.
+.actionsRight {
+  grid-column: 3;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+// Language switcher wrapper in header
+.desktopLangSwitcher {
+  display: none !important;
+
+  @include respond-to('md') {
+    display: inline-flex !important;
+    align-items: center;
+    flex-shrink: 0;
+  }
+}
+
+// Track order button for desktop
+.desktopTrackBtn {
+  display: none !important;
+
+  @include respond-to('md') {
+    @include button-reset;
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0 14px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 180ms ease;
+
+    &:hover {
+      color: #E27344;
+      border-color: rgba(226, 115, 68, 0.4);
+      background-color: rgba(226, 115, 68, 0.08);
+    }
+
+    &.trackActive {
+      border-color: #E27344;
+      color: #E27344;
+      background-color: rgba(226, 115, 68, 0.12);
+    }
+
+    &:focus-visible {
+      outline: 2px solid #E27344;
+      outline-offset: 2px;
+    }
+  }
+}
+
+// In-progress accent dot on desktop Track button
+.desktopTrackAccentDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #E27344;
+  box-shadow: 0 0 6px rgba(226, 115, 68, 0.85);
+  flex-shrink: 0;
+  margin-left: 2px;
+  animation: accentDotPulse 2s infinite ease-in-out;
+}
+
+// Mobile Track Icon (44px transparent icon button, matching mobileCartIconBtn)
+.mobileTrackIconBtn {
+  @include button-reset;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: #FFFFFF;
+  background-color: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.15s ease, background-color 0.15s ease;
+
+  &:hover {
+    color: #E27344;
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  &.trackActive {
+    color: #E27344;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #E27344;
+    outline-offset: 2px;
+  }
+
+  @include respond-to('md') {
+    display: none !important;
+  }
+}
+
+// In-progress accent dot on mobile track icon button (top-right badge)
+.mobileTrackAccentDot {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #E27344;
+  box-shadow: 0 0 0 2px #0B1416, 0 0 8px rgba(226, 115, 68, 0.85);
+  animation: accentDotPulse 2s infinite ease-in-out;
+}
+
+@keyframes accentDotPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.22);
+    opacity: 0.85;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desktopTrackAccentDot,
+  .mobileTrackAccentDot {
+    animation: none;
+  }
+}
+
+// Cart button: icon and "კალათა" on one line, 44px high, without wrapping.
+.desktopCartButton {
+  display: none;
+
+  @include respond-to('md') {
+    @include button-reset;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 8px;
+    background-color: #E27344;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color 180ms ease, transform 150ms ease;
+
+    &:hover {
+      background-color: #F28555;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    &:focus-visible {
+      outline: 2px solid #FFFFFF;
+      outline-offset: 3px;
+    }
+  }
+}
+
+.cartBagIcon {
+  flex-shrink: 0;
+}
+
+.cartLabel {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.cartBadge {
+  background-color: rgba(0, 0, 0, 0.28);
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.cartTotal {
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0.95;
+}
+
+// Mobile 44px Transparent Icon Button (Cart)
+.mobileCartIconBtn {
+  @include button-reset;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: #FFFFFF;
+  background-color: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.15s ease, background-color 0.15s ease;
+
+  &:hover {
+    color: #E27344;
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #E27344;
+    outline-offset: 2px;
+  }
+
+  @include respond-to('md') {
+    display: none;
+  }
+}
+
+.mobileCartBadge {
+  position: absolute;
+  top: 6px;
+  right: 5px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background-color: #E27344;
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+// Mobile/Responsive Menu Toggle: 44px transparent icon-button style
+.mobileMenuToggle {
+  @include button-reset;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  background-color: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.15s ease, background-color 0.15s ease;
+
+  &:hover {
+    color: #E27344;
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #E27344;
+    outline-offset: 2px;
+  }
+}
+
+// Hidden measurement element to accurately gauge natural links width
+.measureNav {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  top: -9999px;
+  left: -9999px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  white-space: nowrap;
+}
+
+.measureItem {
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  line-height: 1.4;
+  letter-spacing: 0;
+  padding: 8px 0;
+}
+
+// Pulse animation when item added
+@keyframes badgePulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.35);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.badgePulsing {
+  animation: badgePulse 350ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badgePulsing {
+    animation: none;
+  }
+}

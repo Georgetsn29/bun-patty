@@ -1,0 +1,681 @@
+@use '@/src/styles/abstracts' as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: $z-modal; // 400 (well above sticky header at 100)
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+
+  @include respond-to('md') {
+    align-items: center;
+    padding: $space-6;
+    overflow-y: auto;
+  }
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(5, 10, 11, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: opacity 0.25s ease;
+}
+
+// Mobile: Full-Screen Bottom Sheet (slides up, fills 100dvh)
+// Desktop: Centered modal card (max-width 44rem, 14px radius)
+.dialog {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
+  background-color: #0E181B;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 0;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: $font-fira;
+
+  @include respond-to('md') {
+    height: auto;
+    max-height: 90vh;
+    max-width: 44rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    margin: auto;
+  }
+}
+
+// Centered grab handle for swipe down affordance on mobile
+.dragIndicator {
+  width: 36px;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  margin: 8px auto 0;
+  flex-shrink: 0;
+
+  @include respond-to('md') {
+    display: none;
+  }
+}
+
+.scrollArea {
+  flex: 1;
+  padding: 12px 16px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+  }
+
+  @include respond-to('md') {
+    padding: 20px;
+    gap: 20px;
+  }
+}
+
+// 1. Full-width Image Slot at top
+.imageSlot {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: $mobile-radius; // 12px
+  overflow: hidden;
+  background-color: #070D0E;
+  position: relative;
+  flex-shrink: 0;
+
+  @include respond-to('md') {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+.modalImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.modalBadge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #E27344;
+  color: #FFFFFF;
+  font-size: 0.725rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 6px;
+  z-index: 2;
+  letter-spacing: 0.03em;
+}
+
+// 44px round close button over top-right of image on dark translucent background
+.imageCloseButton {
+  @include button-reset;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: rgba(11, 20, 22, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    background-color: rgba(11, 20, 22, 0.95);
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #E27344;
+    outline-offset: 2px;
+  }
+}
+
+// 2. Item Name and Price Header
+.headerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.itemTitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: -0.01em;
+  margin: 0;
+  line-height: 1.2;
+
+  @include respond-to('md') {
+    font-size: 1.65rem;
+  }
+}
+
+.itemPrice {
+  font-size: 20px;
+  font-weight: 800;
+  color: #FFFFFF;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+// 3. Small line with prep time and calories (NO separate Base price line)
+.prepCalLine {
+  margin: 0;
+  font-size: 13px;
+  color: #8A9698;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.prepDot {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+// 4. Description with 3-line clamp and "Read more / Read less" toggle
+.descWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.description {
+  font-size: 14px;
+  color: #A2ADB0;
+  line-height: 1.55;
+  margin: 0;
+
+  &.clamped {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+.readMoreBtn {
+  @include button-reset;
+  font-size: 13px;
+  font-weight: 700;
+  color: #E27344;
+  cursor: pointer;
+  padding: 2px 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.metaBox {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.metaRow {
+  color: #8A9698;
+}
+
+// Customization Section Blocks
+.sectionBlock {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sectionHeading {
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.sectionSubNote {
+  font-size: 12px;
+  color: #8A9698;
+}
+
+// 5. Included Ingredients Interactive Rows
+.ingredientList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ingredientRow {
+  @include button-reset;
+  width: 100%;
+  min-height: $mobile-control-min-height; // 48px
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: $mobile-radius; // 12px
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: rgba(255, 255, 255, 0.03);
+  color: #FFFFFF;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &:focus-visible {
+    outline: 2px solid #E27344;
+    outline-offset: 2px;
+  }
+
+  &.selectedRow {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.08);
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.07);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+  }
+
+  &.removedRow {
+    background-color: rgba(244, 169, 168, 0.08);
+    border-color: rgba(244, 169, 168, 0.22);
+
+    &:hover {
+      background-color: rgba(244, 169, 168, 0.13);
+      border-color: rgba(244, 169, 168, 0.32);
+    }
+  }
+
+  &.requiredRow {
+    background-color: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.05);
+    cursor: default;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+  }
+}
+
+.ingredientLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ingredientName {
+  font-size: 15px;
+  font-weight: 600;
+  color: #FFFFFF;
+  transition: color 0.15s ease;
+
+  &.struckThrough {
+    text-decoration: line-through;
+    color: #8A9698;
+  }
+}
+
+.requiredBadge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #A8E6C1;
+  background-color: rgba(168, 230, 193, 0.12);
+  border: 1px solid rgba(168, 230, 193, 0.25);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+// Required Single Choice Group
+.choiceGroupList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.choiceRow {
+  @include button-reset;
+  width: 100%;
+  min-height: $mobile-control-min-height; // 48px
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: $mobile-radius; // 12px
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: rgba(255, 255, 255, 0.03);
+  color: #FFFFFF;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.16);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #E27344;
+    outline-offset: 2px;
+  }
+
+  &.choiceSelected {
+    border-color: #E27344;
+    background-color: rgba(226, 115, 68, 0.08);
+  }
+}
+
+.choiceLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.flavorColorDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+}
+
+.choiceName {
+  font-size: 15px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.choicePriceAdj {
+  font-size: 13px;
+  font-weight: 600;
+  color: #E27344;
+  margin-left: 4px;
+}
+
+.radioCircle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+
+  &.radioSelected {
+    border-color: #E27344;
+  }
+}
+
+.radioInnerDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #E27344;
+}
+
+// 6. Extras with Minus/Plus Stepper
+.extrasList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.extraRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: $mobile-control-min-height; // 48px
+  padding: 8px 12px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: $mobile-radius;
+  transition: all 0.15s ease;
+
+  &.hasExtra {
+    border-color: rgba(226, 115, 68, 0.4);
+    background-color: rgba(226, 115, 68, 0.06);
+  }
+}
+
+.extraInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.extraName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.extraPrice {
+  font-size: 13px;
+  color: #8A9698;
+  font-weight: 500;
+}
+
+.extraStepper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #131E21;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.stepperBtn {
+  @include button-reset;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  &:disabled {
+    color: rgba(255, 255, 255, 0.2);
+    cursor: not-allowed;
+  }
+}
+
+.stepperQty {
+  min-width: 26px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #FFFFFF;
+
+  &.active {
+    color: #E27344;
+  }
+}
+
+// 7. Kitchen Note
+.instructionsTextarea {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: $font-fira;
+  font-size: 14px;
+  background-color: #131E21;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #FFFFFF;
+  resize: vertical;
+
+  &:focus {
+    outline: none;
+    border-color: #E27344;
+  }
+
+  &::placeholder {
+    color: #616F71;
+  }
+}
+
+// Sticky Bottom Bar: Compact stepper + full-width "Add · 49.90 ₾" on ONE single line
+.bottomBar {
+  flex-shrink: 0;
+  padding: 12px 16px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #0B1416;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  @include respond-to('md') {
+    padding: 16px 20px;
+  }
+}
+
+.mainQtyStepper {
+  display: flex;
+  align-items: center;
+  background-color: #131E21;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 2px;
+  height: 48px;
+  box-sizing: border-box;
+}
+
+.mainQtyBtn {
+  @include button-reset;
+  width: 36px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+  }
+}
+
+.mainQtyDisplay {
+  min-width: 24px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.submitBtn {
+  @include button-reset;
+  flex: 1;
+  height: 48px;
+  min-height: 48px;
+  padding: 0 16px;
+  font-size: 15px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 8px;
+  background-color: #E27344;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: #F28555;
+  }
+
+  &.saved {
+    background-color: #16A34A;
+  }
+
+  &.disabledBtn {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.4) !important;
+    cursor: not-allowed;
+    box-shadow: none;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid #FFFFFF;
+    outline-offset: 2px;
+  }
+}

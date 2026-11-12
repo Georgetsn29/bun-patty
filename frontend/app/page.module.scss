@@ -1,0 +1,20 @@
+@use '@/src/styles/abstracts' as *;
+
+.pageWrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #0B1416;
+  color: #FFFFFF;
+  font-family: $font-fira;
+
+  ::selection {
+    background-color: #E27344;
+    color: #FFFFFF;
+  }
+}
+
+.mainContent {
+  flex: 1 1 0%;
+  background-color: #0B1416;
+}
