@@ -1,4 +1,4 @@
-# Peach & Patty — Photography Slots
+# BUN & PATTY — Photography Slots
 
 Drop your photography files into this folder (`/public/images/`) matching the file names below. The site automatically displays them with 35mm natural daylight framing and subtle hover scale:
 
@@ -8,7 +8,7 @@ Drop your photography files into this folder (`/public/images/`) matching the fi
 - `about-butcher-block.jpg` — Butcher cutting fresh chuck primal on end-grain maple wood block with carbon knife.
 
 ### Signature Burgers & Sides
-- `peach-blossom-smash.jpg` — Cheeseburger close-up with peach bacon jam dripping down lacy crust.
+- `menu/bun-patty-smash.jpg` — Double smash burger with smoky onion bacon jam, Havarti, and arugula.
 - `classic-double.jpg` — Two-handed grip on classic double cheeseburger with melted cheddar corners.
 - `jalapeno-hot-honey.jpg` — Burger with blistered jalapeño rings and amber hot honey shine.
 - `truffle-mushroom-burger.jpg` — Dark roasted wild mushrooms and melted alpine cheese over crusty beef.
@@ -22,13 +22,12 @@ Drop your photography files into this folder (`/public/images/`) matching the fi
 - `sweet-potato-waffles.jpg` — Deep orange waffle sweet potato fries with whipped butter dip.
 
 ### Drinks & Custard Shakes
-- `peach-ceylon-tea.jpg` — Tall ribbed highball glass with amber tea, ice cubes, and mint sprig.
+- `menu/cold-steeped-lemon-ceylon-tea.jpg` — Tall ribbed glass of iced Ceylon tea with lemon wheel and thyme sprig.
 - `vanilla-shake.jpg` — Heavy glass diner tumbler filled with thick vanilla shake and cream crown.
 - `pistachio-shake.jpg` — Sage-green custard shake with crushed toasted pistachios on linen napkin.
 - `yuzu-lavender.jpg` — Misty glass of sparkling pale lemonade with lemon wheel on rim.
 - `blood-orange-soda.jpg` — Brown glass bottle of artisan blood orange soda beside condensation glass.
 - `skillet-brownie.jpg` — Black cast-iron mini skillet with dark chocolate brownie and caramel pool.
-- `peach-sundae.jpg` — Glass dessert coupe with cold custard and warm caramelized peach compote.
 - `lunch-combo.jpg` — Butcher paper tray with wrapped smash burger, crinkle fries, and cold tea.
 - `patio-feast.jpg` — Spread across wooden table: two smash burgers, loaded fries, and two drinks.
 
@@ -40,7 +39,9 @@ Drop your photography files into this folder (`/public/images/`) matching the fi
 ### Journal Dispatches
 - `journal-smash-maillard.jpg` — Stainless spatula pressing beef onto 500°F plancha with hot smoke.
 - `journal-brioche-baking.jpg` — Cooling rack of golden unseeded brioche buns freshly dusted with flour.
-- `journal-peach-jam-pot.jpg` — Copper pot simmering dark amber peach jam with wooden spoon resting.
+- `journal-bacon-jam-pot.jpg` — Dark ramekin of smoky onion and bourbon bacon jam.
 - `journal-custard-spindle.jpg` — Vintage green Hamilton Beach milkshake mixer spinning stainless steel malt cup.
 - `journal-compost-prep.jpg` — Prep cook slicing fresh Idaho russets beside unbleached brown paper sacks.
 - `journal-beverage-pairing.jpg` — Cheeseburger beside frosted glass of pale amber cold-steeped iced tea.
+
+> Menu product photos live in `/public/images/menu/` and are referenced by `imageSlot` in `data/menu.ts`.

@@ -98,7 +98,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           const extraText =
             language === 'ka'
               ? `დამატება: ${extraName}${count > 1 ? ` x${count}` : ''}`
-              : `Extra ${extraName}${count > 1 ? ` x${count}` : ''}`;
+              : `${/^extra\b/i.test(extraName) ? extraName : `Extra ${extraName}`}${count > 1 ? ` x${count}` : ''}`;
           lines.push(extraText);
         }
       });

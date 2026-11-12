@@ -1,5 +1,43 @@
 import { ORDER_TRACKING_CONFIG } from './orderConfig';
 import { useSyncExternalStore, useMemo } from 'react';
+import { getMenuItemById, migrateCustomization } from '@/data/menu';
+
+// -----------------------------------------------------------------------------
+// LEGACY MIGRATION (orders saved before the BUN & PATTY rename)
+// Old orders used the "PP-" number prefix, the 'pp_orders_v1' storage key, and
+// a few older item/ingredient IDs. They are rewritten to the current format on read.
+// -----------------------------------------------------------------------------
+const LEGACY_ORDERS_STORAGE_KEY = 'pp_orders_v1';
+const LEGACY_ORDER_PREFIX = /^PP-/;
+const ORDER_PREFIX = 'BP-';
+
+/** Normalizes user input or stored order numbers to the current "BP-1234" format. */
+export function normalizeOrderNumber(orderNumber: string): string {
+  return orderNumber.trim().toUpperCase().replace(/^#/, '').replace(LEGACY_ORDER_PREFIX, ORDER_PREFIX);
+}
+
+function migrateOrderRecord(order: OrderRecord): OrderRecord {
+  return {
+    ...order,
+    orderNumber: normalizeOrderNumber(order.orderNumber),
+    items: (order.items || []).map((it) => {
+      const menuItem = getMenuItemById(it.itemId);
+      if (!menuItem) return it;
+      const customization =
+        migrateCustomization(menuItem, it.customization) ?? {
+          ...it.customization,
+          selectedChoiceId: undefined,
+        };
+      return { ...it, itemId: menuItem.id, customization };
+    }),
+  };
+}
+
+function parseSavedOrders(raw: string | null): OrderRecord[] {
+  if (!raw) return [];
+  const parsed = JSON.parse(raw);
+  return Array.isArray(parsed) ? parsed.map(migrateOrderRecord) : [];
+}
 
 function subscribeToLiveClock(callback: () => void) {
   let intervalId: NodeJS.Timeout | null = null;
@@ -74,7 +112,7 @@ export interface OrderItemCustomization {
 }
 
 export interface OrderItemRecord {
-  itemId: string; // Stable ID, e.g. "peach-blossom-smash"
+  itemId: string; // Stable ID, e.g. "bun-patty-smash"
   quantity: number;
   unitPrice: number;
   customization?: OrderItemCustomization;
@@ -86,7 +124,7 @@ export interface StatusHistoryEntry {
 }
 
 export interface OrderRecord {
-  orderNumber: string; // Short readable ID, e.g. "PP-4827"
+  orderNumber: string; // Short readable ID, e.g. "BP-4827"
   createdAt: number; // Timestamp in milliseconds
   startTime?: number; // Starting timestamp (ms)
   finishTime?: number; // Target completion timestamp (ms)
@@ -148,7 +186,7 @@ export interface OrderProgressDetails {
  */
 export function generateOrderNumber(): string {
   const digits = Math.floor(1000 + Math.random() * 9000);
-  return `BP-${digits}`;
+  return `${ORDER_PREFIX}${digits}`;
 }
 
 const savedOrdersListeners = new Set<() => void>();
@@ -189,7 +227,7 @@ function getSavedOrdersSnapshot(): OrderRecord[] {
   try {
     let raw = localStorage.getItem(ORDER_TRACKING_CONFIG.storageKey);
     if (!raw) {
-      const legacyRaw = localStorage.getItem('pp_orders_v1');
+      const legacyRaw = localStorage.getItem(LEGACY_ORDERS_STORAGE_KEY);
       if (legacyRaw) {
         raw = legacyRaw;
         try {
@@ -203,7 +241,7 @@ function getSavedOrdersSnapshot(): OrderRecord[] {
       return cachedOrders;
     }
     cachedRawOrders = raw;
-    cachedOrders = raw ? JSON.parse(raw) : [];
+    cachedOrders = parseSavedOrders(raw);
     return cachedOrders;
   } catch {
     return [];
@@ -230,7 +268,7 @@ export function getSavedOrders(): OrderRecord[] {
   try {
     let raw = localStorage.getItem(ORDER_TRACKING_CONFIG.storageKey);
     if (!raw) {
-      const legacyRaw = localStorage.getItem('pp_orders_v1');
+      const legacyRaw = localStorage.getItem(LEGACY_ORDERS_STORAGE_KEY);
       if (legacyRaw) {
         raw = legacyRaw;
         try {
@@ -240,12 +278,7 @@ export function getSavedOrders(): OrderRecord[] {
         }
       }
     }
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) {
-      return parsed;
-    }
-    return [];
+    return parseSavedOrders(raw);
   } catch (err) {
     console.error('Failed to parse saved orders from localStorage:', err);
     return [];
@@ -275,14 +308,9 @@ export function saveOrder(order: OrderRecord): void {
  */
 export function getOrderByNumber(orderNumber: string): OrderRecord | null {
   if (!orderNumber) return null;
-  const cleanQuery = orderNumber.trim().toUpperCase().replace(/^#/, '');
+  const cleanQuery = normalizeOrderNumber(orderNumber);
   const orders = getSavedOrders();
-  const match = orders.find(
-    (o) =>
-      o.orderNumber.toUpperCase() === cleanQuery ||
-      o.orderNumber.toUpperCase().replace(/^PP-/, 'BP-') === cleanQuery ||
-      o.orderNumber.toUpperCase().replace(/^BP-/, 'PP-') === cleanQuery
-  );
+  const match = orders.find((o) => normalizeOrderNumber(o.orderNumber) === cleanQuery);
   return match || null;
 }
 
@@ -291,15 +319,12 @@ export function getOrderByNumber(orderNumber: string): OrderRecord | null {
  */
 export function findOrder(queryOrderNumber: string, queryPhone?: string): OrderRecord | null {
   if (!queryOrderNumber) return null;
-  const cleanNum = queryOrderNumber.trim().toUpperCase().replace(/^#/, '');
+  const cleanNum = normalizeOrderNumber(queryOrderNumber);
   const cleanPhone = queryPhone ? queryPhone.replace(/\D/g, '') : '';
 
   const orders = getSavedOrders();
   for (const o of orders) {
-    const matchesNum =
-      o.orderNumber.toUpperCase() === cleanNum ||
-      o.orderNumber.toUpperCase().replace(/^PP-/, 'BP-') === cleanNum ||
-      o.orderNumber.toUpperCase().replace(/^BP-/, 'PP-') === cleanNum;
+    const matchesNum = normalizeOrderNumber(o.orderNumber) === cleanNum;
     if (matchesNum) {
       if (!cleanPhone) {
         return o;
@@ -547,7 +572,8 @@ export function getDismissedHomeOrderNumbers(): string[] {
   if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(ORDER_TRACKING_CONFIG.dismissedOrdersKey);
-    return raw ? JSON.parse(raw) : [];
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.map((n: string) => normalizeOrderNumber(String(n))) : [];
   } catch {
     return [];
   }

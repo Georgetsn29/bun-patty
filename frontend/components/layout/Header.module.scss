@@ -203,7 +203,8 @@
   }
 }
 
-// Track order button for desktop
+// Track order button for tablet/desktop: icon-only 44px square in every language
+// (label is exposed via aria-label and the title tooltip)
 .desktopTrackBtn {
   display: none !important;
 
@@ -211,17 +212,17 @@
     @include button-reset;
     display: inline-flex !important;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    position: relative;
+    width: 44px;
     height: 44px;
+    min-width: 44px;
     min-height: 44px;
-    padding: 0 14px;
+    padding: 0;
     border-radius: 8px;
     background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: none;
     color: #FFFFFF;
-    font-size: 13px;
-    font-weight: 600;
-    white-space: nowrap;
     cursor: pointer;
     flex-shrink: 0;
     transition: all 180ms ease;
@@ -245,15 +246,16 @@
   }
 }
 
-// In-progress accent dot on desktop Track button
+// In-progress accent dot on desktop Track button (top-right badge, like mobile)
 .desktopTrackAccentDot {
-  width: 6px;
-  height: 6px;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background-color: #E27344;
-  box-shadow: 0 0 6px rgba(226, 115, 68, 0.85);
-  flex-shrink: 0;
-  margin-left: 2px;
+  box-shadow: 0 0 0 2px #0B1416, 0 0 8px rgba(226, 115, 68, 0.85);
   animation: accentDotPulse 2s infinite ease-in-out;
 }
 

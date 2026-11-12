@@ -799,6 +799,7 @@
   border-radius: $mobile-radius;
   cursor: pointer;
   transition: background-color 150ms ease;
+  text-align: center;
 
   &:hover {
     background-color: #F28555;

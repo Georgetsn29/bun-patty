@@ -22,7 +22,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenProductMod
   const { addItem } = useCart();
   const { t, getItemTranslation, getCategoryName, language } = useLanguage();
 
-  const signatureItem = MENU_ITEMS.find((i) => i.id === 'bun-patty-smash' || i.id === 'peach-blossom-smash') || MENU_ITEMS[0];
+  const signatureItem = MENU_ITEMS.find((i) => i.id === 'bun-patty-smash') || MENU_ITEMS[0];
   const secondaryItems = MENU_ITEMS.filter(
     (i) => i.id === 'golden-double-classic' || i.id === 'parmesan-truffle-fries' || i.id === 'roasted-vanilla-bean-shake'
   );

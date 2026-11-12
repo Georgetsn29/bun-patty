@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { MenuItem } from '@/data/menu';
+import { MenuItem, getCalorieRange } from '@/data/menu';
 import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
 import styles from './ProductCard.module.scss';
@@ -19,6 +19,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item, onOpenDetails })
   const translated = getItemTranslation(item.id);
   const displayName = translated.name || item.name;
   const displayBadge = translated.badge || item.badge;
+
+  const calorieRange = getCalorieRange(item);
+  const caloriesText =
+    calorieRange.min === calorieRange.max
+      ? `${calorieRange.min} ${t('common.calories')}`
+      : `${calorieRange.min}–${calorieRange.max} ${t('common.calories')}`;
 
   const hasUnselectedRequiredChoice = Boolean(
     item.requiredChoice && !item.requiredChoice.defaultOptionId
@@ -83,6 +89,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item, onOpenDetails })
         <p className={styles.shortDescription}>
           {translated.description || item.description}
         </p>
+
+        {/* Calories only (full nutrition is shown in the item popup) */}
+        <span className={styles.calories}>{caloriesText}</span>
 
         {/* Desktop Customize Link */}
         {isCustomizable && (

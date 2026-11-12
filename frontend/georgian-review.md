@@ -1,6 +1,6 @@
 # Georgian Culinary & Localization Review (ქართული ლოკალიზაციის მიმოხილვა)
 
-This document reviews the Georgian culinary translations, tone of voice, formatting choices, and localization architecture implemented across the **Peach & Patty** web application.
+This document reviews the Georgian culinary translations, tone of voice, formatting choices, and localization architecture implemented across the **BUN & PATTY** web application.
 
 ---
 
@@ -70,7 +70,7 @@ This document reviews the Georgian culinary translations, tone of voice, formatt
 
 ## 5. Bilingual Architecture & Cart Persistence
 
-- **State Persistence**: The guest's language preference (`ka` or `en`) is stored in `localStorage` under `peach_patty_lang_preference`.
+- **State Persistence**: The guest's language preference (`ka` or `en`) is stored in `localStorage` under `bun_patty_lang_preference`.
 - **Default Language**: Georgian (`ka`) is set as the default on first arrival.
 - **Dynamic Cart Re-rendering**: Cart items and customizations store stable item and ingredient IDs (`removedIngredientIds`, `extraQuantities`). When toggling between `ქარ` and `EN`, the cart drawer and checkout re-render instantly in the active language without any page reload or cart loss.
 - **Bilingual Search**: Guests can search menu offerings in Georgian (e.g., „ბეკონი“, „ჩიზქეიქი“, „ფრი“) or English („bacon“, „cheesecake“, „fries“) with matching across both language dictionaries.

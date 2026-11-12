@@ -458,6 +458,8 @@ export const ShopView: React.FC<ShopViewProps> = ({ onOpenProductModal }) => {
             if (!items || items.length === 0) return null;
 
             const sectionId = `section-${category.toLowerCase().replace(/\s+/g, '-')}`;
+            const mainItems = items.filter((item) => item.subgroup !== 'coffee');
+            const coffeeItems = items.filter((item) => item.subgroup === 'coffee');
 
             return (
               <section
@@ -469,16 +471,33 @@ export const ShopView: React.FC<ShopViewProps> = ({ onOpenProductModal }) => {
                 {/* Category Title */}
                 <h2 className={styles.categoryTitle}>{getCategoryName(category)}</h2>
 
-                {/* Unified Item Grid for ALL categories */}
-                <div className={styles.productGrid}>
-                  {items.map((item) => (
-                    <ProductCard
-                      key={item.id}
-                      item={item}
-                      onOpenDetails={onOpenProductModal}
-                    />
-                  ))}
-                </div>
+                {/* Unified Item Grid for ALL categories (subgroups such as Coffee follow under their own subheading) */}
+                {mainItems.length > 0 && (
+                  <div className={styles.productGrid}>
+                    {mainItems.map((item) => (
+                      <ProductCard
+                        key={item.id}
+                        item={item}
+                        onOpenDetails={onOpenProductModal}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {coffeeItems.length > 0 && (
+                  <div className={styles.subgroup} id={`${sectionId}-coffee`}>
+                    <h3 className={styles.subgroupTitle}>{t('shop.coffeeSubheading')}</h3>
+                    <div className={styles.productGrid}>
+                      {coffeeItems.map((item) => (
+                        <ProductCard
+                          key={item.id}
+                          item={item}
+                          onOpenDetails={onOpenProductModal}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
               </section>
             );
           })

@@ -166,6 +166,15 @@
     "chooseOptionFirst": "Choose an option first",
     "requiredChoice": "Required Choice"
   },
+  "nutrition": {
+    "calories": "Calories",
+    "netCarbs": "Net Carbs",
+    "fat": "Fat",
+    "protein": "Protein",
+    "grams": "g",
+    "approximateNote": "Approximate values per serving",
+    "chooseOptionNote": "Choose an option to see nutrition. Approximate values per serving"
+  },
   "cartDrawer": {
     "title": "Your Order Slip",
     "emptyTitle": "Your order slip is empty",
@@ -282,14 +291,7 @@
   "items": {
     "bun-patty-smash": {
       "name": "The Bun & Patty Smash",
-      "description": "Double 90 g dry-aged patties, slow-cooked smoky bourbon bacon jam, melted Havarti, and wild arugula on griddled milk brioche.",
-      "longDescription": "Our beloved house signature burger combining savory smoke and deep caramelized onion sweetness. Two 90 g beef patties smashed on 260°C carbon steel for maximum crust, layered with melted Danish Havarti, peppery wild arugula, and our slow-simmered smoky onion and bourbon bacon jam on butter-griddled milk brioche.",
-      "beefWeight": "180 g beef (2 × 90 g patties) [Placeholder]",
-      "allergens": "Gluten, Dairy, Eggs [Placeholder]"
-    },
-    "peach-blossom-smash": {
-      "name": "The Bun & Patty Smash",
-      "description": "Double 90 g dry-aged patties, slow-cooked smoky bourbon bacon jam, melted Havarti, and wild arugula on griddled milk brioche.",
+      "description": "Double 90 g dry-aged patties, slow-cooked smoky onion and bourbon bacon jam, melted Havarti, and wild arugula on griddled milk brioche.",
       "longDescription": "Our beloved house signature burger combining savory smoke and deep caramelized onion sweetness. Two 90 g beef patties smashed on 260°C carbon steel for maximum crust, layered with melted Danish Havarti, peppery wild arugula, and our slow-simmered smoky onion and bourbon bacon jam on butter-griddled milk brioche.",
       "beefWeight": "180 g beef (2 × 90 g patties) [Placeholder]",
       "allergens": "Gluten, Dairy, Eggs [Placeholder]"
@@ -374,21 +376,15 @@
     },
     "bowl-mix": {
       "name": "Bowl Mix",
-      "description": "Loaded bowl of crispy fries, chopped 90 g smashed beef patty, crispy bacon, shredded iceberg, hot cheese sauce, BBQ sauce, and grated parmesan.",
-      "longDescription": "The ultimate plancha comfort bowl: hot crispy golden fries topped with a freshly chopped 90 g smashed beef patty, crispy smoked bacon pieces, shredded crunchy iceberg lettuce, rich hot cheddar cheese sauce, smoky BBQ sauce, and a generous dusting of 24-month aged parmesan.",
-      "allergens": "Gluten, Dairy [Placeholder]"
+      "description": "A loaded bowl of crispy fries topped with a chopped 90 g smashed beef patty, crispy bacon, shredded iceberg, hot cheese sauce, BBQ sauce, and grated parmesan.",
+      "longDescription": "Our loaded plancha comfort bowl: a generous base of hot, crispy golden fries topped with a freshly chopped 90 g smashed beef patty, crispy smoked bacon pieces, shredded crunchy iceberg lettuce, hot cheddar cheese sauce, smoky BBQ sauce, and a dusting of grated parmesan.",
+      "allergens": "Dairy, Mustard (BBQ sauce) [Placeholder]",
+      "beefWeight": "90 g beef (1 chopped patty) [Placeholder]"
     },
     "smoky-bourbon-bacon-jam": {
       "name": "Smoky Bourbon Bacon Jam",
-      "description": "House-made savory jam of slow-cooked caramelized onions, smoked bacon bits, bourbon, shallots, and dark molasses.",
-      "longDescription": "Our signature condiment cooked low and slow for six hours. Caramelized sweet onions break down naturally with shallots, diced smoked bacon, and a splash of bourbon into an amber, deeply savory spread.",
-      "volume": "80 ml jar",
-      "allergens": "None [Placeholder]"
-    },
-    "sauce-peach-bourbon-jam": {
-      "name": "Smoky Bourbon Bacon Jam",
-      "description": "House-made savory jam of slow-cooked caramelized onions, smoked bacon bits, bourbon, shallots, and dark molasses.",
-      "longDescription": "Our signature condiment cooked low and slow for six hours. Caramelized sweet onions break down naturally with shallots, diced smoked bacon, and a splash of bourbon into an amber, deeply savory spread.",
+      "description": "House-made savory jam of slow-cooked caramelized onions, smoked bacon, bourbon, shallots, and dark molasses.",
+      "longDescription": "Our signature condiment cooked low and slow for six hours. Caramelized onions break down with shallots, diced smoked bacon, and a splash of bourbon into an amber, deeply savory spread.",
       "volume": "80 ml jar",
       "allergens": "None [Placeholder]"
     },
@@ -415,8 +411,8 @@
     },
     "cheese-sauce": {
       "name": "Cheese Sauce",
-      "description": "Smooth hot cheddar cheese sauce served in a dipping cup.",
-      "longDescription": "A 80 ml cup of velvety, piping-hot cheddar cheese sauce. Crafted with sharp aged cheddar and cream, perfect for dipping fries, onion rings, or burger edges.",
+      "description": "A small cup of smooth, hot cheddar cheese sauce for dipping.",
+      "longDescription": "A small cup of smooth, velvety hot cheddar cheese sauce, made for dipping fries, onion rings, or the crispy edges of your burger.",
       "volume": "80 ml cup",
       "allergens": "Dairy [Placeholder]"
     },
@@ -441,14 +437,7 @@
     "cold-steeped-lemon-ceylon-tea": {
       "name": "Cold-Steeped Lemon Ceylon Tea",
       "description": "18-hour cold brew Ceylon black tea, fresh lemon juice, and crushed lemon thyme over hand-cut ice.",
-      "longDescription": "We steep high-grown single-origin Ceylon black tea leaves in cold filtered water for 18 hours to extract clean floral tannins without bitterness. Shaken with fresh lemon juice and poured over hand-cut ice with fresh lemon thyme.",
-      "volume": "400 ml glass",
-      "allergens": "None [Placeholder]"
-    },
-    "peach-blossom-iced-tea": {
-      "name": "Cold-Steeped Lemon Ceylon Tea",
-      "description": "18-hour cold brew Ceylon black tea, fresh lemon juice, and crushed lemon thyme over hand-cut ice.",
-      "longDescription": "We steep high-grown single-origin Ceylon black tea leaves in cold filtered water for 18 hours to extract clean floral tannins without bitterness. Shaken with fresh lemon juice and poured over hand-cut ice with fresh lemon thyme.",
+      "longDescription": "We steep high-grown single-origin Ceylon black tea leaves in cold filtered water for 18 hours to extract clean floral tannins without bitterness. Shaken with fresh lemon juice and a touch of honey, then poured over hand-cut ice with fresh lemon thyme.",
       "volume": "400 ml glass",
       "allergens": "None [Placeholder]"
     },
@@ -473,20 +462,6 @@
       "volume": "330 ml can",
       "allergens": "None [Placeholder]"
     },
-    "pepsi-zero-sugar": {
-      "name": "Pepsi Zero Sugar",
-      "description": "Chilled 330 ml can, zero sugar.",
-      "longDescription": "Ice-cold 330 ml can of Pepsi Zero Sugar with bold cola taste and maximum refreshment, served chilled from our beverage coolers.",
-      "volume": "330 ml can",
-      "allergens": "None [Placeholder]"
-    },
-    "coca-cola-zero-sugar": {
-      "name": "Coca-Cola Zero Sugar",
-      "description": "Chilled 330 ml can, zero sugar.",
-      "longDescription": "Ice-cold 330 ml can of Coca-Cola Zero Sugar, featuring crisp, legendary taste without sugar. Served chilled.",
-      "volume": "330 ml can",
-      "allergens": "None [Placeholder]"
-    },
     "water": {
       "name": "Water",
       "description": "500 ml bottle.",
@@ -497,56 +472,63 @@
     "natural-juice": {
       "name": "Natural Juice",
       "description": "300 ml glass of freshly squeezed natural juice, with no added sugar.",
-      "longDescription": "300 ml glass of freshly squeezed natural juice, with no added sugar. Prepared fresh to order from seasonal fruit and vegetables. Choose your favorite flavor.",
+      "longDescription": "300 ml glass of freshly squeezed natural juice, with no added sugar. Prepared fresh to order from seasonal fruit. Choose your favorite flavor: orange, apple, pomegranate, pineapple, cherry, or a non-alcoholic mojito blend of fresh lime and mint.",
       "volume": "300 ml glass",
       "allergens": "None [Placeholder]"
     },
+    "pepsi-zero-sugar": {
+      "name": "Pepsi Zero Sugar",
+      "description": "Chilled 330 ml can, zero sugar.",
+      "longDescription": "Ice-cold 330 ml can of Pepsi Zero Sugar, served chilled from our beverage coolers. Served upon request with a glass tumbler of ice and a fresh slice of lemon.",
+      "volume": "330 ml can",
+      "allergens": "None (contains phenylalanine) [Placeholder]"
+    },
+    "coca-cola-zero-sugar": {
+      "name": "Coca-Cola Zero Sugar",
+      "description": "Chilled 330 ml can, zero sugar.",
+      "longDescription": "Ice-cold 330 ml can of Coca-Cola Zero Sugar, served chilled from our beverage coolers. Served upon request with a glass tumbler of ice and a fresh slice of lemon.",
+      "volume": "330 ml can",
+      "allergens": "None (contains phenylalanine) [Placeholder]"
+    },
     "espresso": {
       "name": "Espresso",
-      "description": "Rich double shot of freshly pulled specialty espresso.",
-      "longDescription": "Double shot of 100% specialty Arabica coffee extracted under 9 bars of pressure with a thick golden-hazelnut crema and balanced chocolate-caramel notes.",
-      "volume": "60 ml cup",
+      "description": "A single shot of rich espresso.",
+      "longDescription": "A single shot of rich, freshly pulled specialty espresso with a thick golden crema and balanced chocolate-caramel notes.",
+      "volume": "30 ml cup",
       "allergens": "None [Placeholder]"
     },
     "americano": {
       "name": "Americano",
-      "description": "Double shot espresso elongated with hot filtered water.",
-      "longDescription": "Fresh double espresso poured over hot filtered water, delivering a clean, aromatic coffee experience.",
+      "description": "Espresso with hot water.",
+      "longDescription": "Freshly pulled espresso lengthened with hot filtered water for a clean, aromatic cup of coffee.",
       "volume": "250 ml cup",
       "allergens": "None [Placeholder]"
     },
     "cappuccino": {
       "name": "Cappuccino",
-      "description": "Espresso crowned with velvety steamed milk and thick microfoam.",
-      "longDescription": "A classic ratio of rich double espresso, sweet steamed whole milk, and a silky, thick dome of microfoam.",
+      "description": "Espresso with steamed milk and thick milk foam.",
+      "longDescription": "Rich espresso topped with sweet steamed whole milk and a thick, silky layer of milk foam.",
       "volume": "250 ml cup",
       "allergens": "Dairy [Placeholder]"
     },
     "latte": {
       "name": "Latte",
-      "description": "Smooth double shot espresso with delicate steamed milk and light microfoam.",
-      "longDescription": "Gentle espresso balanced with a generous pour of silky textured whole milk and a whisper of milk foam on top.",
+      "description": "Espresso with plenty of steamed milk and a thin layer of foam.",
+      "longDescription": "Smooth espresso with a generous pour of silky steamed whole milk, finished with a thin layer of milk foam.",
       "volume": "300 ml cup",
       "allergens": "Dairy [Placeholder]"
     },
     "iced-coffee": {
       "name": "Iced Coffee",
-      "description": "Fresh double espresso shaken over hand-cut ice with chilled milk.",
-      "longDescription": "Double shot of specialty espresso pulled fresh over ice, lightly shaken and served chilled with cold whole milk.",
+      "description": "Chilled espresso with milk over ice.",
+      "longDescription": "Freshly pulled espresso, chilled and poured over ice with cold whole milk.",
       "volume": "350 ml glass",
       "allergens": "Dairy [Placeholder]"
     },
-    "matcha-latte": {
-      "name": "Matcha Latte",
-      "description": "Ceremonial grade Uji matcha whisked with warm textured milk.",
-      "longDescription": "First-harvest ceremonial Japanese matcha whisked with pure hot water and blended with velvety steamed milk for a rich, antioxidant-packed green tea latte.",
-      "volume": "300 ml cup",
-      "allergens": "Dairy [Placeholder]"
-    },
     "glace": {
-      "name": "Iced Coffee with Ice Cream (Glace)",
-      "description": "Double shot espresso poured over a scoop of frozen vanilla dairy custard and hand-cut ice.",
-      "longDescription": "Rich freshly pulled double espresso poured over a generous scoop of artisanal Madagascar vanilla bean frozen custard, creating a decadent, melting coffee dessert drink.",
+      "name": "Iced Coffee with Ice Cream",
+      "description": "Chilled coffee topped with a scoop of vanilla ice cream.",
+      "longDescription": "Chilled freshly brewed coffee topped with a generous scoop of vanilla ice cream that slowly melts into the glass.",
       "volume": "350 ml glass",
       "allergens": "Dairy, Eggs [Placeholder]"
     }
@@ -555,7 +537,7 @@
     "patty-primary": "First Smashed Patty (90 g)",
     "patty-second": "Second Smashed Patty (90 g)",
     "havarti-cheese": "Melted Danish Havarti",
-    "peach-bacon-jam": "Peach Bourbon Bacon Jam",
+    "bacon-jam": "Smoky Onion & Bourbon Bacon Jam",
     "wild-arugula": "Wild Arugula",
     "brioche-bun": "Toasted Milk Brioche Bun",
     "sharp-cheddar": "Aged Sharp Cheddar",
@@ -598,7 +580,7 @@
     "black-pepper": "Cracked Tellicherry Pepper",
     "onion-rings-core": "Panko Onion Rings",
     "paprika-salt": "Smoked Paprika Seasoning",
-    "crispy-fries": "Crispy Hand-Cut Fries",
+    "crispy-fries": "Crispy Fries",
     "hot-cheese-sauce": "Hot Cheddar Cheese Sauce",
     "chopped-bacon": "Chopped Crispy Bacon",
     "fresh-chives": "Fresh Chopped Chives",
@@ -609,7 +591,7 @@
     "caesar-dressing": "Creamy Caesar Dressing",
     "stainless-syringe": "Stainless Culinary Syringe (Blunt Tip)",
     "hot-cheddar-fill": "Hot Melted Cheddar Fill (60 ml)",
-    "peach-jam-tub": "80 ml Peach Bacon Jam Cup",
+    "bacon-jam-tub": "80 ml Smoky Bacon Jam Cup",
     "truffle-aioli-tub": "80 ml Black Truffle Aioli Cup",
     "secret-sauce-tub": "80 ml House Secret Sauce Cup",
     "fudge-brownie": "Skillet Fudge Brownie Core",
@@ -619,8 +601,8 @@
     "cocoa-dusting": "Dutch Cocoa Powder Dusting",
     "cheesecake-slice": "Basque Burnt Cheesecake Slice",
     "biscuit-crust": "Caramelized Rustic Edges",
-    "peach-tea-base": "Cold-Steeped Ceylon Tea",
-    "peach-puree": "White Peach Puree",
+    "tea-base": "Cold-Steeped Ceylon Tea",
+    "lemon-juice": "Fresh Lemon Juice",
     "fresh-thyme": "Fresh Lemon Thyme Sprig",
     "hand-cut-ice": "Hand-Cut Ice",
     "frozen-custard": "Frozen Dairy Custard Base",
@@ -631,7 +613,22 @@
     "water-bottle-unit": "500 ml Glass Water Bottle",
     "fresh-juice-base": "Freshly Squeezed Natural Juice 300 ml",
     "glass-of-ice": "Tumbler of Ice",
-    "lemon-slice": "Fresh Lemon Wedge"
+    "lemon-slice": "Fresh Lemon Wedge",
+    "chopped-patty": "Chopped Smashed Beef Patty (90 g)",
+    "shredded-iceberg": "Shredded Iceberg Lettuce",
+    "bbq-sauce": "BBQ Sauce",
+    "grated-parmesan": "Grated Parmesan",
+    "cheese-sauce-tub": "80 ml Hot Cheese Sauce Cup",
+    "pepsi-zero-can-unit": "Chilled Pepsi Zero Sugar 330 ml Can",
+    "coca-cola-zero-can-unit": "Chilled Coca-Cola Zero Sugar 330 ml Can",
+    "espresso-shot": "Espresso Shot",
+    "hot-water": "Hot Filtered Water",
+    "steamed-milk": "Steamed Whole Milk",
+    "milk-foam": "Milk Foam",
+    "cold-milk": "Cold Whole Milk",
+    "ice-cubes": "Ice Cubes",
+    "chilled-coffee": "Chilled Coffee",
+    "ice-cream-scoop": "Vanilla Ice Cream Scoop"
   },
   "extras": {
     "extra-patty": "Extra Smashed Patty (90 g)",
@@ -645,7 +642,7 @@
     "applewood-bacon": "Crispy Bacon Strip",
     "extra-bacon-strip": "Extra Crispy Bacon Strips",
     "extra-bacon-bits": "Extra Crispy Bacon Bits",
-    "extra-jam": "Extra Peach Bacon Jam",
+    "extra-jam": "Extra Smoky Bacon Jam",
     "dill-pickles": "Pickled Cucumbers",
     "extra-pickles": "Extra Pickled Cucumbers",
     "charred-jalapeno": "Charred Jalapeños",
@@ -672,7 +669,7 @@
     "side-caesar-dressing": "Side Caesar Dressing Cup",
     "side-secret-sauce": "Side Secret Sauce Cup",
     "side-truffle-aioli": "Side Truffle Aioli Cup",
-    "side-peach-jam": "Side Peach Bacon Jam Cup",
+    "side-bacon-jam": "Side Smoky Bacon Jam Cup",
     "extra-cheese-refill": "Extra Hot Cheese Syringe Refill",
     "jalapeno-cheese-refill": "Jalapeño Hot Cheese Refill",
     "vanilla-scoop": "Vanilla Custard Scoop",
@@ -685,7 +682,15 @@
     "caramel-swirl": "Bourbon Caramel Swirl",
     "fudge-swirl": "Dark Chocolate Fudge Swirl",
     "extra-lemon-wedge": "Extra Fresh Lemon Wedges",
-    "extra-mint-sprig": "Fresh Wild Mint Sprig"
+    "extra-mint-sprig": "Fresh Wild Mint Sprig",
+    "extra-shot": "Extra Espresso Shot",
+    "side-milk": "Splash of Milk",
+    "vanilla-syrup": "Vanilla Syrup",
+    "caramel-syrup": "Caramel Syrup",
+    "extra-ice-cream-scoop": "Extra Vanilla Ice Cream Scoop",
+    "extra-bowl-bacon": "Extra Crispy Bacon",
+    "extra-bowl-cheese-sauce": "Extra Hot Cheese Sauce",
+    "extra-grated-parmesan": "Extra Grated Parmesan"
   },
   "choiceOptions": {
     "still": "Still",
@@ -693,8 +698,9 @@
     "orange": "Orange",
     "apple": "Apple",
     "pomegranate": "Pomegranate",
-    "carrot": "Carrot",
-    "orange-carrot": "Orange & Carrot"
+    "pineapple": "Pineapple",
+    "cherry": "Cherry",
+    "mojito": "Mojito (non-alcoholic)"
   },
   "choiceTitles": {
     "water-type": "Choose water type",
