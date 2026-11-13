@@ -324,10 +324,13 @@ const ProductModalContent: React.FC<{
                 role="radiogroup"
                 aria-label={getChoiceGroupTitle(item.requiredChoice.id, item.requiredChoice.title)}
               >
-                {item.requiredChoice.options.map((opt) => {
+                {item.requiredChoice.options.map((opt, _idx, allOpts) => {
                   const isSelected = selectedChoiceId === opt.id;
                   const optName = getChoiceOptionName(opt.id, opt.name);
-                  const hasPriceAdj = typeof opt.priceAdjustment === 'number' && opt.priceAdjustment !== 0;
+                  // When options are priced differently (e.g. Still vs Sparkling water),
+                  // show the full price of every option so they can be compared.
+                  const optionsDifferInPrice = allOpts.some((o) => (o.priceAdjustment || 0) !== 0);
+                  const optionPrice = item.price + (opt.priceAdjustment || 0);
 
                   return (
                     <button
@@ -347,11 +350,9 @@ const ProductModalContent: React.FC<{
                           />
                         )}
                         <span className={styles.choiceName}>{optName}</span>
-                        {hasPriceAdj && (
+                        {optionsDifferInPrice && (
                           <span className={styles.choicePriceAdj}>
-                            {opt.priceAdjustment! > 0
-                              ? `+${opt.priceAdjustment!.toFixed(2)} ₾`
-                              : `${opt.priceAdjustment!.toFixed(2)} ₾`}
+                            {optionPrice.toFixed(2)} ₾
                           </span>
                         )}
                       </div>

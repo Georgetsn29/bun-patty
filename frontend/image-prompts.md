@@ -13,8 +13,8 @@ This document specifies the exact art direction and studio prompts used for the 
 ---
 
 ### 1. Burgers
-- **The Bun & Patty Smash (`bun-patty-smash.jpg`)**:
-  `Professional food photography of a double smash cheeseburger with lacy caramelized crispy beef edges, melted Havarti, wild arugula, and a glossy slow-cooked smoky onion and bourbon bacon jam on a sesame brioche bun, served on a dark slate board in a moody candle-lit restaurant with warm bokeh. 50mm lens at f/4, warm lighting, rich shadows, realistic textures, no fruit, no hands, no text, no watermarks.`
+- **Bun & Patty Signature Burger (`bun-patty-signature.jpg`)**:
+  `Professional commercial food photography for a bold street burger bar in Tbilisi. Shot on a full-frame camera with a 50mm lens at f/4: the food is tack-sharp and the background softly blurred. Warm, punchy lighting with strong contrast and appetizing highlights. Served on a dark, worn wooden tray lined with dark printed greaseproof paper. Background: a dark, blurred burger bar interior with warm red and amber lights, no readable text. Realistic textures, generous messy portions, natural imperfections. Landscape 16:10 crop, food centered and filling most of the frame. No people, no hands, no text, no logos, no watermarks, no brand names, no floating ingredients, no cartoon or plastic-looking food. A tall, messy double smashed burger, close-up from a slightly low 3/4 angle. A glossy, butter-toasted brioche bun with a golden top. Two thin smashed beef patties with dark, crispy, lacy edges, each covered in thick melted American cheese dripping down the sides. Two fried eggs with runny, glossy yolks, one yolk just breaking and running over the edge. Crispy smoked bacon strips sticking out, green pickle slices, and creamy orange house sauce oozing out. The burger looks heavy, juicy, and hard to eat without napkins.`
 
 - **Classic Double Cheeseburger (`golden-double-classic.jpg`)**:
   `Professional food photography of a classic double smash cheeseburger with double yellow American-style sharp cheddar melted over crisp lacy patties, thinly sliced pickles and onions, toasted brioche bun, centered on a dark wooden serving tray with dark printed liner. Background is a dark restaurant interior with red booth seating and softly blurred neon bokeh. 50mm lens at f/4, warm studio lighting, rich shadows, realistic textures, no hands, no people, no text, no watermarks.`
@@ -25,8 +25,8 @@ This document specifies the exact art direction and studio prompts used for the 
 - **Black Truffle & Forest Mushroom (`truffle-forest-melt.jpg`)**:
   `Professional food photography of a gourmet smash burger topped with pan-roasted wild cremini and shiitake mushrooms, melting cave-aged Gruyere cheese, black truffle aioli glaze on a glossy brioche bun, centered on a dark wooden serving tray with dark printed liner. Background is a dark restaurant interior with red booth seating and softly blurred warm neon lights. 50mm lens at f/4, rich contrast, no hands, no people, no text.`
 
-- **Seared Halloumi & Mint (`crispy-halloumi-mint.jpg`)**:
-  `Professional food photography of a vegetarian gourmet burger with a thick golden-seared Cypriot halloumi cheese slab, sliced fresh ripe avocado, fresh torn mint leaves, and sumac red onions on a toasted brioche bun, centered on a dark wooden serving tray with dark liner. Background is a dark restaurant interior with red booth seating. 50mm lens at f/4, no hands, no text.`
+- **Mozzarella Burger (`mozzarella-burger.jpg`)**:
+  `Professional commercial food photography for a bold street burger bar in Tbilisi. Shot on a full-frame camera with a 50mm lens at f/4: the food is tack-sharp and the background softly blurred. Warm, punchy lighting with strong contrast and appetizing highlights. Served on a dark, worn wooden tray lined with dark printed greaseproof paper. Background: a dark, blurred burger bar interior with warm red and amber lights, no readable text. Realistic textures, generous messy portions, natural imperfections. Landscape 16:10 crop, food centered and filling most of the frame. No people, no hands, no text, no logos, no watermarks, no brand names, no floating ingredients, no cartoon or plastic-looking food. A meat-free burger, close-up from a slightly low 3/4 angle, with one bite-sized wedge pulled away. A thick, golden fried mozzarella patty with a crisp, crunchy breadcrumb coating, and long strings of stretchy melted mozzarella pulling out from the cut. Melted cheddar over the patty, warm cheese sauce dripping down, creamy orange house sauce, crunchy shredded iceberg lettuce, and fresh red tomato slices, on a toasted, golden burger bun. No meat anywhere in the image.`
 
 - **24-Hour Buttermilk Fried Bird (`buttermilk-crispy-chicken.jpg`)**:
   `Professional food photography of a buttermilk fried chicken sandwich with ultra-crispy craggy golden crust, purple and green cabbage slaw, bread and butter pickles on a glossy toasted brioche bun, centered on a dark wooden serving tray with dark printed liner. Background is a dark restaurant interior with red booth seating and warm neon bokeh. 50mm lens at f/4, no hands, no text.`
@@ -43,6 +43,9 @@ This document specifies the exact art direction and studio prompts used for the 
 - **Sweet Vidalia Onion Rings (`onion-rings.jpg`)**:
   `Professional food photography of wide beer-battered sweet Vidalia onion rings with golden blistered crust on dark greaseproof paper on a wooden tray in a dimly lit restaurant interior.`
 
+- **Chicken Wings (`chicken-wings.jpg`)**:
+  `Professional commercial food photography for a bold street burger bar in Tbilisi. Shot on a full-frame camera with a 50mm lens at f/4: the food is tack-sharp and the background softly blurred. Warm, punchy lighting with strong contrast and appetizing highlights. Served on a dark, worn wooden tray lined with dark printed greaseproof paper. Background: a dark, blurred burger bar interior with warm red and amber lights, no readable text. Realistic textures, generous messy portions, natural imperfections. Landscape 16:10 crop, food centered and filling most of the frame. No people, no hands, no text, no logos, no watermarks, no brand names, no floating ingredients, no cartoon or plastic-looking food. Eight crispy chicken wings piled high in a dark metal basket lined with paper, close-up from a 45-degree angle. Half the wings coated in a glossy, deep red-orange spicy butter-chili glaze with visible chili flakes; the other half coated in a sticky, dark, shiny BBQ glaze with slightly charred edges. Crackling-crisp skin and visible texture. A small dark bowl of creamy white garlic-herb dip with green herb flecks beside the basket.`
+
 - **Cast-Iron Street Fries (`loaded-fries.jpg`)**:
   `Cast-iron skillet loaded with crinkle fries blanketed in melted sharp cheddar cheese sauce, crisped beef brisket bits, smoky bacon jam, and snipped fresh garden chives on a dark wooden table.`
 
@@ -51,24 +54,31 @@ This document specifies the exact art direction and studio prompts used for the 
 
 ---
 
-### 3. Sauces (Studio Isolated Style)
+### 3. Sauces (Studio Close-Up Style — regenerate all for consistency)
+
+**Shared art direction for every sauce bowl (apply to all prompts below):**
+- The bowl is large in the frame: it fills about **75% of the image width**, centered.
+- **Closer, slightly higher camera angle** (~35–40° above the table), so the sauce surface and texture are clearly visible.
+- Same small matte dark ceramic bowl, same angle, same warm directional softbox light with golden rim light, same dark slate surface with a softly blurred dark background in every sauce photo.
+- Image fills the whole card (16:10/16:9), no empty padding or borders, no text, no logo, no branding, no hands.
+
+- **Cheese Sauce (`cheese-sauce.jpg`)**:
+  `Close-up food photography of a large matte dark ceramic bowl filled with smooth, glossy hot cheddar cheese sauce with a soft swirl on top, the bowl filling about 75% of the frame width, camera slightly above at ~35°, dark slate surface, warm directional light with golden rim light, rich shadows, shallow depth of field, no text.`
+
+- **Ketchup (`ketchup.jpg`)**:
+  `Professional commercial food photography for a bold street burger bar in Tbilisi. Shot on a full-frame camera with a 50mm lens at f/4: the food is tack-sharp and the background softly blurred. Warm, punchy lighting with strong contrast and appetizing highlights. Served on a dark, worn wooden tray lined with dark printed greaseproof paper. Background: a dark, blurred burger bar interior with warm red and amber lights, no readable text. Realistic textures, generous messy portions, natural imperfections. Landscape 16:10 crop, food centered and filling most of the frame. No people, no hands, no text, no logos, no watermarks, no brand names, no floating ingredients, no cartoon or plastic-looking food. A small dark ceramic dipping bowl filled to the top with rich, glossy, deep red tomato ketchup, with a smooth swirl on the surface. Close-up from a slightly high angle, the bowl filling about 75% of the image width, with the ketchup's thick texture and shine clearly visible. A few crinkle-cut fries leaning against the bowl, slightly out of focus. Same dark wooden tray and paper, and the same lighting, as the other menu photos.`
+
+- **Cheese Injection (`cheese-injection.jpg`)** — *art direction from the user's reference photo*:
+  `Bold, appetizing close-up food photography of a polished stainless steel culinary meat injector: a chunky cylindrical barrel with a clear viewing window showing glossy golden hot cheese sauce inside, two finger rings on the barrel and one thumb ring on the plunger, and a long, thin stainless injection needle. The injector lies diagonally across a thick rustic oiled wooden serving board, with its needle tip resting next to a round carved hollow filled with a glossy pool of molten orange-yellow cheese sauce. Moody dark burger-bar background with red leather booth seating and a softly blurred, glowing red-orange neon sign. Camera about 30° above the board, 50mm lens at f/4, warm studio lighting with a golden rim light on the steel, rich shadows. The board fills the frame with no empty padding. No logos, no brand names, no engraved text, no lettering on the board, injector, or neon, no hands, no watermarks.`
+
+- **House Special Sauce (`sauce-house-secret.jpg`)**:
+  `Close-up food photography of a large matte dark ceramic bowl filled with creamy coral-orange house burger sauce with fine herb and pickle flecks, the bowl filling about 75% of the frame width, camera slightly above at ~35°, dark slate surface, warm directional light with golden rim light, shallow depth of field, no text.`
+
+- **Black Truffle Aioli (`sauce-truffle-aioli.jpg`)**:
+  `Close-up food photography of a large matte dark ceramic bowl filled with thick ivory black truffle aioli speckled with real black truffle and chives, the bowl filling about 75% of the frame width, camera slightly above at ~35°, dark slate surface, warm directional light with golden rim light, shallow depth of field, no text.`
+
 - **Smoky Bourbon Bacon Jam (`smoky-bourbon-bacon-jam.jpg`)**:
-  `Food photography of a dark ceramic ramekin filled with chunky glistening smoky bourbon bacon jam made from caramelized onions, crispy bacon, and bourbon, with a wooden paddle beside it on a dark slate board on a rustic wooden table, warm ambient restaurant lighting, no fruit, no text.`
-
-- **House Plancha Secret Sauce (`sauce-house-secret.jpg`)**:
-  `Studio product photography of artisan burger sauce in a small minimalist matte ceramic dipping ramekin, filled with creamy coral-orange secret burger sauce with herb flecks, isolated centered on a clean dark green-black background #0B1416, clean directional rim lighting, macro focus, no logo, no branding, no text.`
-
-- **Black Winter Truffle Aioli (`sauce-truffle-aioli.jpg`)**:
-  `Studio product photography of gourmet black truffle garlic aioli dipping sauce in a small dark ceramic ramekin, rich creamy ivory texture with real black truffle specks, isolated centered on a dark green-black background #0B1416, studio lighting, no text, no logo.`
-
-- **Wildflower Hot Honey (`sauce-hot-honey.jpg`)**:
-  `Studio product photography of pure amber wildflower honey infused with red chili flakes in a clear low glass dipping bowl, isolated on dark green-black background #0B1416.`
-
-- **Smoked Paprika Herb Ranch (`sauce-paprika-ranch.jpg`)**:
-  `Studio product photography of creamy buttermilk herb ranch lightly dusted with crimson smoked Spanish paprika in a dark ceramic ramekin, centered on #0B1416 background.`
-
-- **Caper Comeback Sauce (`sauce-comeback.jpg`)**:
-  `Studio product photography of Southern-style caper comeback sauce in a dark matte ramekin, creamy texture with cracked black pepper, on #0B1416 dark background.`
+  `Close-up food photography of a large matte dark ceramic bowl filled with chunky, glistening smoky onion and bacon jam, the bowl filling about 75% of the frame width, camera slightly above at ~35°, dark slate surface, warm directional light with golden rim light, shallow depth of field, no fruit, no text.`
 
 ---
 

@@ -8,11 +8,13 @@ Drop your photography files into this folder (`/public/images/`) matching the fi
 - `about-butcher-block.jpg` — Butcher cutting fresh chuck primal on end-grain maple wood block with carbon knife.
 
 ### Signature Burgers & Sides
-- `menu/bun-patty-smash.jpg` — Double smash burger with smoky onion bacon jam, Havarti, and arugula.
+- `menu/bun-patty-signature.jpg` — Tall, messy double smash burger with two runny fried eggs and melted cheese dripping down.
 - `classic-double.jpg` — Two-handed grip on classic double cheeseburger with melted cheddar corners.
 - `jalapeno-hot-honey.jpg` — Burger with blistered jalapeño rings and amber hot honey shine.
 - `truffle-mushroom-burger.jpg` — Dark roasted wild mushrooms and melted alpine cheese over crusty beef.
-- `halloumi-burger.jpg` — Golden griddled halloumi slab with crushed avocado and purple sumac onion.
+- `menu/mozzarella-burger.jpg` — Thick golden fried mozzarella patty with stretchy cheese pulling out of the burger.
+- `menu/chicken-wings.jpg` — Crispy, glossy glazed chicken wings with a creamy dip.
+- `menu/ketchup.jpg` — Large dark ceramic bowl of glossy tomato ketchup, close-up.
 - `buttermilk-chicken.jpg` — Fried chicken sandwich with ruffled crust and purple cabbage slaw.
 - `bbq-gouda-burger.jpg` — Towering smash burger with dark BBQ glaze and beer-battered onion ring.
 - `crinkle-fries.jpg` — Paper cone overflowing with golden crinkle fries and flaky sea salt.
