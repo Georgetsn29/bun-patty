@@ -1,5 +1,10 @@
 @use '@/src/styles/abstracts' as *;
 
+.sr-only {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+}
+
 .cardWrapper {
   width: 100%;
   margin-top: 1.25rem;
@@ -11,7 +16,7 @@
 .orderCard {
   width: 100%;
   background: #0E1A1D;
-  border: 1px solid rgba(226, 115, 68, 0.28);
+  // border: 1px solid rgba(226, 115, 68, 0.28);
   border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.04);
@@ -19,7 +24,7 @@
   position: relative;
 
   &:hover {
-    border-color: rgba(226, 115, 68, 0.45);
+    // border-color: rgba(226, 115, 68, 0.45);
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), 0 0 16px rgba(226, 115, 68, 0.12);
   }
 
@@ -51,6 +56,10 @@
   &:focus-visible {
     outline: 2px solid #E27344;
     outline-offset: -2px;
+  }
+
+  &:hover {
+    border: none;
   }
 }
 

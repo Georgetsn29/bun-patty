@@ -31,7 +31,8 @@
     "freeDeliveryThresholdNotice": "უფასო საკურიერო მიტანა თბილისში 50.00 ₾-დან შეკვეთებზე",
     "currencySymbol": "₾",
     "noticePlaceholder": "[Placeholder]",
-    "verifiedNotice": "[დამოწმებული - Placeholder]"
+    "verifiedNotice": "[დამოწმებული - Placeholder]",
+    "introTagline": "თბილისის ყველაზე გემრიელი ბურგერები"
   },
   "nav": {
     "menu": "მენიუ",

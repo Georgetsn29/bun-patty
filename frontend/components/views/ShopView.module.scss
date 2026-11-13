@@ -199,7 +199,7 @@
   }
 
   &:focus-within {
-    border-color: #E27344;
+    // border-color: #E27344;
     background-color: rgba(255, 255, 255, 0.08);
   }
 }
@@ -282,27 +282,97 @@
   flex-shrink: 0;
 }
 
-.sortSelect {
-  background-color: transparent;
+// Custom sort dropdown (replaces native <select>, whose popup can't be themed)
+.sortDropdown {
+  position: relative;
+  padding: 0 !important;
+  overflow: visible;
+}
+
+.sortTrigger {
+  @include button-reset;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  padding: 0 14px;
+  background: transparent;
   border: none;
   color: #FFFFFF;
   font-size: 13px;
   font-family: $font-fira;
   font-weight: 600;
-  outline: none;
-  cursor: pointer;
-  padding: 0;
   line-height: 1.4;
+  cursor: pointer;
+  border-radius: inherit;
+  white-space: nowrap;
 
   :global(:lang(ka)) &,
   &:lang(ka) {
     letter-spacing: 0;
   }
 
-  option {
-    background-color: #121E21;
-    color: #FFFFFF;
+  &:focus-visible {
+    outline: 2px solid #E27344;
+    outline-offset: 2px;
   }
+}
+
+.sortChevron {
+  color: #8A9698;
+  flex-shrink: 0;
+  transition: transform 200ms ease;
+}
+
+.sortChevronOpen {
+  transform: rotate(180deg);
+}
+
+.sortMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 100%;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background-color: #121E21;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sortMenuItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #FFFFFF;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 150ms ease;
+
+  :global(:lang(ka)) &,
+  &:lang(ka) {
+    letter-spacing: 0;
+  }
+}
+
+.sortMenuItemFocused {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.sortMenuItemSelected {
+  color: #E27344;
+  font-weight: 700;
 }
 
 // Phone Sort Icon Button (< 640px): Compact 44px high, opens bottom sheet

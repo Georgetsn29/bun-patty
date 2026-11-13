@@ -56,3 +56,14 @@ body {
     padding-right: $space-8;
   }
 }
+
+// Intro cover: lock page scroll while it is on screen (set before first paint)
+html[data-intro='on'],
+html[data-intro='on'] body {
+  overflow: hidden;
+}
+
+// Main content receives programmatic focus after the intro cover; no visible ring needed
+#main-content:focus {
+  outline: none;
+}
