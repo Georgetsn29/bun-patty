@@ -1833,15 +1833,19 @@ export function calculateOrderEstimatedMinutes(
   orderType: "delivery" | "pickup" = "pickup",
   deliveryExtraMinutes: number = 0
 ): number {
-  if (!items || items.length === 0) return 30;
+  const BUFFER_MINUTES = 5;
   let maxMinutes = 0;
-  for (const it of items) {
+  for (const it of items ?? []) {
     const menuItem = getMenuItemById(it.itemId);
-    const itemEst = menuItem ? menuItem.estimatedMinutes : 30;
+    if (!menuItem) continue;
+    // Use the item's real prep time (e.g. "12 min"); fall back to estimatedMinutes
+    const parsed = parseInt(menuItem.prepTime, 10);
+    const itemEst = Number.isFinite(parsed) ? parsed : menuItem.estimatedMinutes;
     if (itemEst > maxMinutes) {
       maxMinutes = itemEst;
     }
   }
   const deliveryPadding = orderType === "delivery" ? deliveryExtraMinutes : 0;
-  return (maxMinutes || 30) + deliveryPadding;
+  // Longest-prep item in the order + 5 min buffer
+  return maxMinutes + BUFFER_MINUTES + deliveryPadding;
 }
