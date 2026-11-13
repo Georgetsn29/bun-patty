@@ -764,7 +764,9 @@
   transition: border-color 150ms ease;
 
   &:focus-within {
-    border-color: #E27344;
+    // border-color: #E27344;
+  background-color: rgba(255, 255, 255, 0.114);
+
   }
 }
 
@@ -876,7 +878,7 @@
   transition: border-color 150ms ease, background-color 150ms ease, transform 150ms ease;
 
   &:hover {
-    border-color: #E27344;
+    // border-color: #E27344;
     background-color: #152327;
     transform: translateY(-2px);
   }

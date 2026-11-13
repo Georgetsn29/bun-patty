@@ -159,7 +159,7 @@ export default function App() {
           <Header currentRoute={currentRoute} onNavigate={navigateTo} />
 
           {/* Main Content Area */}
-          <main className={styles.mainContent}>
+          <main id="main-content" tabIndex={-1} className={styles.mainContent}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentRoute}

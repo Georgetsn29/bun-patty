@@ -31,7 +31,8 @@
     "freeDeliveryThresholdNotice": "Free courier delivery on orders 50.00 ₾ and above across Tbilisi",
     "currencySymbol": "₾",
     "noticePlaceholder": "[Placeholder]",
-    "verifiedNotice": "[Verified Component - Placeholder]"
+    "verifiedNotice": "[Verified Component - Placeholder]",
+    "introTagline": "Tbilisi's messiest burgers"
   },
   "nav": {
     "menu": "Menu",

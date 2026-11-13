@@ -249,7 +249,7 @@
   justify-content: center;
   font-size: 14px;
   font-weight: 700;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: #ffffff0d;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
   color: #FFFFFF;
@@ -257,7 +257,8 @@
   transition: all 0.15s ease;
 
   &:hover {
-    border-color: #E27344;
+    // border-color: #E27344;
+    background-color: #ffffff2f;
   }
 
   &.active {

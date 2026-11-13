@@ -172,7 +172,6 @@
   }
 
   &:hover {
-    border-color: #E27344;
     color: #E27344;
   }
 }
@@ -333,14 +332,15 @@
   border-radius: 12px;
   padding: $space-6;
   background-color: #131E21;
-  transition: border-color 0.2s ease;
+  transition: all 0.3s ease-in-out;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   gap: $space-5;
 
   &:hover {
-    border-color: #E27344;
+    // border-color: #E27344;
+    box-shadow: 15px 15px 8px #131e21a1;
 
     .spotlightTitle {
       color: #E27344;
@@ -694,7 +694,7 @@
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: #E27344;
+    // border-color: #E27344;
     color: #E27344;
   }
 }

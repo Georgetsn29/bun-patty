@@ -43,3 +43,14 @@ export const STORE_SETTINGS = {
 export function formatPrice(amount: number): string {
   return `${amount.toFixed(2)} ${STORE_SETTINGS.currency.symbol}`;
 }
+
+/**
+ * INTRO COVER
+ * Full-screen brand cover shown once per browser session when a visitor first lands.
+ * - enabled: turn the cover on/off
+ * - durationMs: total time on screen, including the 600ms slide-up exit (min 1200)
+ */
+export const INTRO_COVER_SETTINGS = {
+  enabled: true,
+  durationMs: 2000,
+};

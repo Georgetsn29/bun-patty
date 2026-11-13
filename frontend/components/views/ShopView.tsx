@@ -4,11 +4,118 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { MENU_ITEMS, CATEGORIES, MenuItem } from '@/data/menu';
 import { ProductCard } from '@/components/product/ProductCard';
 import { useLanguage } from '@/context/LanguageContext';
-import { Search, ArrowUpDown, Check, X } from 'lucide-react';
+import { Search, ArrowUpDown, Check, X, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import kaData from '@/src/locales/ka.json';
 import enData from '@/src/locales/en.json';
 import styles from './ShopView.module.scss';
+
+interface SortDropdownProps {
+  className: string;
+  value: string;
+  options: { value: string; labelKey: string }[];
+  onChange: (value: string) => void;
+  t: (key: string) => string;
+}
+
+const SortDropdown: React.FC<SortDropdownProps> = ({ className, value, options, onChange, t }) => {
+  const [open, setOpen] = useState(false);
+  const [focusIdx, setFocusIdx] = useState(0);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const listId = React.useId();
+  const active = options.find((o) => o.value === value) || options[0];
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent | TouchEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('touchstart', onDown);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('touchstart', onDown);
+    };
+  }, [open]);
+
+  const openMenu = () => {
+    setFocusIdx(Math.max(0, options.findIndex((o) => o.value === value)));
+    setOpen(true);
+  };
+
+  const select = (v: string) => {
+    onChange(v);
+    setOpen(false);
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (!open) {
+      if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) {
+        e.preventDefault();
+        openMenu();
+      }
+      return;
+    }
+    if (e.key === 'Escape' || e.key === 'Tab') {
+      setOpen(false);
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setFocusIdx((i) => (i + 1) % options.length);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setFocusIdx((i) => (i - 1 + options.length) % options.length);
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      select(options[focusIdx].value);
+    }
+  };
+
+  return (
+    <div ref={rootRef} className={`${className} ${styles.sortDropdown}`} onKeyDown={onKeyDown}>
+      <button
+        type="button"
+        className={styles.sortTrigger}
+        onClick={() => (open ? setOpen(false) : openMenu())}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-controls={listId}
+        aria-label={t('shop.sortLabel')}
+      >
+        <ArrowUpDown size={14} className={styles.sortIcon} aria-hidden="true" />
+        <span className={styles.sortTriggerText}>
+          {t('shop.sortPrefix')}{t(active.labelKey)}
+        </span>
+        <ChevronDown
+          size={14}
+          className={`${styles.sortChevron} ${open ? styles.sortChevronOpen : ''}`}
+          aria-hidden="true"
+        />
+      </button>
+      {open && (
+        <ul id={listId} role="listbox" className={styles.sortMenu} aria-label={t('shop.sortLabel')}>
+          {options.map((opt, i) => {
+            const selected = opt.value === value;
+            return (
+              <li
+                key={opt.value}
+                role="option"
+                aria-selected={selected}
+                className={`${styles.sortMenuItem} ${selected ? styles.sortMenuItemSelected : ''} ${
+                  i === focusIdx ? styles.sortMenuItemFocused : ''
+                }`}
+                onMouseEnter={() => setFocusIdx(i)}
+                onClick={() => select(opt.value)}
+              >
+                <span>{t(opt.labelKey)}</span>
+                {selected && <Check size={14} className={styles.checkIcon} aria-hidden="true" />}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
+  );
+};
 
 interface ShopViewProps {
   onOpenProductModal: (item: MenuItem) => void;
@@ -327,25 +434,13 @@ export const ShopView: React.FC<ShopViewProps> = ({ onOpenProductModal }) => {
                 )}
               </div>
 
-              <div className={styles.sortBox}>
-                <ArrowUpDown size={14} className={styles.sortIcon} aria-hidden="true" />
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as any)}
-                  className={styles.sortSelect}
-                  aria-label={t('shop.sortLabel')}
-                >
-                  <option value="default">
-                    {t('shop.sortPrefix')}{t('shop.sortDefault')}
-                  </option>
-                  <option value="price-asc">
-                    {t('shop.sortPrefix')}{t('shop.sortPriceAsc')}
-                  </option>
-                  <option value="price-desc">
-                    {t('shop.sortPrefix')}{t('shop.sortPriceDesc')}
-                  </option>
-                </select>
-              </div>
+              <SortDropdown
+                className={styles.sortBox}
+                value={sortBy}
+                options={sortOptions}
+                onChange={(v) => setSortBy(v as typeof sortBy)}
+                t={t}
+              />
             </div>
           </div>
 
@@ -375,25 +470,13 @@ export const ShopView: React.FC<ShopViewProps> = ({ onOpenProductModal }) => {
             </div>
 
             {/* Tablet Sort Select (640px to 1023px) */}
-            <div className={styles.tabletSortBox}>
-              <ArrowUpDown size={14} className={styles.sortIcon} aria-hidden="true" />
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className={styles.sortSelect}
-                aria-label={t('shop.sortLabel')}
-              >
-                <option value="default">
-                  {t('shop.sortPrefix')}{t('shop.sortDefault')}
-                </option>
-                <option value="price-asc">
-                  {t('shop.sortPrefix')}{t('shop.sortPriceAsc')}
-                </option>
-                <option value="price-desc">
-                  {t('shop.sortPrefix')}{t('shop.sortPriceDesc')}
-                </option>
-              </select>
-            </div>
+            <SortDropdown
+              className={styles.tabletSortBox}
+              value={sortBy}
+              options={sortOptions}
+              onChange={(v) => setSortBy(v as typeof sortBy)}
+              t={t}
+            />
 
             {/* Phone Compact 44px Sort Icon Button (< 640px) */}
             <button
