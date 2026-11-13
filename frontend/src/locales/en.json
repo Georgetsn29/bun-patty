@@ -290,22 +290,22 @@
   },
   "items": {
     "bun-patty-smash": {
-      "name": "The Bun & Patty Smash",
-      "description": "Double 90 g dry-aged patties, slow-cooked smoky onion and bourbon bacon jam, melted Havarti, and wild arugula on griddled milk brioche.",
-      "longDescription": "Our beloved house signature burger combining savory smoke and deep caramelized onion sweetness. Two 90 g beef patties smashed on 260°C carbon steel for maximum crust, layered with melted Danish Havarti, peppery wild arugula, and our slow-simmered smoky onion and bourbon bacon jam on butter-griddled milk brioche.",
+      "name": "Bun & Patty Signature Burger",
+      "description": "Two smashed 90 g beef patties with melted American cheese, two fried eggs, crispy bacon, pickles, and house special sauce on a brioche bun.",
+      "longDescription": "Our house signature, built tall and messy. Two 90 g beef patties smashed on 260°C carbon steel and blanketed in melted American cheese, stacked with two runny fried eggs, crispy smoked bacon, pickles, and our house special sauce on a butter-toasted brioche bun.",
       "beefWeight": "180 g beef (2 × 90 g patties) [Placeholder]",
-      "allergens": "Gluten, Dairy, Eggs [Placeholder]"
+      "allergens": "Gluten, Dairy, Eggs, Mustard [Placeholder]"
     },
     "golden-double-classic": {
       "name": "Classic Double Cheeseburger",
-      "description": "Two smashed 90 g beef patties, double aged cheddar, pickled cucumber, shaved sweet onion, and house secret sauce.",
-      "longDescription": "The purist standard prepared with absolute plancha discipline. Two 90 g beef patties smashed thin for caramelized lace edges, paired with double melted cheddar, thinly shaved sweet onion, crisp pickled cucumbers, and our caper-shallot secret sauce on a toasted milk bun.",
+      "description": "Two smashed 90 g beef patties, double aged cheddar, pickled cucumber, shaved sweet onion, and house special sauce.",
+      "longDescription": "The purist standard prepared with absolute plancha discipline. Two 90 g beef patties smashed thin for caramelized lace edges, paired with double melted cheddar, thinly shaved sweet onion, crisp pickled cucumbers, and our house special sauce on a toasted milk bun.",
       "beefWeight": "180 g beef (2 × 90 g patties) [Placeholder]",
       "allergens": "Gluten, Dairy, Eggs, Mustard [Placeholder]"
     },
     "truffle-forest-melt": {
       "name": "Truffle Forest Melt",
-      "description": "Double 90 g smashed patties, sautéed brown beech mushrooms, melted Swiss Gruyère, and black truffle herb aioli on brioche.",
+      "description": "Double 90 g smashed patties, sautéed brown beech mushrooms, melted Swiss Gruyère, and black truffle aioli on brioche.",
       "longDescription": "An intensely savory forest-inspired creation featuring two 90 g dry-aged beef patties. Smothered in butter-sautéed brown beech mushrooms, nutty aged Swiss Gruyère, and fragrant black truffle emulsion on our signature griddled brioche bun.",
       "beefWeight": "180 g beef (2 × 90 g patties) [Placeholder]",
       "allergens": "Gluten, Dairy, Eggs [Placeholder]"
@@ -324,10 +324,11 @@
       "allergens": "Gluten, Dairy, Eggs, Mustard [Placeholder]"
     },
     "crispy-halloumi-mint": {
-      "name": "Crispy Griddled Halloumi Burger",
-      "description": "Thick seared halloumi slab, charred red peppers, fresh mint, wild baby arugula, and lemon-tahini crema on toasted milk brioche.",
-      "longDescription": "A satisfying meatless burger built around a thick slab of Mediterranean halloumi cheese seared on the plancha until golden and warm. Layered with tender fire-roasted sweet peppers, fresh garden mint, baby arugula, and velvety lemon-tahini crema on toasted brioche.",
-      "allergens": "Gluten, Dairy, Sesame [Placeholder]"
+      "name": "Mozzarella Burger",
+      "badge": "Vegetarian",
+      "description": "Fried mozzarella, cheddar, cheese sauce, house special sauce, iceberg lettuce, and tomato on a toasted burger bun.",
+      "longDescription": "A meat-free burger built around a thick, golden fried mozzarella patty with a crisp crumb and a molten, stretchy centre. Layered with melted cheddar, warm cheese sauce, our house special sauce, crunchy iceberg lettuce, and fresh tomato on a toasted burger bun.",
+      "allergens": "Gluten, Dairy, Eggs, Mustard [Placeholder]"
     },
     "double-smashed-bacon-burger": {
       "name": "Double Smashed Bacon Burger",
@@ -345,19 +346,19 @@
       "allergens": "Gluten, Dairy, Eggs, Mustard, Sulphites (Saperavi wine marinade) [Placeholder]"
     },
     "golden-crinkle-fries": {
-      "name": "Rosemary Russet Crinkle Fries",
+      "name": "Fries",
       "description": "Thick-cut crinkle potatoes double-fried in clean oil, tossed in pulverized sea salt, fresh rosemary, and lemon thyme.",
       "longDescription": "We double-fry thick russet potatoes to guarantee a crunchy exterior ridges and a fluffy baked potato interior. Straight from the fryer, they are tossed with pulverized sea salt crystals, fresh fragrant rosemary, and lemon thyme.",
       "allergens": "None (Dedicated Fryer) [Placeholder]"
     },
     "parmesan-truffle-fries": {
-      "name": "Truffle Parmesan Hand-Cut Fries",
+      "name": "Truffle Fries",
       "description": "Skin-on hand-cut fries drizzled with white truffle oil, dusted with 24-month aged parmesan, and cracked Tellicherry black pepper.",
       "longDescription": "Hand-cut russet fries cooked until dark golden and immediately tossed with Italian white truffle oil, a generous snowfall of aged Parmigiano-Reggiano, and freshly cracked black peppercorns.",
       "allergens": "Dairy [Placeholder]"
     },
     "onion-rings": {
-      "name": "Crispy Sweet Onion Rings",
+      "name": "Onion Rings",
       "description": "Thick rings of sweet onion soaked in buttermilk, coated in seasoned Japanese panko, and fried to golden perfection.",
       "longDescription": "Thick-cut sweet onion rings soaked in seasoned cultured buttermilk and dredged in coarse Japanese panko breadcrumbs. Fried to a resonant, shatter-crisp crunch with a sweet, tender interior.",
       "allergens": "Gluten, Dairy [Placeholder]"
@@ -381,6 +382,12 @@
       "allergens": "Dairy, Mustard (BBQ sauce) [Placeholder]",
       "beefWeight": "90 g beef (1 chopped patty) [Placeholder]"
     },
+    "chicken-wings": {
+      "name": "Chicken Wings",
+      "description": "8 crispy chicken wings tossed in your choice of spicy or BBQ glaze, served with a dipping sauce.",
+      "longDescription": "Eight juicy chicken wings, lightly dusted in seasoned flour and fried until crackling-crisp, then tossed in your choice of glaze: a fiery butter-chili Spicy or a sticky, smoky BBQ. Served with a cool, creamy garlic-herb dipping sauce.",
+      "allergens": "Gluten, Dairy, Eggs, Mustard (BBQ glaze) [Placeholder]"
+    },
     "smoky-bourbon-bacon-jam": {
       "name": "Smoky Bourbon Bacon Jam",
       "description": "House-made savory jam of slow-cooked caramelized onions, smoked bacon, bourbon, shallots, and dark molasses.",
@@ -389,23 +396,23 @@
       "allergens": "None [Placeholder]"
     },
     "sauce-truffle-aioli": {
-      "name": "Black Truffle Herb Aioli",
+      "name": "Black Truffle Aioli",
       "description": "Emulsified cold-pressed olive oil, roasted garlic, minced black summer truffles, and fresh garden chives.",
       "longDescription": "A silky, luxurious dipping emulsion whisked with roasted garlic cloves, fragrant black summer truffles, organic egg yolks, and fresh snipped chives.",
       "volume": "80 ml cup",
       "allergens": "Eggs [Placeholder]"
     },
     "sauce-house-secret": {
-      "name": "House Secret Plancha Sauce",
+      "name": "House Special Sauce",
       "description": "Our proprietary blend of kewpie mayonnaise, coarse whole grain mustard, brine-pickled capers, and sweet relish.",
-      "longDescription": "The savory backbone of our classic cheeseburgers. Prepared daily with rich mayonnaise, crushed capers, tangy pickle relish, and a secret blend of ground roasted spices.",
+      "longDescription": "The savory backbone of our classic cheeseburgers. Prepared daily with rich mayonnaise, crushed capers, tangy pickle relish, and a house blend of ground roasted spices.",
       "volume": "80 ml cup",
       "allergens": "Eggs, Mustard [Placeholder]"
     },
     "cheese-injection": {
       "name": "Cheese Injection",
-      "description": "A food-safe, reusable stainless steel culinary syringe with a wide, blunt tip, filled with hot cheese sauce to inject into a burger.",
-      "longDescription": "An interactive gastronomic experience for true cheese lovers. A food-safe, reusable stainless steel kitchen culinary syringe with an ergonomic plunger and wide blunt nozzle, filled with 60 ml of piping hot, velvety melted cheddar sauce ready to inject directly into the center of your burger bun.",
+      "description": "A food-safe, reusable stainless steel culinary injector filled with hot cheese sauce, ready to inject straight into your burger.",
+      "longDescription": "An interactive treat for true cheese lovers. A food-safe, reusable stainless steel kitchen injector with a three-ring plunger and a long injection needle, filled with 60 ml of piping hot, velvety melted cheddar sauce ready to inject directly into the center of your burger.",
       "volume": "60 ml cheese sauce fill",
       "allergens": "Dairy [Placeholder]"
     },
@@ -415,6 +422,13 @@
       "longDescription": "A small cup of smooth, velvety hot cheddar cheese sauce, made for dipping fries, onion rings, or the crispy edges of your burger.",
       "volume": "80 ml cup",
       "allergens": "Dairy [Placeholder]"
+    },
+    "ketchup": {
+      "name": "Ketchup",
+      "description": "A small cup of classic tomato ketchup.",
+      "longDescription": "A small cup of classic, rich tomato ketchup — sweet, tangy, and made for fries, onion rings, and wings.",
+      "volume": "30 ml cup",
+      "allergens": "None [Placeholder]"
     },
     "warm-bourbon-caramel-brownie": {
       "name": "Skillet Dark Chocolate Brownie",
@@ -435,14 +449,14 @@
       "allergens": "Dairy, Gluten, Eggs [Placeholder]"
     },
     "cold-steeped-lemon-ceylon-tea": {
-      "name": "Cold-Steeped Lemon Ceylon Tea",
+      "name": "Tea",
       "description": "18-hour cold brew Ceylon black tea, fresh lemon juice, and crushed lemon thyme over hand-cut ice.",
       "longDescription": "We steep high-grown single-origin Ceylon black tea leaves in cold filtered water for 18 hours to extract clean floral tannins without bitterness. Shaken with fresh lemon juice and a touch of honey, then poured over hand-cut ice with fresh lemon thyme.",
       "volume": "400 ml glass",
       "allergens": "None [Placeholder]"
     },
     "roasted-vanilla-bean-shake": {
-      "name": "Madagascar Vanilla Custard Shake",
+      "name": "Shake",
       "description": "Hand-spun local frozen dairy custard, whole scraped Madagascar vanilla bean, and whipped cultured cream.",
       "longDescription": "Traditional dense frozen custard churned fresh every morning with rich whole dairy milk and egg yolks. Hand-spun on vintage spindle mixers with scraped Madagascar vanilla caviar and topped with cultured whipped cream.",
       "volume": "450 ml tumbler",
@@ -536,17 +550,14 @@
   "ingredients": {
     "patty-primary": "First Smashed Patty (90 g)",
     "patty-second": "Second Smashed Patty (90 g)",
-    "havarti-cheese": "Melted Danish Havarti",
-    "bacon-jam": "Smoky Onion & Bourbon Bacon Jam",
-    "wild-arugula": "Wild Arugula",
     "brioche-bun": "Toasted Milk Brioche Bun",
     "sharp-cheddar": "Aged Sharp Cheddar",
     "shaved-onion": "Shaved Sweet Onion",
     "pickled-cucumbers": "Pickled Cucumber Slices",
-    "secret-sauce": "House Secret Sauce",
+    "secret-sauce": "House Special Sauce",
     "swiss-gruyere": "Melted Swiss Gruyère",
     "sauteed-mushrooms": "Sautéed Beech Mushrooms",
-    "truffle-aioli": "Black Truffle Herb Aioli",
+    "truffle-aioli": "Black Truffle Aioli",
     "pepper-jack": "Spicy Pepper Jack Cheese",
     "pickled-jalapenos": "Quick-Pickled Jalapeños",
     "crispy-shallots": "Crispy Fried Shallots",
@@ -555,11 +566,6 @@
     "cabbage-slaw": "Cabbage-Apple Slaw",
     "dill-pickles": "Pickled Cucumber Slices",
     "garlic-aioli": "Smoked Garlic Aioli",
-    "halloumi-slab": "Seared Halloumi Slab",
-    "roasted-peppers": "Fire-Roasted Sweet Peppers",
-    "fresh-mint": "Fresh Mint Leaves",
-    "baby-arugula": "Baby Wild Arugula",
-    "tahini-crema": "Lemon-Tahini Crema",
     "patty-90g-1": "First Smashed Patty (90 g)",
     "patty-90g-2": "Second Smashed Patty (90 g)",
     "crispy-bacon": "Crispy Smoked Bacon",
@@ -589,11 +595,11 @@
     "shaved-parmesan": "Shaved Aged Parmesan",
     "brioche-croutons": "Brioche Garlic Croutons",
     "caesar-dressing": "Creamy Caesar Dressing",
-    "stainless-syringe": "Stainless Culinary Syringe (Blunt Tip)",
+    "stainless-syringe": "Stainless Steel Culinary Injector",
     "hot-cheddar-fill": "Hot Melted Cheddar Fill (60 ml)",
     "bacon-jam-tub": "80 ml Smoky Bacon Jam Cup",
     "truffle-aioli-tub": "80 ml Black Truffle Aioli Cup",
-    "secret-sauce-tub": "80 ml House Secret Sauce Cup",
+    "secret-sauce-tub": "80 ml House Special Sauce Cup",
     "fudge-brownie": "Skillet Fudge Brownie Core",
     "bourbon-caramel": "Warm Bourbon Caramel Drizzle",
     "flaky-sea-salt": "Flaky Sea Salt Crystals",
@@ -628,24 +634,30 @@
     "cold-milk": "Cold Whole Milk",
     "ice-cubes": "Ice Cubes",
     "chilled-coffee": "Chilled Coffee",
-    "ice-cream-scoop": "Vanilla Ice Cream Scoop"
+    "ice-cream-scoop": "Vanilla Ice Cream Scoop",
+    "american-cheese": "Melted American Cheese",
+    "fried-eggs": "Two Fried Eggs",
+    "pickles": "Pickles",
+    "house-special-sauce": "House Special Sauce",
+    "burger-bun": "Toasted Burger Bun",
+    "fried-mozzarella": "Fried Mozzarella Patty",
+    "cheese-sauce-layer": "Cheese Sauce",
+    "fresh-tomato": "Fresh Tomato",
+    "crispy-wings-8": "8 Crispy Chicken Wings",
+    "dipping-sauce": "Dipping Sauce",
+    "ketchup-cup": "30 ml Ketchup Cup"
   },
   "extras": {
     "extra-patty": "Extra Smashed Patty (90 g)",
     "extra-patty-90g": "Extra Smashed Patty (90 g)",
     "extra-cheddar": "Extra Melted Cheddar",
-    "extra-havarti": "Extra Melted Havarti",
     "extra-gruyere": "Extra Swiss Gruyère",
-    "extra-halloumi": "Extra Seared Halloumi Slab",
     "extra-bacon": "Extra Crispy Bacon Strip",
     "smoked-bacon": "Crispy Bacon Strip",
-    "applewood-bacon": "Crispy Bacon Strip",
     "extra-bacon-strip": "Extra Crispy Bacon Strips",
     "extra-bacon-bits": "Extra Crispy Bacon Bits",
-    "extra-jam": "Extra Smoky Bacon Jam",
     "dill-pickles": "Pickled Cucumbers",
     "extra-pickles": "Extra Pickled Cucumbers",
-    "charred-jalapeno": "Charred Jalapeños",
     "extra-jalapenos": "Extra Pickled Jalapeños",
     "add-jalapenos": "Charred Jalapeños",
     "pickled-jalapenos": "Sliced Pickled Jalapeños",
@@ -660,14 +672,12 @@
     "extra-slaw": "Extra Cabbage-Apple Slaw",
     "add-cheese": "Melted Cheddar Cheese",
     "add-bacon": "Crispy Smoked Bacon",
-    "avocado-mash": "Crushed Ripe Avocado",
-    "extra-peppers": "Extra Fire-Roasted Peppers",
     "extra-cheese-sauce": "Extra Hot Cheese Sauce Ladle",
     "extra-grilled-chicken": "Extra Grilled Chicken Portion",
     "extra-parmesan": "Extra Shaved Parmesan",
     "extra-croutons": "Extra Garlic Croutons",
     "side-caesar-dressing": "Side Caesar Dressing Cup",
-    "side-secret-sauce": "Side Secret Sauce Cup",
+    "side-secret-sauce": "Side House Special Sauce Cup",
     "side-truffle-aioli": "Side Truffle Aioli Cup",
     "side-bacon-jam": "Side Smoky Bacon Jam Cup",
     "extra-cheese-refill": "Extra Hot Cheese Syringe Refill",
@@ -690,7 +700,14 @@
     "extra-ice-cream-scoop": "Extra Vanilla Ice Cream Scoop",
     "extra-bowl-bacon": "Extra Crispy Bacon",
     "extra-bowl-cheese-sauce": "Extra Hot Cheese Sauce",
-    "extra-grated-parmesan": "Extra Grated Parmesan"
+    "extra-grated-parmesan": "Extra Grated Parmesan",
+    "extra-american-cheese": "Extra American Cheese",
+    "extra-fried-egg": "Extra Fried Egg",
+    "extra-fried-mozzarella": "Extra Fried Mozzarella",
+    "extra-burger-cheese-sauce": "Extra Cheese Sauce",
+    "add-beef-patty": "Add Beef Patty (90 g)",
+    "extra-wings-4": "Extra Wings (4 pcs)",
+    "extra-dipping-sauce": "Extra Dipping Sauce"
   },
   "choiceOptions": {
     "still": "Still",
@@ -700,10 +717,13 @@
     "pomegranate": "Pomegranate",
     "pineapple": "Pineapple",
     "cherry": "Cherry",
-    "mojito": "Mojito (non-alcoholic)"
+    "mojito": "Mojito (non-alcoholic)",
+    "spicy": "Spicy",
+    "bbq": "BBQ"
   },
   "choiceTitles": {
     "water-type": "Choose water type",
-    "juice-flavor": "Choose a flavor"
+    "juice-flavor": "Choose a flavor",
+    "wing-flavor": "Choose a flavor"
   }
 }

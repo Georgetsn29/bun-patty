@@ -7,10 +7,13 @@
  * 2. Side Dishes
  * 3. Sauces
  * 4. Desserts
- * 5. Drinks (soft drinks first, then the "Coffee" subgroup)
+ * 5. Drinks (soft drinks, Water, Juice, Shake, Tea, then the "Coffee" subgroup)
  *
- * In every category: original items first, followed by newly added items.
- * Each item has an explicit sortOrder for default 'Recommended' sort.
+ * Each item has an explicit sortOrder (1-based, per category) that defines the
+ * default 'Recommended' order. Items are also listed in that order below.
+ *
+ * Item IDs are stable: when a product is renamed or replaced, it keeps its ID
+ * so carts and orders saved in a browser keep working.
  *
  * NUTRITION [Placeholder]
  * Every nutrition value in this file is an approximate kitchen estimate per
@@ -156,12 +159,16 @@ const N = {
   briocheBun: placeholderNutrition(230, 38, 5, 7), // ~75 g milk brioche
   sesameBriocheBun: placeholderNutrition(240, 38, 6, 8), // ~78 g sesame brioche
   largeSesameBun: placeholderNutrition(380, 62, 8, 12), // ~120 g oversized bun
+  burgerBun: placeholderNutrition(220, 40, 3, 7), // ~75 g soft burger bun
   // Proteins
   patty90: placeholderNutrition(230, 0, 18, 16), // 90 g raw 80/20 beef
   beef750: placeholderNutrition(1900, 0, 150, 128), // 750 g raw 80/20 beef
   friedChickenThigh: placeholderNutrition(400, 18, 22, 30), // ~150 g battered thigh
   grilledChicken: placeholderNutrition(200, 0, 5, 37), // 120 g grilled breast
-  halloumi: placeholderNutrition(320, 2, 25, 22), // 100 g halloumi
+  friedMozzarella: placeholderNutrition(380, 18, 24, 22), // ~110 g breaded fried mozzarella patty
+  friedEgg: placeholderNutrition(90, 0, 7, 6), // 1 large egg fried in butter
+  chickenWings8: placeholderNutrition(640, 8, 44, 56), // 8 floured, fried wings (~320 g bone-in)
+  chickenWings4: placeholderNutrition(320, 4, 22, 28), // 4 floured, fried wings
   crispyBacon: placeholderNutrition(80, 0, 6, 6), // 2 crispy strips (~16 g)
   baconBits: placeholderNutrition(100, 0, 8, 7), // ~20 g chopped crispy bacon
   baconLayers2: placeholderNutrition(240, 0, 18, 18), // 6 strips
@@ -169,9 +176,11 @@ const N = {
   cheddarSlice: placeholderNutrition(80, 0, 7, 5), // 20 g
   cheddarDouble: placeholderNutrition(160, 1, 13, 10), // 2 × 20 g
   cheddar6Layers: placeholderNutrition(480, 2, 40, 30), // 6 × 20 g
-  havarti: placeholderNutrition(95, 0, 8, 6), // 25 g
   gruyere: placeholderNutrition(105, 0, 8, 7), // 25 g
   pepperJack: placeholderNutrition(80, 0, 7, 5), // 20 g
+  americanCheeseSlice: placeholderNutrition(75, 1, 6, 4), // 20 g slice
+  americanCheese2: placeholderNutrition(150, 2, 12, 8), // 2 × 20 g slices
+  cheeseSauce30: placeholderNutrition(68, 3, 6, 3), // 30 g hot cheddar sauce
   parmesanSnow: placeholderNutrition(60, 0, 4, 5), // 15 g
   parmesanGrated: placeholderNutrition(40, 0, 3, 4), // 10 g
   cheeseSauce60: placeholderNutrition(135, 5, 11, 5), // 60 g hot cheddar sauce
@@ -183,28 +192,29 @@ const N = {
   secretSauceCup: placeholderNutrition(160, 3, 16, 0), // 30 g side cup
   secretSauce80: placeholderNutrition(430, 8, 44, 1), // 80 ml cup
   specialSauce40: placeholderNutrition(220, 4, 22, 0), // 40 g
+  specialSauce20: placeholderNutrition(110, 2, 11, 0), // 20 g house special sauce
+  dippingSauce30: placeholderNutrition(140, 2, 15, 0), // 30 g creamy garlic-herb dip
+  ketchup30: placeholderNutrition(30, 7, 0, 0), // 30 g tomato ketchup
+  spicyWingGlaze: placeholderNutrition(60, 4, 5, 0), // ~40 g butter-chili glaze for 8 wings
+  bbqWingGlaze: placeholderNutrition(80, 19, 0, 0), // ~45 g BBQ glaze for 8 wings
   truffleAioli20: placeholderNutrition(140, 0, 15, 0), // 20 g
   truffleAioliCup: placeholderNutrition(210, 1, 22, 0), // 30 g side cup
   truffleAioli80: placeholderNutrition(500, 2, 55, 1), // 80 ml cup
   garlicAioli20: placeholderNutrition(140, 1, 15, 0), // 20 g
-  tahiniCrema: placeholderNutrition(90, 2, 8, 2), // 25 g
   caesarDressing: placeholderNutrition(200, 2, 21, 1), // 40 g
   bbqSauce: placeholderNutrition(40, 9, 0, 0), // 25 g
   hotHoney: placeholderNutrition(45, 12, 0, 0), // 15 g
   truffleOil: placeholderNutrition(40, 0, 5, 0), // 5 ml
   // Vegetables & garnish
-  arugula: placeholderNutrition(5, 1, 0, 0),
   shavedOnion: placeholderNutrition(6, 1, 0, 0),
   pickles: placeholderNutrition(3, 0, 0, 0),
   jalapenos: placeholderNutrition(4, 0, 0, 0),
   crispyShallots: placeholderNutrition(50, 4, 3, 1),
   sauteedMushrooms: placeholderNutrition(60, 2, 5, 2),
   cabbageSlaw: placeholderNutrition(60, 5, 4, 1),
-  roastedPeppers: placeholderNutrition(25, 3, 1, 0),
-  mint: placeholderNutrition(2, 0, 0, 0),
-  avocadoMash: placeholderNutrition(80, 1, 7, 1),
   saperaviOnions: placeholderNutrition(40, 8, 0, 1),
   iceberg: placeholderNutrition(4, 1, 0, 0),
+  tomato: placeholderNutrition(5, 1, 0, 0), // 2 slices
   romaine: placeholderNutrition(25, 2, 0, 2),
   croutons: placeholderNutrition(110, 14, 5, 3),
   chives: placeholderNutrition(1, 0, 0, 0),
@@ -299,71 +309,26 @@ export function getCalorieRange(item: MenuItem): { min: number; max: number } {
 
 export const MENU_ITEMS: MenuItem[] = [
   // =========================================================================
-  // 1. BURGERS (Originals 1-6, then Double Smashed Bacon, then The Big One)
+  // 1. BURGERS
   // =========================================================================
 
-  // 1. The Bun & Patty Smash (Original)
-  {
-    id: 'bun-patty-smash',
-    estimatedMinutes: 30,
-    name: 'The Bun & Patty Smash',
-    category: 'Burgers',
-    sortOrder: 1,
-    price: 24.90,
-    description: 'Double 90 g dry-aged patties, slow-cooked smoky onion and bourbon bacon jam, melted Havarti, and wild arugula on griddled milk brioche.',
-    longDescription: 'Our beloved house signature burger combining savory smoke and deep caramelized onion sweetness. Two 90 g beef patties smashed on 260°C carbon steel for maximum crust, layered with melted Danish Havarti, peppery wild arugula, and our slow-simmered smoky onion and bourbon bacon jam on butter-griddled milk brioche.',
-    mainIngredients: [
-      'Griddled Milk Brioche Bun',
-      'Two Smashed Angus Patties (90 g each)',
-      'Melted Danish Havarti Cheese',
-      'House Smoky Onion & Bourbon Bacon Jam [Placeholder]',
-      'Fresh Wild Arugula',
-    ],
-    beefWeight: '180 g beef (2 × 90 g patties) [Placeholder]',
-    allergens: ['Gluten', 'Dairy', 'Eggs [Placeholder]'],
-    tags: ['House Signature', 'Dry-Aged'],
-    nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.havarti, N.baconJam30, N.arugula),
-    prepTime: '6 min',
-    isBestseller: true,
-    isChefSpecial: true,
-    imageSlot: '/images/menu/bun-patty-smash.jpg',
-    imageLabel: 'Double smash burger with smoky onion bacon jam, melted Havarti, and arugula',
-    imageStyle: 'scene',
-    includedIngredients: [
-      { id: 'patty-primary', name: 'First Smashed Patty (90 g)', isRequired: true },
-      { id: 'patty-second', name: 'Second Smashed Patty (90 g)', isRequired: false, nutrition: N.patty90 },
-      { id: 'havarti-cheese', name: 'Melted Danish Havarti', isRequired: false, nutrition: N.havarti },
-      { id: 'bacon-jam', name: 'Smoky Onion & Bourbon Bacon Jam', isRequired: false, nutrition: N.baconJam30 },
-      { id: 'wild-arugula', name: 'Wild Arugula', isRequired: false, nutrition: N.arugula },
-      { id: 'brioche-bun', name: 'Griddled Milk Brioche Bun', isRequired: true },
-    ],
-    availableExtras: [
-      { id: 'extra-patty', name: 'Extra Smashed Patty (90 g)', price: 5.50, maxQuantity: 3, nutrition: N.patty90 },
-      { id: 'extra-havarti', name: 'Extra Melted Havarti', price: 2.00, maxQuantity: 3, nutrition: N.havarti },
-      { id: 'smoked-bacon', name: 'Crispy Bacon Strip', price: 2.50, maxQuantity: 3, nutrition: N.crispyBacon },
-      { id: 'extra-jam', name: 'Extra Smoky Bacon Jam', price: 2.00, maxQuantity: 3, nutrition: N.baconJam30 },
-      { id: 'dill-pickles', name: 'Pickled Cucumbers', price: 1.00, maxQuantity: 3, nutrition: N.pickles },
-      { id: 'charred-jalapeno', name: 'Charred Jalapeños', price: 1.50, maxQuantity: 3, nutrition: N.jalapenos },
-    ],
-  },
-
-  // 2. Classic Double Cheeseburger (Original)
+  // 1. Classic Double Cheeseburger
   {
     id: 'golden-double-classic',
     estimatedMinutes: 30,
     name: 'Classic Double Cheeseburger',
     category: 'Burgers',
-    sortOrder: 2,
+    sortOrder: 1,
     price: 22.90,
-    description: 'Two smashed 90 g beef patties, double aged cheddar, pickled cucumber, shaved sweet onion, and house secret sauce.',
-    longDescription: 'The purist standard prepared with absolute plancha discipline. Two 90 g beef patties smashed thin for caramelized lace edges, paired with double melted cheddar, thinly shaved sweet onion, crisp pickled cucumbers, and our caper-shallot secret sauce on a toasted milk bun.',
+    description: 'Two smashed 90 g beef patties, double aged cheddar, pickled cucumber, shaved sweet onion, and house special sauce.',
+    longDescription: 'The purist standard prepared with absolute plancha discipline. Two 90 g beef patties smashed thin for caramelized lace edges, paired with double melted cheddar, thinly shaved sweet onion, crisp pickled cucumbers, and our house special sauce on a toasted milk bun.',
     mainIngredients: [
       'Toasted Milk Brioche Bun',
       'Two Smashed Beef Patties (90 g each)',
       'Double Melted Sharp Cheddar',
       'Paper-Thin Shaved Onion',
       'Pickled Cucumber Slices',
-      'House Secret Plancha Sauce',
+      'House Special Sauce',
     ],
     beefWeight: '180 g beef (2 × 90 g patties) [Placeholder]',
     allergens: ['Gluten', 'Dairy', 'Eggs, Mustard [Placeholder]'],
@@ -380,7 +345,7 @@ export const MENU_ITEMS: MenuItem[] = [
       { id: 'sharp-cheddar', name: 'Aged Sharp Cheddar', isRequired: false, nutrition: N.cheddarDouble },
       { id: 'shaved-onion', name: 'Shaved Sweet Onion', isRequired: false, nutrition: N.shavedOnion },
       { id: 'pickled-cucumbers', name: 'Pickled Cucumber Slices', isRequired: false, nutrition: N.pickles },
-      { id: 'secret-sauce', name: 'House Secret Sauce', isRequired: false, nutrition: N.secretSauce20 },
+      { id: 'secret-sauce', name: 'House Special Sauce', isRequired: false, nutrition: N.secretSauce20 },
       { id: 'brioche-bun', name: 'Toasted Milk Brioche Bun', isRequired: true },
     ],
     availableExtras: [
@@ -391,49 +356,102 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
   },
 
-  // 3. Truffle Forest Melt (Original)
+  // 2. Double Smashed Bacon Burger
   {
-    id: 'truffle-forest-melt',
+    id: 'double-smashed-bacon-burger',
     estimatedMinutes: 30,
-    name: 'Truffle Forest Melt',
+    name: 'Double Smashed Bacon Burger',
     category: 'Burgers',
-    sortOrder: 3,
-    price: 27.90,
-    description: 'Double 90 g smashed patties, sautéed brown beech mushrooms, melted Swiss Gruyère, and black truffle herb aioli on brioche.',
-    longDescription: 'An intensely savory forest-inspired creation featuring two 90 g dry-aged beef patties. Smothered in butter-sautéed brown beech mushrooms, nutty aged Swiss Gruyère, and fragrant black truffle emulsion on our signature griddled brioche bun.',
+    sortOrder: 2,
+    price: 26.90,
+    description: 'Two smashed beef patties, 90 g each, with crispy bacon, melted cheddar, pickled cucumber, onion, burger sauce, and a toasted brioche bun.',
+    longDescription: 'Two fresh 90 g beef patties smashed searing-hot on 260°C carbon steel to lock in juices and create signature caramelized lacy edges. Topped with thick strips of crispy smoked bacon, rich melted cheddar cheese, house pickled cucumber rounds, sweet shaved onion, and creamy burger sauce on a butter-griddled potato brioche bun.',
     mainIngredients: [
-      'Toasted Brioche Bun',
+      'Toasted Potato Brioche Bun',
       'Two Smashed Beef Patties (90 g each)',
-      'Sautéed Brown Beech Mushrooms',
-      'Aged Swiss Gruyère Cheese',
-      'Black Truffle Herb Aioli',
+      'Crispy Smoked Bacon',
+      'Melted Cheddar Cheese',
+      'Pickled Cucumber Rounds',
+      'Shaved Sweet Onion',
+      'Creamy Burger Sauce',
     ],
     beefWeight: '180 g beef (2 × 90 g patties) [Placeholder]',
-    allergens: ['Gluten', 'Dairy', 'Eggs [Placeholder]'],
-    tags: ['Truffle', 'Gruyère'],
-    nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.gruyere, N.sauteedMushrooms, N.truffleAioli20),
+    allergens: ['Gluten', 'Dairy', 'Eggs, Mustard [Placeholder]'],
+    tags: ['Double Smashed', 'Smoked Bacon', 'New'],
+    nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.crispyBacon, N.cheddarSlice, N.pickles, N.shavedOnion, N.secretSauce20),
     prepTime: '6 min',
-    isChefSpecial: true,
-    imageSlot: '/images/menu/truffle-forest-melt.jpg',
-    imageLabel: 'Mushroom and melted gruyere burger on dark slate board',
+    isBestseller: true,
+    imageSlot: '/images/menu/double-smashed-bacon.jpg',
+    imageLabel: 'Double smashed beef patties with crispy bacon and melted cheddar',
     imageStyle: 'scene',
+    imagePosition: 'center 55%',
     includedIngredients: [
-      { id: 'patty-primary', name: 'First Smashed Patty (90 g)', isRequired: true },
-      { id: 'patty-second', name: 'Second Smashed Patty (90 g)', isRequired: false, nutrition: N.patty90 },
-      { id: 'swiss-gruyere', name: 'Melted Swiss Gruyère', isRequired: false, nutrition: N.gruyere },
-      { id: 'sauteed-mushrooms', name: 'Sautéed Beech Mushrooms', isRequired: false, nutrition: N.sauteedMushrooms },
-      { id: 'truffle-aioli', name: 'Black Truffle Herb Aioli', isRequired: false, nutrition: N.truffleAioli20 },
+      { id: 'patty-90g-1', name: 'First Smashed Patty (90 g)', isRequired: true },
+      { id: 'patty-90g-2', name: 'Second Smashed Patty (90 g)', isRequired: false, nutrition: N.patty90 },
+      { id: 'crispy-bacon', name: 'Crispy Smoked Bacon', isRequired: false, nutrition: N.crispyBacon },
+      { id: 'melted-cheddar', name: 'Melted Cheddar Cheese', isRequired: false, nutrition: N.cheddarSlice },
+      { id: 'pickled-cucumbers', name: 'Pickled Cucumber Rounds', isRequired: false, nutrition: N.pickles },
+      { id: 'shaved-onion', name: 'Shaved Sweet Onion', isRequired: false, nutrition: N.shavedOnion },
+      { id: 'burger-sauce', name: 'Creamy Burger Sauce', isRequired: false, nutrition: N.secretSauce20 },
       { id: 'brioche-bun', name: 'Toasted Brioche Bun', isRequired: true },
     ],
     availableExtras: [
-      { id: 'extra-patty', name: 'Extra Smashed Patty (90 g)', price: 5.50, maxQuantity: 3, nutrition: N.patty90 },
-      { id: 'extra-gruyere', name: 'Extra Swiss Gruyère', price: 2.50, maxQuantity: 3, nutrition: N.gruyere },
-      { id: 'extra-mushrooms', name: 'Extra Sautéed Mushrooms', price: 2.00, maxQuantity: 3, nutrition: N.sauteedMushrooms },
-      { id: 'truffle-aioli-extra', name: 'Extra Black Truffle Aioli', price: 2.00, maxQuantity: 3, nutrition: N.truffleAioli20 },
+      { id: 'extra-patty-90g', name: 'Extra Smashed Patty (90 g)', price: 5.50, maxQuantity: 3, nutrition: N.patty90 },
+      { id: 'extra-bacon', name: 'Extra Crispy Bacon Strips', price: 2.50, maxQuantity: 3, nutrition: N.crispyBacon },
+      { id: 'extra-cheddar', name: 'Extra Melted Cheddar', price: 2.00, maxQuantity: 3, nutrition: N.cheddarSlice },
+      { id: 'extra-pickles', name: 'Extra Pickled Cucumbers', price: 1.00, maxQuantity: 3, nutrition: N.pickles },
+      { id: 'extra-sauce', name: 'Extra House Burger Sauce', price: 1.50, maxQuantity: 3, nutrition: N.secretSauce20 },
     ],
   },
 
-  // 4. Sweet Heat Pickled Jalapeño (Original)
+  // 3. Bun & Patty Signature Burger
+  {
+    id: 'bun-patty-smash',
+    estimatedMinutes: 30,
+    name: 'Bun & Patty Signature Burger',
+    category: 'Burgers',
+    sortOrder: 3,
+    price: 27.90,
+    description: 'Two smashed 90 g beef patties with melted American cheese, two fried eggs, crispy bacon, pickles, and house special sauce on a brioche bun.',
+    longDescription: 'Our house signature, built tall and messy. Two 90 g beef patties smashed on 260°C carbon steel and blanketed in melted American cheese, stacked with two runny fried eggs, crispy smoked bacon, pickles, and our house special sauce on a butter-toasted brioche bun.',
+    mainIngredients: [
+      'Toasted Brioche Bun',
+      'Two Smashed Beef Patties (90 g each)',
+      'Melted American Cheese',
+      'Two Fried Eggs',
+      'Crispy Smoked Bacon',
+      'Pickles',
+      'House Special Sauce',
+    ],
+    beefWeight: '180 g beef (2 × 90 g patties) [Placeholder]',
+    allergens: ['Gluten', 'Dairy', 'Eggs', 'Mustard [Placeholder]'],
+    tags: ['House Signature', 'Fried Eggs'],
+    nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.americanCheese2, N.friedEgg, N.friedEgg, N.crispyBacon, N.pickles, N.specialSauce20),
+    prepTime: '7 min',
+    isBestseller: true,
+    isChefSpecial: true,
+    imageSlot: '/images/menu/bun-patty-signature.jpg',
+    imageLabel: 'Tall messy double smash burger with two runny fried eggs and melted cheese dripping down',
+    imageStyle: 'scene',
+    includedIngredients: [
+      { id: 'brioche-bun', name: 'Toasted Brioche Bun', isRequired: true },
+      { id: 'patty-primary', name: 'First Smashed Patty (90 g)', isRequired: true },
+      { id: 'patty-second', name: 'Second Smashed Patty (90 g)', isRequired: true },
+      { id: 'american-cheese', name: 'Melted American Cheese', isRequired: false, nutrition: N.americanCheese2 },
+      { id: 'fried-eggs', name: 'Two Fried Eggs', isRequired: false, nutrition: sumNutrition(N.friedEgg, N.friedEgg) },
+      { id: 'crispy-bacon', name: 'Crispy Smoked Bacon', isRequired: false, nutrition: N.crispyBacon },
+      { id: 'pickles', name: 'Pickles', isRequired: false, nutrition: N.pickles },
+      { id: 'house-special-sauce', name: 'House Special Sauce', isRequired: false, nutrition: N.specialSauce20 },
+    ],
+    availableExtras: [
+      { id: 'extra-patty', name: 'Extra Smashed Patty (90 g)', price: 5.50, maxQuantity: 3, nutrition: N.patty90 },
+      { id: 'extra-american-cheese', name: 'Extra American Cheese', price: 2.00, maxQuantity: 3, nutrition: N.americanCheeseSlice },
+      { id: 'extra-fried-egg', name: 'Extra Fried Egg', price: 2.00, maxQuantity: 3, nutrition: N.friedEgg },
+      { id: 'extra-bacon', name: 'Extra Crispy Bacon', price: 2.50, maxQuantity: 3, nutrition: N.crispyBacon },
+    ],
+  },
+
+  // 4. Sweet Heat Pickled Jalapeño
   {
     id: 'sweet-heat-jalapeno',
     estimatedMinutes: 30,
@@ -477,7 +495,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
   },
 
-  // 5. Buttermilk Crispy Chicken (Original)
+  // 5. Buttermilk Fried Chicken Sandwich
   {
     id: 'buttermilk-crispy-chicken',
     estimatedMinutes: 30,
@@ -516,102 +534,58 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
   },
 
-  // 6. Crispy Halloumi & Mint (Original)
+  // 6. Mozzarella Burger
   {
     id: 'crispy-halloumi-mint',
     estimatedMinutes: 30,
-    name: 'Crispy Griddled Halloumi Burger',
+    name: 'Mozzarella Burger',
     category: 'Burgers',
     sortOrder: 6,
     price: 21.90,
-    description: 'Thick seared halloumi slab, charred red peppers, fresh mint, wild baby arugula, and lemon-tahini crema on toasted milk brioche.',
-    longDescription: 'A satisfying meatless burger built around a thick slab of Mediterranean halloumi cheese seared on the plancha until golden and warm. Layered with tender fire-roasted sweet peppers, fresh garden mint, baby arugula, and velvety lemon-tahini crema on toasted brioche.',
+    description: 'Fried mozzarella, cheddar, cheese sauce, house special sauce, iceberg lettuce, and tomato on a toasted burger bun.',
+    longDescription: 'A meat-free burger built around a thick, golden fried mozzarella patty with a crisp crumb and a molten, stretchy centre. Layered with melted cheddar, warm cheese sauce, our house special sauce, crunchy iceberg lettuce, and fresh tomato on a toasted burger bun.',
     mainIngredients: [
-      'Toasted Brioche Bun',
-      'Seared Halloumi Cheese Slab',
-      'Fire-Roasted Sweet Red Peppers',
-      'Fresh Garden Mint Leaves',
-      'Baby Wild Arugula',
-      'Lemon-Tahini Crema',
+      'Toasted Burger Bun',
+      'Fried Mozzarella Patty',
+      'Melted Cheddar',
+      'Cheese Sauce',
+      'House Special Sauce',
+      'Iceberg Lettuce',
+      'Fresh Tomato',
     ],
-    allergens: ['Gluten', 'Dairy', 'Sesame [Placeholder]'],
-    tags: ['Vegetarian', 'Mediterranean'],
-    nutrition: sumNutrition(N.briocheBun, N.halloumi, N.roastedPeppers, N.mint, N.arugula, N.tahiniCrema),
-    prepTime: '5 min',
-    isVegetarian: true,
-    imageSlot: '/images/menu/crispy-halloumi-mint.jpg',
-    imageLabel: 'Golden griddled halloumi with charred red peppers and vibrant green herbs',
-    imageStyle: 'scene',
-    includedIngredients: [
-      { id: 'halloumi-slab', name: 'Seared Halloumi Slab', isRequired: true },
-      { id: 'roasted-peppers', name: 'Fire-Roasted Sweet Peppers', isRequired: false, nutrition: N.roastedPeppers },
-      { id: 'fresh-mint', name: 'Fresh Mint Leaves', isRequired: false, nutrition: N.mint },
-      { id: 'baby-arugula', name: 'Baby Wild Arugula', isRequired: false, nutrition: N.arugula },
-      { id: 'tahini-crema', name: 'Lemon-Tahini Crema', isRequired: false, nutrition: N.tahiniCrema },
-      { id: 'brioche-bun', name: 'Toasted Milk Brioche Bun', isRequired: true },
-    ],
-    availableExtras: [
-      { id: 'extra-halloumi', name: 'Extra Seared Halloumi Slab', price: 4.50, maxQuantity: 2, nutrition: N.halloumi },
-      { id: 'avocado-mash', name: 'Crushed Ripe Avocado', price: 2.50, maxQuantity: 2, nutrition: N.avocadoMash },
-      { id: 'extra-peppers', name: 'Extra Fire-Roasted Peppers', price: 1.50, maxQuantity: 2, nutrition: N.roastedPeppers },
-    ],
-  },
-
-  // 7. Double Smashed Bacon Burger (New - after originals)
-  {
-    id: 'double-smashed-bacon-burger',
-    estimatedMinutes: 30,
-    name: 'Double Smashed Bacon Burger',
-    category: 'Burgers',
-    sortOrder: 7,
-    price: 26.90,
-    description: 'Two smashed beef patties, 90 g each, with crispy bacon, melted cheddar, pickled cucumber, onion, burger sauce, and a toasted brioche bun.',
-    longDescription: 'Two fresh 90 g beef patties smashed searing-hot on 260°C carbon steel to lock in juices and create signature caramelized lacy edges. Topped with thick strips of crispy smoked bacon, rich melted cheddar cheese, house pickled cucumber rounds, sweet shaved onion, and creamy burger sauce on a butter-griddled potato brioche bun.',
-    mainIngredients: [
-      'Toasted Potato Brioche Bun',
-      'Two Smashed Beef Patties (90 g each)',
-      'Crispy Smoked Bacon',
-      'Melted Cheddar Cheese',
-      'Pickled Cucumber Rounds',
-      'Shaved Sweet Onion',
-      'Creamy Burger Sauce',
-    ],
-    beefWeight: '180 g beef (2 × 90 g patties) [Placeholder]',
-    allergens: ['Gluten', 'Dairy', 'Eggs, Mustard [Placeholder]'],
-    tags: ['Double Smashed', 'Smoked Bacon', 'New'],
-    nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.crispyBacon, N.cheddarSlice, N.pickles, N.shavedOnion, N.secretSauce20),
+    allergens: ['Gluten', 'Dairy', 'Eggs', 'Mustard [Placeholder]'],
+    badge: 'Vegetarian',
+    tags: ['Vegetarian', 'Fried Mozzarella'],
+    nutrition: sumNutrition(N.burgerBun, N.friedMozzarella, N.cheddarSlice, N.cheeseSauce30, N.specialSauce20, N.iceberg, N.tomato),
     prepTime: '6 min',
-    isBestseller: true,
-    imageSlot: '/images/menu/double-smashed-bacon.jpg',
-    imageLabel: 'Double smashed beef patties with crispy bacon and melted cheddar',
+    isVegetarian: true,
+    imageSlot: '/images/menu/mozzarella-burger.jpg',
+    imageLabel: 'Burger with a thick golden fried mozzarella patty and stretchy cheese pulling out',
     imageStyle: 'scene',
-    imagePosition: 'center 55%',
     includedIngredients: [
-      { id: 'patty-90g-1', name: 'First Smashed Patty (90 g)', isRequired: true },
-      { id: 'patty-90g-2', name: 'Second Smashed Patty (90 g)', isRequired: false, nutrition: N.patty90 },
-      { id: 'crispy-bacon', name: 'Crispy Smoked Bacon', isRequired: false, nutrition: N.crispyBacon },
+      { id: 'burger-bun', name: 'Toasted Burger Bun', isRequired: true },
+      { id: 'fried-mozzarella', name: 'Fried Mozzarella Patty', isRequired: true },
       { id: 'melted-cheddar', name: 'Melted Cheddar Cheese', isRequired: false, nutrition: N.cheddarSlice },
-      { id: 'pickled-cucumbers', name: 'Pickled Cucumber Rounds', isRequired: false, nutrition: N.pickles },
-      { id: 'shaved-onion', name: 'Shaved Sweet Onion', isRequired: false, nutrition: N.shavedOnion },
-      { id: 'burger-sauce', name: 'Creamy Burger Sauce', isRequired: false, nutrition: N.secretSauce20 },
-      { id: 'brioche-bun', name: 'Toasted Brioche Bun', isRequired: true },
+      { id: 'cheese-sauce-layer', name: 'Cheese Sauce', isRequired: false, nutrition: N.cheeseSauce30 },
+      { id: 'house-special-sauce', name: 'House Special Sauce', isRequired: false, nutrition: N.specialSauce20 },
+      { id: 'iceberg-crisp', name: 'Crisp Iceberg Lettuce', isRequired: false, nutrition: N.iceberg },
+      { id: 'fresh-tomato', name: 'Fresh Tomato', isRequired: false, nutrition: N.tomato },
     ],
     availableExtras: [
-      { id: 'extra-patty-90g', name: 'Extra Smashed Patty (90 g)', price: 5.50, maxQuantity: 3, nutrition: N.patty90 },
-      { id: 'extra-bacon', name: 'Extra Crispy Bacon Strips', price: 2.50, maxQuantity: 3, nutrition: N.crispyBacon },
+      { id: 'extra-fried-mozzarella', name: 'Extra Fried Mozzarella', price: 5.00, maxQuantity: 2, nutrition: N.friedMozzarella },
       { id: 'extra-cheddar', name: 'Extra Melted Cheddar', price: 2.00, maxQuantity: 3, nutrition: N.cheddarSlice },
-      { id: 'extra-pickles', name: 'Extra Pickled Cucumbers', price: 1.00, maxQuantity: 3, nutrition: N.pickles },
-      { id: 'extra-sauce', name: 'Extra House Burger Sauce', price: 1.50, maxQuantity: 3, nutrition: N.secretSauce20 },
+      { id: 'extra-burger-cheese-sauce', name: 'Extra Cheese Sauce', price: 2.00, maxQuantity: 3, nutrition: N.cheeseSauce30 },
+      { id: 'add-beef-patty', name: 'Add Beef Patty (90 g)', price: 5.50, maxQuantity: 2, nutrition: N.patty90 },
     ],
   },
 
-  // 8. The Big One (New - after Double Smashed Bacon Burger)
+  // 7. The Big One
   {
     id: 'the-big-one',
     estimatedMinutes: 40,
     name: 'The Big One',
     category: 'Burgers',
-    sortOrder: 8,
+    sortOrder: 7,
     price: 49.90,
     description: '750 g of beef, 6 layers of cheddar, 2 layers of bacon, special sauce, onion in Saperavi wine, iceberg, and pickled cucumber.',
     longDescription: 'Our towering culinary centerpiece built for serious burger enthusiasts and communal sharing. Features an extraordinary 750 g of dry-aged beef smashed paper-thin across juicy tiers, interlaced with six generous blankets of melted sharp cheddar, two ribbons of crispy smoked bacon, and sweet red onions marinated in Kakheti Saperavi wine. Balanced with crunchy iceberg lettuce, vinegar pickled cucumber, and house special burger sauce on an oversized toasted sesame bun secured by twin skewers.',
@@ -656,15 +630,57 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
   },
 
+  // 8. Truffle Forest Melt
+  {
+    id: 'truffle-forest-melt',
+    estimatedMinutes: 30,
+    name: 'Truffle Forest Melt',
+    category: 'Burgers',
+    sortOrder: 8,
+    price: 27.90,
+    description: 'Double 90 g smashed patties, sautéed brown beech mushrooms, melted Swiss Gruyère, and black truffle aioli on brioche.',
+    longDescription: 'An intensely savory forest-inspired creation featuring two 90 g dry-aged beef patties. Smothered in butter-sautéed brown beech mushrooms, nutty aged Swiss Gruyère, and fragrant black truffle emulsion on our signature griddled brioche bun.',
+    mainIngredients: [
+      'Toasted Brioche Bun',
+      'Two Smashed Beef Patties (90 g each)',
+      'Sautéed Brown Beech Mushrooms',
+      'Aged Swiss Gruyère Cheese',
+      'Black Truffle Aioli',
+    ],
+    beefWeight: '180 g beef (2 × 90 g patties) [Placeholder]',
+    allergens: ['Gluten', 'Dairy', 'Eggs [Placeholder]'],
+    tags: ['Truffle', 'Gruyère'],
+    nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.gruyere, N.sauteedMushrooms, N.truffleAioli20),
+    prepTime: '6 min',
+    isChefSpecial: true,
+    imageSlot: '/images/menu/truffle-forest-melt.jpg',
+    imageLabel: 'Mushroom and melted gruyere burger on dark slate board',
+    imageStyle: 'scene',
+    includedIngredients: [
+      { id: 'patty-primary', name: 'First Smashed Patty (90 g)', isRequired: true },
+      { id: 'patty-second', name: 'Second Smashed Patty (90 g)', isRequired: false, nutrition: N.patty90 },
+      { id: 'swiss-gruyere', name: 'Melted Swiss Gruyère', isRequired: false, nutrition: N.gruyere },
+      { id: 'sauteed-mushrooms', name: 'Sautéed Beech Mushrooms', isRequired: false, nutrition: N.sauteedMushrooms },
+      { id: 'truffle-aioli', name: 'Black Truffle Aioli', isRequired: false, nutrition: N.truffleAioli20 },
+      { id: 'brioche-bun', name: 'Toasted Brioche Bun', isRequired: true },
+    ],
+    availableExtras: [
+      { id: 'extra-patty', name: 'Extra Smashed Patty (90 g)', price: 5.50, maxQuantity: 3, nutrition: N.patty90 },
+      { id: 'extra-gruyere', name: 'Extra Swiss Gruyère', price: 2.50, maxQuantity: 3, nutrition: N.gruyere },
+      { id: 'extra-mushrooms', name: 'Extra Sautéed Mushrooms', price: 2.00, maxQuantity: 3, nutrition: N.sauteedMushrooms },
+      { id: 'truffle-aioli-extra', name: 'Extra Black Truffle Aioli', price: 2.00, maxQuantity: 3, nutrition: N.truffleAioli20 },
+    ],
+  },
+
   // =========================================================================
-  // 2. SIDE DISHES (Originals 1-3, then Fries with Cheese & Bacon, Caesar Salad, Bowl Mix)
+  // 2. SIDE DISHES
   // =========================================================================
 
-  // 1. Rosemary Russet Crinkle Fries (Original)
+  // 1. Fries
   {
     id: 'golden-crinkle-fries',
     estimatedMinutes: 15,
-    name: 'Rosemary Russet Crinkle Fries',
+    name: 'Fries',
     category: 'Side Dishes',
     sortOrder: 1,
     price: 8.90,
@@ -689,16 +705,16 @@ export const MENU_ITEMS: MenuItem[] = [
       { id: 'rosemary-salt', name: 'Rosemary & Thyme Salt', isRequired: false, nutrition: ZERO_NUTRITION },
     ],
     availableExtras: [
-      { id: 'side-secret-sauce', name: 'Side Secret Sauce Cup', price: 1.50, maxQuantity: 3, nutrition: N.secretSauceCup },
+      { id: 'side-secret-sauce', name: 'Side House Special Sauce Cup', price: 1.50, maxQuantity: 3, nutrition: N.secretSauceCup },
       { id: 'side-truffle-aioli', name: 'Side Truffle Aioli Cup', price: 2.00, maxQuantity: 3, nutrition: N.truffleAioliCup },
     ],
   },
 
-  // 2. Truffle Parmesan Hand-Cut Fries (Original)
+  // 2. Truffle Fries
   {
     id: 'parmesan-truffle-fries',
     estimatedMinutes: 15,
-    name: 'Truffle Parmesan Hand-Cut Fries',
+    name: 'Truffle Fries',
     category: 'Side Dishes',
     sortOrder: 2,
     price: 12.90,
@@ -730,47 +746,13 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
   },
 
-  // 3. Crispy Sweet Onion Rings (Original)
-  {
-    id: 'onion-rings',
-    estimatedMinutes: 15,
-    name: 'Crispy Sweet Onion Rings',
-    category: 'Side Dishes',
-    sortOrder: 3,
-    price: 9.90,
-    description: 'Thick rings of sweet onion soaked in buttermilk, coated in seasoned Japanese panko, and fried to golden perfection.',
-    longDescription: 'Thick-cut sweet onion rings soaked in seasoned cultured buttermilk and dredged in coarse Japanese panko breadcrumbs. Fried to a resonant, shatter-crisp crunch with a sweet, tender interior.',
-    mainIngredients: [
-      'Thick-Cut Sweet Onions',
-      'Cultured Buttermilk Marinade',
-      'Japanese Coarse Panko Crumbs',
-      'Smoked Paprika Sea Salt',
-    ],
-    allergens: ['Gluten', 'Dairy [Placeholder]'],
-    tags: ['Vegetarian', 'Crispy'],
-    nutrition: sumNutrition(N.onionRings180),
-    prepTime: '4 min',
-    isVegetarian: true,
-    imageSlot: '/images/menu/onion-rings.jpg',
-    imageLabel: 'Tower stack of thick golden panko onion rings on parchment paper',
-    imageStyle: 'isolated',
-    includedIngredients: [
-      { id: 'onion-rings-core', name: 'Panko Onion Rings', isRequired: true },
-      { id: 'paprika-salt', name: 'Smoked Paprika Seasoning', isRequired: false, nutrition: ZERO_NUTRITION },
-    ],
-    availableExtras: [
-      { id: 'side-secret-sauce', name: 'Side Secret Sauce Cup', price: 1.50, maxQuantity: 3, nutrition: N.secretSauceCup },
-      { id: 'side-bacon-jam', name: 'Side Smoky Bacon Jam Cup', price: 2.00, maxQuantity: 3, nutrition: N.baconJam30 },
-    ],
-  },
-
-  // 4. Fries with Cheese and Bacon (New - after originals)
+  // 3. Fries with Cheese and Bacon
   {
     id: 'fries-with-cheese-and-bacon',
     estimatedMinutes: 15,
     name: 'Fries with Cheese and Bacon',
     category: 'Side Dishes',
-    sortOrder: 4,
+    sortOrder: 3,
     price: 14.90,
     description: 'Crispy golden fries smothered in thick, glossy melted cheese sauce and crispy bacon pieces.',
     longDescription: 'A generous mountain of hand-cut double-fried golden potatoes, heavily blanketed in rich, velvety molten cheddar cheese sauce cascading through the entire portion, crowned with abundant crispy smoked bacon pieces and freshly snipped scallions.',
@@ -801,7 +783,51 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
   },
 
-  // 5. Caesar Salad (New - after Fries with Cheese and Bacon)
+  // 4. Bowl Mix
+  {
+    id: 'bowl-mix',
+    estimatedMinutes: 20,
+    name: 'Bowl Mix',
+    category: 'Side Dishes',
+    sortOrder: 4,
+    price: 22.90,
+    description: 'A loaded bowl of crispy fries topped with a chopped 90 g smashed beef patty, crispy bacon, shredded iceberg, hot cheese sauce, BBQ sauce, and grated parmesan.',
+    longDescription: 'Our loaded plancha comfort bowl: a generous base of hot, crispy golden fries topped with a freshly chopped 90 g smashed beef patty, crispy smoked bacon pieces, shredded crunchy iceberg lettuce, hot cheddar cheese sauce, smoky BBQ sauce, and a dusting of grated parmesan.',
+    mainIngredients: [
+      'Crispy Golden Fries',
+      'Chopped 90 g Smashed Beef Patty',
+      'Crispy Bacon',
+      'Shredded Iceberg Lettuce',
+      'Hot Cheese Sauce',
+      'BBQ Sauce',
+      'Grated Parmesan',
+    ],
+    beefWeight: '90 g beef (1 chopped patty) [Placeholder]',
+    allergens: ['Dairy', 'Mustard (BBQ sauce) [Placeholder]'],
+    tags: ['Loaded Bowl', 'Smashed Beef', 'New'],
+    nutrition: sumNutrition(N.fries170, N.patty90, N.baconBits, N.iceberg, N.cheeseSauce60, N.bbqSauce, N.parmesanGrated),
+    prepTime: '6 min',
+    imageSlot: '/images/menu/bowl-mix.jpg',
+    imageLabel: 'Dark bowl of crispy fries loaded with chopped beef, bacon, iceberg, cheese sauce, BBQ sauce, and parmesan',
+    imageStyle: 'scene',
+    includedIngredients: [
+      { id: 'crispy-fries', name: 'Crispy Fries', isRequired: false, nutrition: N.fries170 },
+      { id: 'chopped-patty', name: 'Chopped Smashed Beef Patty (90 g)', isRequired: false, nutrition: N.patty90 },
+      { id: 'crispy-bacon', name: 'Crispy Bacon', isRequired: false, nutrition: N.baconBits },
+      { id: 'shredded-iceberg', name: 'Shredded Iceberg Lettuce', isRequired: false, nutrition: N.iceberg },
+      { id: 'hot-cheese-sauce', name: 'Hot Cheese Sauce', isRequired: false, nutrition: N.cheeseSauce60 },
+      { id: 'bbq-sauce', name: 'BBQ Sauce', isRequired: false, nutrition: N.bbqSauce },
+      { id: 'grated-parmesan', name: 'Grated Parmesan', isRequired: false, nutrition: N.parmesanGrated },
+    ],
+    availableExtras: [
+      { id: 'extra-patty', name: 'Extra Smashed Patty (90 g)', price: 5.50, maxQuantity: 3, nutrition: N.patty90 },
+      { id: 'extra-bowl-bacon', name: 'Extra Crispy Bacon', price: 2.50, maxQuantity: 3, nutrition: N.baconBits },
+      { id: 'extra-bowl-cheese-sauce', name: 'Extra Hot Cheese Sauce', price: 2.50, maxQuantity: 3, nutrition: N.cheeseSauce60 },
+      { id: 'extra-grated-parmesan', name: 'Extra Grated Parmesan', price: 2.00, maxQuantity: 3, nutrition: N.parmesanGrated },
+    ],
+  },
+
+  // 5. Caesar Salad
   {
     id: 'caesar-salad',
     estimatedMinutes: 10,
@@ -840,93 +866,215 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
   },
 
-  // 6. Bowl Mix (New - after Caesar Salad)
+  // 6. Onion Rings
   {
-    id: 'bowl-mix',
-    estimatedMinutes: 20,
-    name: 'Bowl Mix',
+    id: 'onion-rings',
+    estimatedMinutes: 15,
+    name: 'Onion Rings',
     category: 'Side Dishes',
     sortOrder: 6,
-    price: 22.90,
-    description: 'A loaded bowl of crispy fries topped with a chopped 90 g smashed beef patty, crispy bacon, shredded iceberg, hot cheese sauce, BBQ sauce, and grated parmesan.',
-    longDescription: 'Our loaded plancha comfort bowl: a generous base of hot, crispy golden fries topped with a freshly chopped 90 g smashed beef patty, crispy smoked bacon pieces, shredded crunchy iceberg lettuce, hot cheddar cheese sauce, smoky BBQ sauce, and a dusting of grated parmesan.',
+    price: 9.90,
+    description: 'Thick rings of sweet onion soaked in buttermilk, coated in seasoned Japanese panko, and fried to golden perfection.',
+    longDescription: 'Thick-cut sweet onion rings soaked in seasoned cultured buttermilk and dredged in coarse Japanese panko breadcrumbs. Fried to a resonant, shatter-crisp crunch with a sweet, tender interior.',
     mainIngredients: [
-      'Crispy Golden Fries',
-      'Chopped 90 g Smashed Beef Patty',
-      'Crispy Bacon',
-      'Shredded Iceberg Lettuce',
-      'Hot Cheese Sauce',
-      'BBQ Sauce',
-      'Grated Parmesan',
+      'Thick-Cut Sweet Onions',
+      'Cultured Buttermilk Marinade',
+      'Japanese Coarse Panko Crumbs',
+      'Smoked Paprika Sea Salt',
     ],
-    beefWeight: '90 g beef (1 chopped patty) [Placeholder]',
-    allergens: ['Dairy', 'Mustard (BBQ sauce) [Placeholder]'],
-    tags: ['Loaded Bowl', 'Smashed Beef', 'New'],
-    nutrition: sumNutrition(N.fries170, N.patty90, N.baconBits, N.iceberg, N.cheeseSauce60, N.bbqSauce, N.parmesanGrated),
-    prepTime: '6 min',
-    imageSlot: '/images/menu/bowl-mix.jpg',
-    imageLabel: 'Dark bowl of crispy fries loaded with chopped beef, bacon, iceberg, cheese sauce, BBQ sauce, and parmesan',
-    imageStyle: 'scene',
+    allergens: ['Gluten', 'Dairy [Placeholder]'],
+    tags: ['Vegetarian', 'Crispy'],
+    nutrition: sumNutrition(N.onionRings180),
+    prepTime: '4 min',
+    isVegetarian: true,
+    imageSlot: '/images/menu/onion-rings.jpg',
+    imageLabel: 'Tower stack of thick golden panko onion rings on parchment paper',
+    imageStyle: 'isolated',
     includedIngredients: [
-      { id: 'crispy-fries', name: 'Crispy Fries', isRequired: false, nutrition: N.fries170 },
-      { id: 'chopped-patty', name: 'Chopped Smashed Beef Patty (90 g)', isRequired: false, nutrition: N.patty90 },
-      { id: 'crispy-bacon', name: 'Crispy Bacon', isRequired: false, nutrition: N.baconBits },
-      { id: 'shredded-iceberg', name: 'Shredded Iceberg Lettuce', isRequired: false, nutrition: N.iceberg },
-      { id: 'hot-cheese-sauce', name: 'Hot Cheese Sauce', isRequired: false, nutrition: N.cheeseSauce60 },
-      { id: 'bbq-sauce', name: 'BBQ Sauce', isRequired: false, nutrition: N.bbqSauce },
-      { id: 'grated-parmesan', name: 'Grated Parmesan', isRequired: false, nutrition: N.parmesanGrated },
+      { id: 'onion-rings-core', name: 'Panko Onion Rings', isRequired: true },
+      { id: 'paprika-salt', name: 'Smoked Paprika Seasoning', isRequired: false, nutrition: ZERO_NUTRITION },
     ],
     availableExtras: [
-      { id: 'extra-patty', name: 'Extra Smashed Patty (90 g)', price: 5.50, maxQuantity: 3, nutrition: N.patty90 },
-      { id: 'extra-bowl-bacon', name: 'Extra Crispy Bacon', price: 2.50, maxQuantity: 3, nutrition: N.baconBits },
-      { id: 'extra-bowl-cheese-sauce', name: 'Extra Hot Cheese Sauce', price: 2.50, maxQuantity: 3, nutrition: N.cheeseSauce60 },
-      { id: 'extra-grated-parmesan', name: 'Extra Grated Parmesan', price: 2.00, maxQuantity: 3, nutrition: N.parmesanGrated },
+      { id: 'side-secret-sauce', name: 'Side House Special Sauce Cup', price: 1.50, maxQuantity: 3, nutrition: N.secretSauceCup },
+      { id: 'side-bacon-jam', name: 'Side Smoky Bacon Jam Cup', price: 2.00, maxQuantity: 3, nutrition: N.baconJam30 },
     ],
   },
 
+  // 7. Chicken Wings
+  {
+    id: 'chicken-wings',
+    estimatedMinutes: 20,
+    name: 'Chicken Wings',
+    category: 'Side Dishes',
+    sortOrder: 7,
+    price: 18.90,
+    description: '8 crispy chicken wings tossed in your choice of spicy or BBQ glaze, served with a dipping sauce.',
+    longDescription: 'Eight juicy chicken wings, lightly dusted in seasoned flour and fried until crackling-crisp, then tossed in your choice of glaze: a fiery butter-chili Spicy or a sticky, smoky BBQ. Served with a cool, creamy garlic-herb dipping sauce.',
+    mainIngredients: [
+      '8 Crispy Chicken Wings',
+      'Choice of Spicy or BBQ Glaze',
+      'Creamy Garlic-Herb Dipping Sauce',
+    ],
+    allergens: ['Gluten', 'Dairy', 'Eggs', 'Mustard (BBQ glaze) [Placeholder]'],
+    tags: ['Crispy', 'Chicken', 'New'],
+    // Base is the plain wings + dip; the chosen glaze adds its own values
+    nutrition: sumNutrition(N.chickenWings8, N.dippingSauce30),
+    prepTime: '12 min',
+    imageSlot: '/images/menu/chicken-wings.jpg',
+    imageLabel: 'Crispy glossy chicken wings with a creamy dip on a dark serving tray',
+    imageStyle: 'scene',
+    includedIngredients: [
+      { id: 'crispy-wings-8', name: '8 Crispy Chicken Wings', isRequired: true },
+      { id: 'dipping-sauce', name: 'Dipping Sauce', isRequired: false, nutrition: N.dippingSauce30 },
+    ],
+    availableExtras: [
+      { id: 'extra-wings-4', name: 'Extra Wings (4 pcs)', price: 8.90, maxQuantity: 3, nutrition: N.chickenWings4 },
+      { id: 'extra-dipping-sauce', name: 'Extra Dipping Sauce', price: 1.50, maxQuantity: 3, nutrition: N.dippingSauce30 },
+    ],
+    requiredChoice: {
+      id: 'wing-flavor',
+      title: 'Choose a flavor',
+      defaultOptionId: undefined, // Nothing preselected
+      options: [
+        { id: 'spicy', name: 'Spicy', priceAdjustment: 0.00, color: '#DC2626', nutrition: N.spicyWingGlaze },
+        { id: 'bbq', name: 'BBQ', priceAdjustment: 0.00, color: '#7C2D12', nutrition: N.bbqWingGlaze },
+      ],
+    },
+  },
+
   // =========================================================================
-  // 3. SAUCES (Originals 1-3, then Cheese Injection, then Cheese Sauce)
+  // 3. SAUCES
   // =========================================================================
 
-  // 1. Smoky Bourbon Bacon Jam (Original)
+  // 1. Cheese Sauce
   {
-    id: 'smoky-bourbon-bacon-jam',
-    estimatedMinutes: 5,
-    name: 'Smoky Bourbon Bacon Jam',
+    id: 'cheese-sauce',
+    estimatedMinutes: 2,
+    name: 'Cheese Sauce',
     category: 'Sauces',
     sortOrder: 1,
-    price: 4.50,
-    description: 'House-made savory jam of slow-cooked caramelized onions, smoked bacon, bourbon, shallots, and dark molasses.',
-    longDescription: 'Our signature condiment cooked low and slow for six hours. Caramelized onions break down with shallots, diced smoked bacon, and a splash of bourbon into an amber, deeply savory spread.',
+    price: 3.90,
+    description: 'A small cup of smooth, hot cheddar cheese sauce for dipping.',
+    longDescription: 'A small cup of smooth, velvety hot cheddar cheese sauce, made for dipping fries, onion rings, or the crispy edges of your burger.',
     mainIngredients: [
-      'Slow-Caramelized Onions',
-      'Smoked Applewood Bacon',
-      'Kentucky Bourbon',
-      'Caramelized Shallots',
-      'Dark Molasses & Cider Vinegar',
+      'Hot Cheddar Cheese Sauce',
     ],
-    volume: '80 ml jar',
-    allergens: ['None [Placeholder]'],
-    tags: ['House Specialty', 'Small Batch'],
-    nutrition: sumNutrition(N.baconJam80),
+    volume: '80 ml cup',
+    allergens: ['Dairy [Placeholder]'],
+    tags: ['Hot Cheese', 'Dip', 'New'],
+    nutrition: sumNutrition(N.cheeseSauce80),
     prepTime: '1 min',
-    isBestseller: true,
-    imageSlot: '/images/menu/smoky-bourbon-bacon-jam.jpg',
-    imageLabel: 'Dark ramekin of chunky smoky onion and bourbon bacon jam with wooden paddle',
+    isVegetarian: true,
+    imageSlot: '/images/menu/cheese-sauce.jpg',
+    imageLabel: 'Small ceramic cup of smooth hot cheddar cheese sauce on dark slate',
     imageStyle: 'isolated',
     includedIngredients: [
-      { id: 'bacon-jam-tub', name: '80 ml Smoky Bacon Jam Cup', isRequired: true },
+      { id: 'cheese-sauce-tub', name: '80 ml Hot Cheese Sauce Cup', isRequired: true },
     ],
     availableExtras: [],
   },
 
-  // 2. Black Truffle Herb Aioli (Original)
+  // 2. Ketchup
+  {
+    id: 'ketchup',
+    estimatedMinutes: 2,
+    name: 'Ketchup',
+    category: 'Sauces',
+    sortOrder: 2,
+    price: 1.50,
+    description: 'A small cup of classic tomato ketchup.',
+    longDescription: 'A small cup of classic, rich tomato ketchup — sweet, tangy, and made for fries, onion rings, and wings.',
+    mainIngredients: [
+      'Classic Tomato Ketchup',
+    ],
+    volume: '30 ml cup',
+    allergens: ['None [Placeholder]'],
+    tags: ['Classic', 'Dip', 'New'],
+    nutrition: sumNutrition(N.ketchup30),
+    prepTime: '1 min',
+    isVegetarian: true,
+    imageSlot: '/images/menu/ketchup.jpg',
+    imageLabel: 'Small bowl of glossy red tomato ketchup on a dark background',
+    imageStyle: 'isolated',
+    includedIngredients: [
+      { id: 'ketchup-cup', name: '30 ml Ketchup Cup', isRequired: true },
+    ],
+    availableExtras: [],
+  },
+
+  // 3. Cheese Injection
+  {
+    id: 'cheese-injection',
+    estimatedMinutes: 5,
+    name: 'Cheese Injection',
+    category: 'Sauces',
+    sortOrder: 3,
+    price: 6.50,
+    description: 'A food-safe, reusable stainless steel culinary injector filled with hot cheese sauce, ready to inject straight into your burger.',
+    longDescription: 'An interactive treat for true cheese lovers. A food-safe, reusable stainless steel kitchen injector with a three-ring plunger and a long injection needle, filled with 60 ml of piping hot, velvety melted cheddar sauce ready to inject directly into the center of your burger.',
+    mainIngredients: [
+      'Reusable Stainless Steel Culinary Injector [Placeholder tool]',
+      '60 ml Piping Hot Melted Cheddar Sauce',
+    ],
+    volume: '60 ml cheese sauce fill',
+    allergens: ['Dairy [Placeholder]'],
+    tags: ['Hot Cheese', 'Culinary Injector', 'Interactive', 'New'],
+    nutrition: sumNutrition(N.cheeseSauce60),
+    prepTime: '2 min',
+    isBestseller: true,
+    imageSlot: '/images/menu/cheese-injection.jpg',
+    imageLabel: 'Stainless steel three-ring culinary injector on a rustic wooden board beside a pool of cheese sauce',
+    imageStyle: 'scene',
+    imagePosition: 'center 58%',
+    includedIngredients: [
+      { id: 'stainless-syringe', name: 'Stainless Steel Culinary Injector', isRequired: true },
+      { id: 'hot-cheddar-fill', name: 'Hot Melted Cheddar Fill (60 ml)', isRequired: true },
+    ],
+    availableExtras: [
+      { id: 'extra-cheese-refill', name: 'Extra Hot Cheese Syringe Refill', price: 4.00, maxQuantity: 2, nutrition: N.cheeseSauce60 },
+      { id: 'jalapeno-cheese-refill', name: 'Jalapeño Hot Cheese Refill', price: 4.50, maxQuantity: 2, nutrition: sumNutrition(N.cheeseSauce60, N.jalapenos) },
+    ],
+  },
+
+  // 4. House Special Sauce
+  {
+    id: 'sauce-house-secret',
+    estimatedMinutes: 5,
+    name: 'House Special Sauce',
+    category: 'Sauces',
+    sortOrder: 4,
+    price: 3.00,
+    description: 'Our proprietary blend of kewpie mayonnaise, coarse whole grain mustard, brine-pickled capers, and sweet relish.',
+    longDescription: 'The savory backbone of our classic cheeseburgers. Prepared daily with rich mayonnaise, crushed capers, tangy pickle relish, and a house blend of ground roasted spices.',
+    mainIngredients: [
+      'Creamy Mayonnaise',
+      'Whole Grain Mustard',
+      'Brine-Pickled Capers',
+      'Finely Diced Sweet Relish',
+      'Paprika & Celery Seed',
+    ],
+    volume: '80 ml cup',
+    allergens: ['Eggs', 'Mustard [Placeholder]'],
+    tags: ['Standard', 'Everyday Dip'],
+    nutrition: sumNutrition(N.secretSauce80),
+    prepTime: '1 min',
+    isVegetarian: true,
+    imageSlot: '/images/menu/sauce-house-secret.jpg',
+    imageLabel: 'White porcelain ramekin of orange-tinted house burger sauce with cracked pepper',
+    imageStyle: 'isolated',
+    includedIngredients: [
+      { id: 'secret-sauce-tub', name: '80 ml House Special Sauce Cup', isRequired: true },
+    ],
+    availableExtras: [],
+  },
+
+  // 5. Black Truffle Aioli
   {
     id: 'sauce-truffle-aioli',
     estimatedMinutes: 5,
-    name: 'Black Truffle Herb Aioli',
+    name: 'Black Truffle Aioli',
     category: 'Sauces',
-    sortOrder: 2,
+    sortOrder: 5,
     price: 4.00,
     description: 'Emulsified cold-pressed olive oil, roasted garlic, minced black summer truffles, and fresh garden chives.',
     longDescription: 'A silky, luxurious dipping emulsion whisked with roasted garlic cloves, fragrant black summer truffles, organic egg yolks, and fresh snipped chives.',
@@ -952,105 +1100,43 @@ export const MENU_ITEMS: MenuItem[] = [
     availableExtras: [],
   },
 
-  // 3. House Secret Plancha Sauce (Original)
+  // 6. Smoky Bourbon Bacon Jam
   {
-    id: 'sauce-house-secret',
+    id: 'smoky-bourbon-bacon-jam',
     estimatedMinutes: 5,
-    name: 'House Secret Plancha Sauce',
+    name: 'Smoky Bourbon Bacon Jam',
     category: 'Sauces',
-    sortOrder: 3,
-    price: 3.00,
-    description: 'Our proprietary blend of kewpie mayonnaise, coarse whole grain mustard, brine-pickled capers, and sweet relish.',
-    longDescription: 'The savory backbone of our classic cheeseburgers. Prepared daily with rich mayonnaise, crushed capers, tangy pickle relish, and a secret blend of ground roasted spices.',
+    sortOrder: 6,
+    price: 4.50,
+    description: 'House-made savory jam of slow-cooked caramelized onions, smoked bacon, bourbon, shallots, and dark molasses.',
+    longDescription: 'Our signature condiment cooked low and slow for six hours. Caramelized onions break down with shallots, diced smoked bacon, and a splash of bourbon into an amber, deeply savory spread.',
     mainIngredients: [
-      'Creamy Mayonnaise',
-      'Whole Grain Mustard',
-      'Brine-Pickled Capers',
-      'Finely Diced Sweet Relish',
-      'Paprika & Celery Seed',
+      'Slow-Caramelized Onions',
+      'Smoked Applewood Bacon',
+      'Kentucky Bourbon',
+      'Caramelized Shallots',
+      'Dark Molasses & Cider Vinegar',
     ],
-    volume: '80 ml cup',
-    allergens: ['Eggs', 'Mustard [Placeholder]'],
-    tags: ['Standard', 'Everyday Dip'],
-    nutrition: sumNutrition(N.secretSauce80),
+    volume: '80 ml jar',
+    allergens: ['None [Placeholder]'],
+    tags: ['House Specialty', 'Small Batch'],
+    nutrition: sumNutrition(N.baconJam80),
     prepTime: '1 min',
-    isVegetarian: true,
-    imageSlot: '/images/menu/sauce-house-secret.jpg',
-    imageLabel: 'White porcelain ramekin of orange-tinted house burger sauce with cracked pepper',
-    imageStyle: 'isolated',
-    includedIngredients: [
-      { id: 'secret-sauce-tub', name: '80 ml House Secret Sauce Cup', isRequired: true },
-    ],
-    availableExtras: [],
-  },
-
-  // 4. Cheese Injection (New - after originals)
-  {
-    id: 'cheese-injection',
-    estimatedMinutes: 5,
-    name: 'Cheese Injection',
-    category: 'Sauces',
-    sortOrder: 4,
-    price: 6.50,
-    description: 'A food-safe, reusable stainless steel culinary syringe with a wide, blunt tip, filled with hot cheese sauce to inject into a burger.',
-    longDescription: 'An interactive gastronomic experience for true cheese lovers. A food-safe, reusable stainless steel kitchen culinary syringe with an ergonomic plunger and wide blunt nozzle, filled with 60 ml of piping hot, velvety melted cheddar sauce ready to inject directly into the center of your burger bun.',
-    mainIngredients: [
-      'Reusable Stainless Steel Culinary Kitchen Syringe (Blunt Tip) [Placeholder tool]',
-      '60 ml Piping Hot Melted Cheddar Sauce',
-    ],
-    volume: '60 ml cheese sauce fill',
-    allergens: ['Dairy [Placeholder]'],
-    tags: ['Hot Cheese', 'Kitchen Syringe', 'Interactive', 'New'],
-    nutrition: sumNutrition(N.cheeseSauce60),
-    prepTime: '2 min',
     isBestseller: true,
-    imageSlot: '/images/menu/cheese-injection.jpg',
-    imageLabel: 'Stainless steel culinary kitchen syringe filled with warm cheese sauce beside burger',
-    imageStyle: 'scene',
-    imagePosition: 'center 58%',
-    includedIngredients: [
-      { id: 'stainless-syringe', name: 'Stainless Culinary Syringe (Blunt Tip)', isRequired: true },
-      { id: 'hot-cheddar-fill', name: 'Hot Melted Cheddar Fill (60 ml)', isRequired: true },
-    ],
-    availableExtras: [
-      { id: 'extra-cheese-refill', name: 'Extra Hot Cheese Syringe Refill', price: 4.00, maxQuantity: 2, nutrition: N.cheeseSauce60 },
-      { id: 'jalapeno-cheese-refill', name: 'Jalapeño Hot Cheese Refill', price: 4.50, maxQuantity: 2, nutrition: sumNutrition(N.cheeseSauce60, N.jalapenos) },
-    ],
-  },
-
-  // 5. Cheese Sauce (New - after Cheese Injection)
-  {
-    id: 'cheese-sauce',
-    estimatedMinutes: 2,
-    name: 'Cheese Sauce',
-    category: 'Sauces',
-    sortOrder: 5,
-    price: 3.90,
-    description: 'A small cup of smooth, hot cheddar cheese sauce for dipping.',
-    longDescription: 'A small cup of smooth, velvety hot cheddar cheese sauce, made for dipping fries, onion rings, or the crispy edges of your burger.',
-    mainIngredients: [
-      'Hot Cheddar Cheese Sauce',
-    ],
-    volume: '80 ml cup',
-    allergens: ['Dairy [Placeholder]'],
-    tags: ['Hot Cheese', 'Dip', 'New'],
-    nutrition: sumNutrition(N.cheeseSauce80),
-    prepTime: '1 min',
-    isVegetarian: true,
-    imageSlot: '/images/menu/cheese-sauce.jpg',
-    imageLabel: 'Small ceramic cup of smooth hot cheddar cheese sauce on dark slate',
+    imageSlot: '/images/menu/smoky-bourbon-bacon-jam.jpg',
+    imageLabel: 'Dark ramekin of chunky smoky onion and bourbon bacon jam with wooden paddle',
     imageStyle: 'isolated',
     includedIngredients: [
-      { id: 'cheese-sauce-tub', name: '80 ml Hot Cheese Sauce Cup', isRequired: true },
+      { id: 'bacon-jam-tub', name: '80 ml Smoky Bacon Jam Cup', isRequired: true },
     ],
     availableExtras: [],
   },
 
   // =========================================================================
-  // 4. DESSERTS (Original 1, then Lava Cake, then Basque Cheesecake)
+  // 4. DESSERTS
   // =========================================================================
 
-  // 1. Skillet Dark Chocolate Brownie (Original)
+  // 1. Skillet Dark Chocolate Brownie
   {
     id: 'warm-bourbon-caramel-brownie',
     estimatedMinutes: 10,
@@ -1084,7 +1170,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
   },
 
-  // 2. Lava Cake (New - after original)
+  // 2. Lava Cake
   {
     id: 'lava-cake',
     estimatedMinutes: 10,
@@ -1120,7 +1206,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
   },
 
-  // 3. Basque Cheesecake (New)
+  // 3. Basque Cheesecake
   {
     id: 'cheesecake',
     estimatedMinutes: 10,
@@ -1156,89 +1242,16 @@ export const MENU_ITEMS: MenuItem[] = [
   },
 
   // =========================================================================
-  // 5. DRINKS (Originals 1-2, Pepsi, Coca-Cola, Water, Natural Juice,
-  //    Pepsi Zero Sugar, Coca-Cola Zero Sugar, then the Coffee subgroup)
+  // 5. DRINKS (soft drinks, Shake, Tea, then the Coffee subgroup)
   // =========================================================================
 
-  // 1. Cold-Steeped Lemon Ceylon Tea (Original)
-  {
-    id: 'cold-steeped-lemon-ceylon-tea',
-    estimatedMinutes: 2,
-    name: 'Cold-Steeped Lemon Ceylon Tea',
-    category: 'Drinks',
-    sortOrder: 1,
-    price: 6.50,
-    description: '18-hour cold brew Ceylon black tea, fresh lemon juice, and crushed lemon thyme over hand-cut ice.',
-    longDescription: 'We steep high-grown single-origin Ceylon black tea leaves in cold filtered water for 18 hours to extract clean floral tannins without bitterness. Shaken with fresh lemon juice and a touch of honey, then poured over hand-cut ice with fresh lemon thyme.',
-    mainIngredients: [
-      '18-Hour Cold Brew Ceylon Black Tea',
-      'Fresh Lemon Juice',
-      'Lemon Thyme Sprig',
-      'Pure Clover Honey Syrup',
-    ],
-    volume: '400 ml glass',
-    allergens: ['None [Placeholder]'],
-    tags: ['House Brewed', 'Botanical'],
-    nutrition: sumNutrition(N.coldBrewTeaHoney, N.lemonJuice),
-    prepTime: '2 min',
-    isVegetarian: true,
-    imageSlot: '/images/menu/cold-steeped-lemon-ceylon-tea.jpg',
-    imageLabel: 'Tall ribbed glass of amber iced Ceylon tea with lemon wheel and thyme sprig',
-    imageStyle: 'isolated',
-    includedIngredients: [
-      { id: 'tea-base', name: 'Cold-Steeped Ceylon Tea', isRequired: true },
-      { id: 'lemon-juice', name: 'Fresh Lemon Juice', isRequired: false, nutrition: N.lemonJuice },
-      { id: 'fresh-thyme', name: 'Fresh Lemon Thyme Sprig', isRequired: false, nutrition: ZERO_NUTRITION },
-      { id: 'hand-cut-ice', name: 'Hand-Cut Ice', isRequired: false, nutrition: ZERO_NUTRITION },
-    ],
-    availableExtras: [
-      { id: 'extra-sweetness', name: 'Add Honey Syrup Pump', price: 0.50, maxQuantity: 2, nutrition: N.honeyPump },
-    ],
-  },
-
-  // 2. Madagascar Vanilla Custard Shake (Original)
-  {
-    id: 'roasted-vanilla-bean-shake',
-    estimatedMinutes: 2,
-    name: 'Madagascar Vanilla Custard Shake',
-    category: 'Drinks',
-    sortOrder: 2,
-    price: 9.90,
-    description: 'Hand-spun local frozen dairy custard, whole scraped Madagascar vanilla bean, and whipped cultured cream.',
-    longDescription: 'Traditional dense frozen custard churned fresh every morning with rich whole dairy milk and egg yolks. Hand-spun on vintage spindle mixers with scraped Madagascar vanilla caviar and topped with cultured whipped cream.',
-    mainIngredients: [
-      'Dense Fresh Dairy Custard [Placeholder]',
-      'Madagascar Vanilla Caviar',
-      'Cultured Whipped Cream',
-    ],
-    volume: '450 ml tumbler',
-    allergens: ['Dairy', 'Eggs [Placeholder]'],
-    tags: ['Hand-Spun', 'Fresh Dairy'],
-    nutrition: sumNutrition(N.frozenCustardShake, N.whippedCream),
-    prepTime: '3 min',
-    isVegetarian: true,
-    imageSlot: '/images/menu/roasted-vanilla-bean-shake.jpg',
-    imageLabel: 'Heavy glass diner tumbler filled with thick vanilla shake and cream crown',
-    imageStyle: 'isolated',
-    imagePosition: 'center 45%',
-    includedIngredients: [
-      { id: 'frozen-custard', name: 'Frozen Dairy Custard Base', isRequired: true },
-      { id: 'vanilla-caviar', name: 'Madagascar Vanilla Bean Caviar', isRequired: true },
-      { id: 'whipped-cream', name: 'Cultured Whipped Cream Crown', isRequired: false, nutrition: N.whippedCream },
-    ],
-    availableExtras: [
-      { id: 'caramel-swirl', name: 'Bourbon Caramel Swirl', price: 1.50, maxQuantity: 3, nutrition: N.bourbonCaramel },
-      { id: 'fudge-swirl', name: 'Dark Chocolate Fudge Swirl', price: 1.50, maxQuantity: 3, nutrition: placeholderNutrition(100, 15, 4, 1) },
-    ],
-  },
-
-  // 3. Pepsi (New - after originals)
+  // 1. Pepsi
   {
     id: 'pepsi-can',
     estimatedMinutes: 2,
     name: 'Pepsi',
     category: 'Drinks',
-    sortOrder: 3,
+    sortOrder: 1,
     price: 3.50,
     description: 'Chilled 330 ml can.',
     longDescription: 'Ice-cold 330 ml aluminium can of classic Pepsi cola, served chilled from our beverage coolers. Served upon request with a heavy glass tumbler filled with crystal-clear ice cubes and a fresh slice of lemon.',
@@ -1267,13 +1280,47 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
   },
 
-  // 4. Coca-Cola (New)
+  // 2. Pepsi Zero Sugar
+  {
+    id: 'pepsi-zero-sugar',
+    estimatedMinutes: 2,
+    name: 'Pepsi Zero Sugar',
+    category: 'Drinks',
+    sortOrder: 2,
+    price: 3.50,
+    description: 'Chilled 330 ml can, zero sugar.',
+    longDescription: 'Ice-cold 330 ml can of Pepsi Zero Sugar, served chilled from our beverage coolers. Served upon request with a glass tumbler of ice and a fresh slice of lemon.',
+    mainIngredients: [
+      'Chilled Pepsi Zero Sugar (330 ml Can)',
+      'Optional Tumbler of Ice',
+      'Optional Lemon Wedge',
+    ],
+    volume: '330 ml can',
+    allergens: ['None (contains phenylalanine) [Placeholder]'],
+    tags: ['Chilled Soda', 'Zero Sugar', 'New'],
+    nutrition: sumNutrition(N.zeroSugar330, N.lemonWedge),
+    prepTime: '1 min',
+    isVegetarian: true,
+    imageSlot: '/images/menu/pepsi-zero-sugar.jpg',
+    imageLabel: 'Chilled black 330 ml Pepsi Zero Sugar can with condensation beside a glass of ice and lemon',
+    imageStyle: 'isolated',
+    includedIngredients: [
+      { id: 'pepsi-zero-can-unit', name: 'Chilled Pepsi Zero Sugar 330 ml Can', isRequired: true },
+      { id: 'glass-of-ice', name: 'Tumbler of Ice', isRequired: false, nutrition: ZERO_NUTRITION },
+      { id: 'lemon-slice', name: 'Fresh Lemon Wedge', isRequired: false, nutrition: N.lemonWedge },
+    ],
+    availableExtras: [
+      { id: 'extra-lemon-wedge', name: 'Extra Fresh Lemon Wedges', price: 0.50, maxQuantity: 2, nutrition: N.lemonWedge },
+    ],
+  },
+
+  // 3. Coca-Cola
   {
     id: 'coca-cola',
     estimatedMinutes: 2,
     name: 'Coca-Cola',
     category: 'Drinks',
-    sortOrder: 4,
+    sortOrder: 3,
     price: 3.50,
     description: 'Chilled 330 ml can.',
     longDescription: 'Ice-cold 330 ml can of classic Coca-Cola, served chilled from our beverage coolers. Served upon request with a glass tumbler filled with crystal-clear ice cubes and a fresh slice of lemon.',
@@ -1301,7 +1348,41 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
   },
 
-  // 5. Water (New)
+  // 4. Coca-Cola Zero Sugar
+  {
+    id: 'coca-cola-zero-sugar',
+    estimatedMinutes: 2,
+    name: 'Coca-Cola Zero Sugar',
+    category: 'Drinks',
+    sortOrder: 4,
+    price: 3.50,
+    description: 'Chilled 330 ml can, zero sugar.',
+    longDescription: 'Ice-cold 330 ml can of Coca-Cola Zero Sugar, served chilled from our beverage coolers. Served upon request with a glass tumbler of ice and a fresh slice of lemon.',
+    mainIngredients: [
+      'Chilled Coca-Cola Zero Sugar (330 ml Can)',
+      'Optional Tumbler of Ice',
+      'Optional Lemon Wedge',
+    ],
+    volume: '330 ml can',
+    allergens: ['None (contains phenylalanine) [Placeholder]'],
+    tags: ['Chilled Soda', 'Zero Sugar', 'New'],
+    nutrition: sumNutrition(N.zeroSugar330, N.lemonWedge),
+    prepTime: '1 min',
+    isVegetarian: true,
+    imageSlot: '/images/menu/coca-cola-zero-sugar.jpg',
+    imageLabel: 'Chilled red 330 ml Coca-Cola Zero Sugar can with black logo and condensation beside a glass of cola over ice',
+    imageStyle: 'isolated',
+    includedIngredients: [
+      { id: 'coca-cola-zero-can-unit', name: 'Chilled Coca-Cola Zero Sugar 330 ml Can', isRequired: true },
+      { id: 'glass-of-ice', name: 'Tumbler of Ice', isRequired: false, nutrition: ZERO_NUTRITION },
+      { id: 'lemon-slice', name: 'Fresh Lemon Wedge', isRequired: false, nutrition: N.lemonWedge },
+    ],
+    availableExtras: [
+      { id: 'extra-lemon-wedge', name: 'Extra Fresh Lemon Wedges', price: 0.50, maxQuantity: 2, nutrition: N.lemonWedge },
+    ],
+  },
+
+  // 5. Water
   {
     id: 'water',
     estimatedMinutes: 2,
@@ -1339,12 +1420,12 @@ export const MENU_ITEMS: MenuItem[] = [
       defaultOptionId: 'still',
       options: [
         { id: 'still', name: 'Still', priceAdjustment: 0.00, color: '#38BDF8', nutrition: placeholderNutrition(0, 0, 0, 0) },
-        { id: 'sparkling', name: 'Sparkling', priceAdjustment: 0.00, color: '#818CF8', nutrition: placeholderNutrition(0, 0, 0, 0) },
+        { id: 'sparkling', name: 'Sparkling', priceAdjustment: 1.00, color: '#818CF8', nutrition: placeholderNutrition(0, 0, 0, 0) },
       ],
     },
   },
 
-  // 6. Natural Juice (New)
+  // 6. Natural Juice
   {
     id: 'natural-juice',
     estimatedMinutes: 2,
@@ -1392,75 +1473,77 @@ export const MENU_ITEMS: MenuItem[] = [
     },
   },
 
-  // 7. Pepsi Zero Sugar (New - after existing drinks)
+  // 7. Shake
   {
-    id: 'pepsi-zero-sugar',
+    id: 'roasted-vanilla-bean-shake',
     estimatedMinutes: 2,
-    name: 'Pepsi Zero Sugar',
+    name: 'Shake',
     category: 'Drinks',
     sortOrder: 7,
-    price: 3.50,
-    description: 'Chilled 330 ml can, zero sugar.',
-    longDescription: 'Ice-cold 330 ml can of Pepsi Zero Sugar, served chilled from our beverage coolers. Served upon request with a glass tumbler of ice and a fresh slice of lemon.',
+    price: 9.90,
+    description: 'Hand-spun local frozen dairy custard, whole scraped Madagascar vanilla bean, and whipped cultured cream.',
+    longDescription: 'Traditional dense frozen custard churned fresh every morning with rich whole dairy milk and egg yolks. Hand-spun on vintage spindle mixers with scraped Madagascar vanilla caviar and topped with cultured whipped cream.',
     mainIngredients: [
-      'Chilled Pepsi Zero Sugar (330 ml Can)',
-      'Optional Tumbler of Ice',
-      'Optional Lemon Wedge',
+      'Dense Fresh Dairy Custard [Placeholder]',
+      'Madagascar Vanilla Caviar',
+      'Cultured Whipped Cream',
     ],
-    volume: '330 ml can',
-    allergens: ['None (contains phenylalanine) [Placeholder]'],
-    tags: ['Chilled Soda', 'Zero Sugar', 'New'],
-    nutrition: sumNutrition(N.zeroSugar330, N.lemonWedge),
-    prepTime: '1 min',
+    volume: '450 ml tumbler',
+    allergens: ['Dairy', 'Eggs [Placeholder]'],
+    tags: ['Hand-Spun', 'Fresh Dairy'],
+    nutrition: sumNutrition(N.frozenCustardShake, N.whippedCream),
+    prepTime: '3 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/pepsi-zero-sugar.jpg',
-    imageLabel: 'Chilled black 330 ml Pepsi Zero Sugar can with condensation beside a glass of ice and lemon',
+    imageSlot: '/images/menu/roasted-vanilla-bean-shake.jpg',
+    imageLabel: 'Heavy glass diner tumbler filled with thick vanilla shake and cream crown',
     imageStyle: 'isolated',
+    imagePosition: 'center 45%',
     includedIngredients: [
-      { id: 'pepsi-zero-can-unit', name: 'Chilled Pepsi Zero Sugar 330 ml Can', isRequired: true },
-      { id: 'glass-of-ice', name: 'Tumbler of Ice', isRequired: false, nutrition: ZERO_NUTRITION },
-      { id: 'lemon-slice', name: 'Fresh Lemon Wedge', isRequired: false, nutrition: N.lemonWedge },
+      { id: 'frozen-custard', name: 'Frozen Dairy Custard Base', isRequired: true },
+      { id: 'vanilla-caviar', name: 'Madagascar Vanilla Bean Caviar', isRequired: true },
+      { id: 'whipped-cream', name: 'Cultured Whipped Cream Crown', isRequired: false, nutrition: N.whippedCream },
     ],
     availableExtras: [
-      { id: 'extra-lemon-wedge', name: 'Extra Fresh Lemon Wedges', price: 0.50, maxQuantity: 2, nutrition: N.lemonWedge },
+      { id: 'caramel-swirl', name: 'Bourbon Caramel Swirl', price: 1.50, maxQuantity: 3, nutrition: N.bourbonCaramel },
+      { id: 'fudge-swirl', name: 'Dark Chocolate Fudge Swirl', price: 1.50, maxQuantity: 3, nutrition: placeholderNutrition(100, 15, 4, 1) },
     ],
   },
 
-  // 8. Coca-Cola Zero Sugar (New)
+  // 8. Tea
   {
-    id: 'coca-cola-zero-sugar',
+    id: 'cold-steeped-lemon-ceylon-tea',
     estimatedMinutes: 2,
-    name: 'Coca-Cola Zero Sugar',
+    name: 'Tea',
     category: 'Drinks',
     sortOrder: 8,
-    price: 3.50,
-    description: 'Chilled 330 ml can, zero sugar.',
-    longDescription: 'Ice-cold 330 ml can of Coca-Cola Zero Sugar, served chilled from our beverage coolers. Served upon request with a glass tumbler of ice and a fresh slice of lemon.',
+    price: 6.50,
+    description: '18-hour cold brew Ceylon black tea, fresh lemon juice, and crushed lemon thyme over hand-cut ice.',
+    longDescription: 'We steep high-grown single-origin Ceylon black tea leaves in cold filtered water for 18 hours to extract clean floral tannins without bitterness. Shaken with fresh lemon juice and a touch of honey, then poured over hand-cut ice with fresh lemon thyme.',
     mainIngredients: [
-      'Chilled Coca-Cola Zero Sugar (330 ml Can)',
-      'Optional Tumbler of Ice',
-      'Optional Lemon Wedge',
+      '18-Hour Cold Brew Ceylon Black Tea',
+      'Fresh Lemon Juice',
+      'Lemon Thyme Sprig',
+      'Pure Clover Honey Syrup',
     ],
-    volume: '330 ml can',
-    allergens: ['None (contains phenylalanine) [Placeholder]'],
-    tags: ['Chilled Soda', 'Zero Sugar', 'New'],
-    nutrition: sumNutrition(N.zeroSugar330, N.lemonWedge),
-    prepTime: '1 min',
+    volume: '400 ml glass',
+    allergens: ['None [Placeholder]'],
+    tags: ['House Brewed', 'Botanical'],
+    nutrition: sumNutrition(N.coldBrewTeaHoney, N.lemonJuice),
+    prepTime: '2 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/coca-cola-zero-sugar.jpg',
-    imageLabel: 'Chilled red 330 ml Coca-Cola Zero Sugar can with black logo and condensation beside a glass of cola over ice',
+    imageSlot: '/images/menu/cold-steeped-lemon-ceylon-tea.jpg',
+    imageLabel: 'Tall ribbed glass of amber iced Ceylon tea with lemon wheel and thyme sprig',
     imageStyle: 'isolated',
     includedIngredients: [
-      { id: 'coca-cola-zero-can-unit', name: 'Chilled Coca-Cola Zero Sugar 330 ml Can', isRequired: true },
-      { id: 'glass-of-ice', name: 'Tumbler of Ice', isRequired: false, nutrition: ZERO_NUTRITION },
-      { id: 'lemon-slice', name: 'Fresh Lemon Wedge', isRequired: false, nutrition: N.lemonWedge },
+      { id: 'tea-base', name: 'Cold-Steeped Ceylon Tea', isRequired: true },
+      { id: 'lemon-juice', name: 'Fresh Lemon Juice', isRequired: false, nutrition: N.lemonJuice },
+      { id: 'fresh-thyme', name: 'Fresh Lemon Thyme Sprig', isRequired: false, nutrition: ZERO_NUTRITION },
+      { id: 'hand-cut-ice', name: 'Hand-Cut Ice', isRequired: false, nutrition: ZERO_NUTRITION },
     ],
     availableExtras: [
-      { id: 'extra-lemon-wedge', name: 'Extra Fresh Lemon Wedges', price: 0.50, maxQuantity: 2, nutrition: N.lemonWedge },
+      { id: 'extra-sweetness', name: 'Add Honey Syrup Pump', price: 0.50, maxQuantity: 2, nutrition: N.honeyPump },
     ],
   },
-
-  // ---------------------------- COFFEE subgroup ----------------------------
 
   // 9. Espresso
   {
@@ -1622,7 +1705,7 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
   },
 
-  // 14. Iced Coffee with Ice Cream (Glace)
+  // 14. Iced Coffee with Ice Cream
   {
     id: 'glace',
     estimatedMinutes: 5,
