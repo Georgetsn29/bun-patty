@@ -17,19 +17,9 @@ import { ORDER_TRACKING_CONFIG } from '@/services/orderConfig';
 import { getMenuItemById } from '@/data/menu';
 import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
-import {
-  Copy,
-  Check,
-  Search,
-  Phone,
-  MapPin,
-  RotateCcw,
-  AlertTriangle,
-  Clock,
-  ArrowRight,
-  ShieldAlert,
-} from 'lucide-react';
-import { motion, useReducedMotion } from 'motion/react';
+import { LOCATIONS } from '@/data/locations';
+import { ArrowIcon } from '@/components/layout/Header';
+import { KitchenMap } from '@/components/map/KitchenMap';
 import styles from './TrackingView.module.scss';
 
 interface TrackingViewProps {
@@ -43,7 +33,6 @@ export const TrackingView: React.FC<TrackingViewProps> = ({
 }) => {
   const { addItem, setIsCartOpen } = useCart();
   const { t, getItemTranslation, getIngredientName, getExtraName, getChoiceOptionName, language } = useLanguage();
-  const shouldReduceMotion = useReducedMotion();
 
   // Current active order state
   const [manualOrder, setManualOrder] = useState<OrderRecord | null>(null);
@@ -159,15 +148,14 @@ export const TrackingView: React.FC<TrackingViewProps> = ({
 
   // Helper for customization text in order summary
   const renderCustomizationLines = (
-    customization?: OrderRecord['items'][0]['customization'],
-    itemName?: string
+    customization?: OrderRecord['items'][0]['customization']
   ) => {
     if (!customization) return null;
     const lines: string[] = [];
 
     if (customization.selectedChoiceId) {
       const choiceName = getChoiceOptionName(customization.selectedChoiceId);
-      lines.push(`${itemName ? `${itemName} · ` : ''}${choiceName}`);
+      lines.push(choiceName);
     }
 
     if (customization.removedIngredientIds && customization.removedIngredientIds.length > 0) {
@@ -209,530 +197,354 @@ export const TrackingView: React.FC<TrackingViewProps> = ({
     );
   };
 
+  const ka = language === 'ka';
+
   // =========================================================================
-  // Render: Search / Find an Order View (when no specific order is chosen)
+  // Render: Find an order (no specific order chosen)
   // =========================================================================
   if (!order) {
     return (
       <div className={styles.trackingPage}>
-        <div className={styles.container}>
-          {/* Header */}
-          <div className={styles.header}>
+        <section className={styles.lookupHero}>
+          <div className={styles.lookupIntro}>
             <span className={styles.kicker}>{t('tracking.title')}</span>
-            <h1 className={styles.title}>{t('tracking.lookupTitle')}</h1>
-            <p className={styles.subtitle}>{t('tracking.lookupSubtitle')}</p>
+            <h1 className={styles.bigTitle}>
+              {ka ? 'იპოვე შეკვეთა' : 'Find your order'}
+              <span className={styles.dot}>.</span>
+            </h1>
+            <p className={styles.lead}>{t('tracking.lookupSubtitle')}</p>
           </div>
 
-          {/* Lookup Form */}
           <form onSubmit={handleSearchSubmit} className={styles.lookupForm}>
-            <div className={styles.formRow}>
-              <div className={styles.inputGroup}>
-                <label htmlFor="track-order-number" className={styles.label}>
-                  {t('tracking.orderNumberLabel')}
-                </label>
-                <div className={styles.inputWrap}>
-                  <Search size={16} className={styles.inputIcon} aria-hidden="true" />
-                  <input
-                    id="track-order-number"
-                    type="text"
-                    value={searchOrderNumber}
-                    onChange={(e) => {
-                      setSearchOrderNumber(e.target.value);
-                      if (searchFailed) setSearchFailed(false);
-                    }}
-                    placeholder={t('tracking.orderNumberPlaceholder')}
-                    className={styles.input}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className={styles.inputGroup}>
-                <label htmlFor="track-phone" className={styles.label}>
-                  {t('tracking.phoneLabel')}
-                </label>
-                <div className={styles.inputWrap}>
-                  <Phone size={16} className={styles.inputIcon} aria-hidden="true" />
-                  <input
-                    id="track-phone"
-                    type="tel"
-                    value={searchPhone}
-                    onChange={(e) => setSearchPhone(e.target.value)}
-                    placeholder={t('tracking.phonePlaceholder')}
-                    className={styles.input}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <button type="submit" className={styles.submitBtn}>
-              {t('tracking.trackOrderBtn')}
+            <label className={styles.field}>
+              <span className={styles.label}>{t('tracking.orderNumberLabel')}</span>
+              <input
+                id="track-order-number"
+                type="text"
+                value={searchOrderNumber}
+                onChange={(e) => {
+                  setSearchOrderNumber(e.target.value);
+                  if (searchFailed) setSearchFailed(false);
+                }}
+                placeholder={t('tracking.orderNumberPlaceholder')}
+                className={styles.input}
+                required
+              />
+            </label>
+            <label className={styles.field}>
+              <span className={styles.label}>{t('tracking.phoneLabel')}</span>
+              <input
+                id="track-phone"
+                type="tel"
+                value={searchPhone}
+                onChange={(e) => setSearchPhone(e.target.value)}
+                placeholder={t('tracking.phonePlaceholder')}
+                className={styles.input}
+              />
+            </label>
+            <button type="submit" className={styles.btnRed}>
+              {t('tracking.trackOrderBtn')} <ArrowIcon size={20} />
             </button>
-          </form>
 
-          {/* Not Found Alert */}
-          {notFound && (
-            <div className={styles.notFoundAlert} role="alert">
-              <AlertTriangle size={20} className={styles.alertIcon} />
-              <div>
-                <h3 className={styles.alertTitle}>{t('tracking.orderNotFound')}</h3>
-                <p className={styles.alertDesc}>{t('tracking.orderNotFoundDesc')}</p>
-              </div>
-            </div>
-          )}
-
-          {/* Recent Orders on this Device */}
-          <section className={styles.recentSection} aria-label="Recent orders">
-            <h2 className={styles.sectionTitle}>{t('tracking.recentOrdersTitle')}</h2>
-
-            {recentOrders.length === 0 ? (
-              <p className={styles.emptyRecent}>{t('tracking.noRecentOrders')}</p>
-            ) : (
-              <div className={styles.recentGrid}>
-                {recentOrders.map((rec) => {
-                  const recProgress = calculateOrderProgress(rec, now);
-                  const isFinished = recProgress.isDeliveredOrPickedUp || recProgress.isCancelled;
-
-                  return (
-                    <article
-                      key={rec.orderNumber}
-                      onClick={() => onNavigate(`track/${rec.orderNumber}`)}
-                      className={styles.recentCard}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          onNavigate(`track/${rec.orderNumber}`);
-                        }
-                      }}
-                    >
-                      <div className={styles.recentHeader}>
-                        <span className={styles.recentNumber}>
-                          {rec.orderNumber}
-                        </span>
-                        <span
-                          className={`${styles.recentStatusBadge} ${
-                            isFinished ? styles.statusFinished : styles.statusActive
-                          }`}
-                        >
-                          {!isFinished && <span className={styles.miniPulse} />}
-                          {t(recProgress.statusLabelKey)}
-                        </span>
-                      </div>
-
-                      <div className={styles.recentMeta}>
-                        <span>{formatEuropeanDate(rec.createdAt)}</span>
-                        <span>·</span>
-                        <span>{format24HourTime(rec.createdAt)}</span>
-                        <span>·</span>
-                        <span>
-                          {rec.orderType === 'delivery'
-                            ? t('cartDrawer.delivery')
-                            : t('cartDrawer.pickup')}
-                        </span>
-                      </div>
-
-                      <div className={styles.recentFooter}>
-                        <span className={styles.recentTotal}>
-                          {rec.grandTotal.toFixed(2)} ₾
-                        </span>
-                        <span className={styles.recentViewLink}>
-                          {t('tracking.banner.trackLink')} <ArrowRight size={14} />
-                        </span>
-                      </div>
-                    </article>
-                  );
-                })}
+            {notFound && (
+              <div className={styles.alert} role="alert">
+                <strong>{t('tracking.orderNotFound')}</strong>
+                <span>{t('tracking.orderNotFoundDesc')}</span>
               </div>
             )}
-          </section>
-        </div>
+          </form>
+        </section>
+
+        <section className={styles.recentSection} aria-label={t('tracking.recentOrdersTitle')}>
+          <h2 className={styles.sectionTitle}>{t('tracking.recentOrdersTitle')}</h2>
+          {recentOrders.length === 0 ? (
+            <p className={styles.muted}>{t('tracking.noRecentOrders')}</p>
+          ) : (
+            <ol className={styles.recentList}>
+              {recentOrders.map((rec) => {
+                const recProgress = calculateOrderProgress(rec, now);
+                const isFinished = recProgress.isDeliveredOrPickedUp || recProgress.isCancelled;
+                return (
+                  <li key={rec.orderNumber}>
+                    <button
+                      type="button"
+                      onClick={() => onNavigate(`track/${rec.orderNumber}`)}
+                      className={styles.recentRow}
+                    >
+                      <span className={styles.orderChip}>{rec.orderNumber}</span>
+                      <span className={`${styles.recentStatus} ${isFinished ? styles.recentDone : styles.recentLive}`}>
+                        {!isFinished && <span className={styles.liveDot} aria-hidden="true" />}
+                        {t(recProgress.statusLabelKey)}
+                      </span>
+                      <span className={styles.recentMeta}>
+                        {formatEuropeanDate(rec.createdAt)} · {format24HourTime(rec.createdAt)} ·{' '}
+                        {rec.orderType === 'delivery' ? t('cartDrawer.delivery') : t('cartDrawer.pickup')}
+                      </span>
+                      <span className={styles.recentTotal}>{rec.grandTotal.toFixed(2)} ₾</span>
+                      <ArrowIcon size={18} />
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
+          )}
+        </section>
       </div>
     );
   }
 
   // =========================================================================
-  // Render: Live Order Tracking Detail View
+  // Render: Live order
   // =========================================================================
   if (!progress) return null;
 
   const isDelivery = order.orderType === 'delivery';
+  const flagship = LOCATIONS[0];
+  const isActive = !progress.isDeliveredOrPickedUp && !progress.isCancelled;
+  const isReadyForPickup =
+    !isDelivery &&
+    (progress.currentStatus === 'ready' || progress.currentStatus === 'ready_for_pickup') &&
+    !order.pickedUpAt;
+  const mapQuery = isDelivery
+    ? encodeURIComponent(`${order.address || ''}, Tbilisi`)
+    : `${flagship.coordinates.lat},${flagship.coordinates.lng}`;
+  const visibleSteps = progress.timelineSteps.filter((s) => s.isCompleted || s.isCurrent);
 
   return (
     <div className={styles.trackingPage}>
-      <div className={styles.container}>
-        {/* Navigation Breadcrumb */}
-        <div className={styles.topBar}>
-          <button
-            type="button"
-            onClick={() => onNavigate('track')}
-            className={styles.backLink}
-          >
-            {t('tracking.findAnotherOrder')}
-          </button>
-
-          {/* Optional Demo Notice */}
-          {ORDER_TRACKING_CONFIG.showDemoNotice && (
-            <div className={styles.demoTag} title={t('tracking.demoNotice')}>
-              <Clock size={12} />
-              <span>{t('tracking.demoNotice')}</span>
-            </div>
-          )}
-        </div>
-
-        {/* 1. Top Section: Order Number, Copy Button, Status & Countdown */}
-        <header className={styles.statusHero}>
-          <div className={styles.orderNumberRow}>
-            <span className={styles.orderNumberTitle}>
-              {t('tracking.orderNumberPrefix')}{' '}
-              <span className={styles.orderNumberCode}>{order.orderNumber}</span>
-            </span>
-
+      {/* 1. Hero: status + ETA */}
+      <section className={styles.hero}>
+        <div className={styles.heroMain}>
+          <div className={styles.metaRow}>
+            <span className={styles.kicker}>{t('tracking.orderNumberPrefix')}</span>
+            <span className={styles.orderChip}>{order.orderNumber}</span>
             <button
               type="button"
               onClick={handleCopyOrderNumber}
-              className={`${styles.copyBtn} ${copied ? styles.copyBtnSuccess : ''}`}
+              className={styles.copyBtn}
               aria-label={t('tracking.copyOrderNumber')}
-              title={t('tracking.copyOrderNumber')}
             >
-              {copied ? (
-                <>
-                  <Check size={14} />
-                  <span>{t('tracking.copied')}</span>
-                </>
-              ) : (
-                <>
-                  <Copy size={14} />
-                  <span>{t('tracking.copyOrderNumber')}</span>
-                </>
-              )}
+              {copied ? t('tracking.copied') : ka ? 'კოპირება' : 'Copy'}
+            </button>
+            <span className={styles.kicker}>
+              · {isDelivery ? t('cartDrawer.delivery') : `${t('cartDrawer.pickup')} · ${flagship.shortName}`}
+            </span>
+            <button type="button" onClick={() => onNavigate('track')} className={styles.copyBtn}>
+              {t('tracking.findAnotherOrder')}
             </button>
           </div>
-
-          {/* Current Status Headline */}
           <h1 className={styles.statusTitle}>
             {t(progress.statusLabelKey)}
+            <span className={styles.dot}>.</span>
           </h1>
-          <p className={styles.statusMessage}>
-            {t(progress.statusMessageKey)}
-          </p>
+          <p className={styles.lead}>{t(progress.statusMessageKey)}</p>
+        </div>
 
-          {/* Estimated Arrival / Ready Time & Countdown (unless delivered or cancelled) */}
-          {!progress.isDeliveredOrPickedUp && !progress.isCancelled && (
-            <div className={styles.etaBox}>
-              <div className={styles.etaCol}>
-                <span className={styles.etaLabel}>
-                  {isDelivery
-                    ? t('tracking.estimatedArrival')
-                    : t('tracking.estimatedReady')}
-                </span>
-                <span className={styles.etaTime}>
-                  {format24HourTime(progress.estimatedTargetTime)}
-                </span>
-              </div>
+        {isActive && (
+          <div className={styles.etaBox}>
+            <span className={styles.kicker}>
+              {isDelivery ? t('tracking.estimatedArrival') : t('tracking.estimatedReady')}
+            </span>
+            <span className={styles.etaTime}>{format24HourTime(progress.estimatedTargetTime)}</span>
+            <span className={styles.etaNote}>
+              {progress.remainingMinutes <= 1
+                ? t('tracking.readyNow')
+                : `${t('tracking.countdownPrefix')} ${t('tracking.countdownMinutes', { count: progress.remainingMinutes })}`}
+            </span>
+          </div>
+        )}
+      </section>
 
-              <div className={styles.etaDivider} aria-hidden="true" />
+      {/* 2. Progress bars */}
+      <section className={styles.progressSection} aria-label={ka ? 'შეკვეთის სტატუსი' : 'Order progress'}>
+        <ol className={styles.steps}>
+          {progress.timelineSteps.map((step, idx) => (
+            <li
+              key={step.status}
+              aria-current={step.isCurrent ? 'step' : undefined}
+              className={`${styles.step} ${step.isCompleted ? styles.stepDone : ''} ${step.isCurrent ? styles.stepCurrent : ''}`}
+            >
+              <span className={styles.stepBar} />
+              <span className={styles.stepHead}>
+                <span className={styles.stepBadge}>{step.isCompleted ? '✓' : idx + 1}</span>
+                <span className={styles.stepLabel}>{t(step.labelKey)}</span>
+              </span>
+              <span className={styles.stepTime}>
+                {step.isCompleted || step.isCurrent ? format24HourTime(step.scheduledTime) : ' '}
+              </span>
+            </li>
+          ))}
+        </ol>
+        {ORDER_TRACKING_CONFIG.showDemoNotice && <p className={styles.demoNote}>{t('tracking.demoNotice')}</p>}
+      </section>
 
-              <div className={styles.etaCol}>
-                <span className={styles.etaLabel}>
-                  {language === 'ka' ? 'დარჩენილია' : 'Time remaining'}
-                </span>
-                <span className={styles.etaCountdown}>
-                  {progress.remainingMinutes <= 1
-                    ? t('tracking.readyNow')
-                    : `${t('tracking.countdownPrefix')} ${t(
-                        'tracking.countdownMinutes',
-                        { count: progress.remainingMinutes }
-                      )}`}
-                </span>
-              </div>
-            </div>
+      {isReadyForPickup && (
+        <div className={`${styles.banner} ${styles.bannerGreen}`}>
+          <span className={styles.bannerTitle}>
+            {ka ? 'შეკვეთა მზადაა დახლთან.' : 'Your order is ready at the counter.'}
+          </span>
+          <button type="button" onClick={handleConfirmPickup} className={styles.bannerBtn}>
+            {t('tracking.confirmPickupBtn')}
+          </button>
+        </div>
+      )}
+
+      {progress.isDeliveredOrPickedUp && (
+        <div className={`${styles.banner} ${styles.bannerInk}`}>
+          <span className={styles.bannerTitle}>{t('tracking.thankYouTitle')}</span>
+          <span className={styles.bannerText}>
+            {isDelivery ? t('tracking.thankYouDelivered') : t('tracking.thankYouPickedUp')}
+          </span>
+        </div>
+      )}
+
+      {/* 3. Log + aside */}
+      <div className={styles.columns}>
+        <section className={styles.logSection}>
+          <h2 className={styles.sectionTitle}>{ka ? 'რა ხდება' : 'What’s happening'}</h2>
+          <ol className={styles.log}>
+            {[...visibleSteps].reverse().map((step) => (
+              <li key={step.status} className={styles.logRow}>
+                <span className={styles.logTime}>{format24HourTime(step.scheduledTime)}</span>
+                <div className={styles.logBody}>
+                  <span className={styles.logTitle}>{t(step.labelKey)}</span>
+                  <span className={styles.muted}>{t(step.messageKey)}</span>
+                </div>
+              </li>
+            ))}
+          </ol>
+          {progress.canCancel && (
+            <button type="button" onClick={() => setShowCancelModal(true)} className={styles.cancelBtn}>
+              {t('tracking.cancelOrderBtn')}
+            </button>
           )}
 
-          {/* Pickup Order: Customer Confirmation Button */}
-          {!isDelivery &&
-            (progress.currentStatus === 'ready' || progress.currentStatus === 'ready_for_pickup') &&
-            !order.pickedUpAt && (
-              <div className={styles.pickupActionBanner}>
-                <p className={styles.pickupActionText}>
-                  {language === 'ka'
-                    ? 'შეკვეთა მზადაა დახლთან! როდესაც აიღებთ, გთხოვთ დაადასტუროთ:'
-                    : 'Your order is ready at the counter! Tap below once collected:'}
-                </p>
-                <button
-                  type="button"
-                  onClick={handleConfirmPickup}
-                  className={styles.pickupConfirmBtn}
-                >
-                  <Check size={18} />
-                  <span>{t('tracking.confirmPickupBtn')}</span>
-                </button>
-              </div>
-            )}
-
-          {/* Thank You Note on Completion */}
-          {progress.isDeliveredOrPickedUp && (
-            <div className={styles.thankYouBanner}>
-              <h3 className={styles.thankYouTitle}>{t('tracking.thankYouTitle')}</h3>
-              <p className={styles.thankYouDesc}>
-                {isDelivery
-                  ? t('tracking.thankYouDelivered')
-                  : t('tracking.thankYouPickedUp')}
-              </p>
-            </div>
-          )}
-        </header>
-
-        {/* 2. Vertical Status Timeline */}
-        <section className={styles.timelineSection} aria-label="Status timeline">
-          <div className={styles.timelineList}>
-            {progress.timelineSteps.map((step, idx) => {
-              const stepTimeStr = format24HourTime(step.scheduledTime);
-
+          <h2 className={styles.sectionTitle}>{t('tracking.orderSummary')}</h2>
+          <div className={styles.summary}>
+            {order.items.map((itemRecord, i) => {
+              const trans = getItemTranslation(itemRecord.itemId);
               return (
-                <div
-                  key={step.status}
-                  className={`${styles.timelineStep} ${
-                    step.isCompleted ? styles.stepCompleted : ''
-                  } ${step.isCurrent ? styles.stepCurrent : ''} ${
-                    step.isUpcoming ? styles.stepUpcoming : ''
-                  }`}
-                >
-                  {/* Left Column: Scheduled / Completed Time */}
-                  <div className={styles.stepTimeCol}>
-                    {(step.isCompleted || step.isCurrent) && (
-                      <span className={styles.stepTime}>{stepTimeStr}</span>
-                    )}
+                <div key={i} className={styles.summaryRow}>
+                  <div className={styles.summaryItem}>
+                    <span>
+                      {itemRecord.quantity} × {trans.name || itemRecord.itemId}
+                    </span>
+                    {renderCustomizationLines(itemRecord.customization)}
                   </div>
-
-                  {/* Center Column: Node Dot & Connecting Animated Line */}
-                  <div className={styles.stepIndicatorCol}>
-                    <div className={styles.stepDot}>
-                      {step.isCompleted && <Check size={12} className={styles.checkMini} />}
-                      {step.isCurrent && <span className={styles.currentInnerDot} />}
-                    </div>
-
-                    {/* Connecting line to next step */}
-                    {idx < progress.timelineSteps.length - 1 && (
-                      <div className={styles.stepLineTrack}>
-                        <motion.div
-                          className={styles.stepLineFill}
-                          initial={false}
-                          animate={{
-                            height: step.isCompleted ? '100%' : '0%',
-                          }}
-                          transition={{
-                            duration: shouldReduceMotion ? 0.01 : 0.45,
-                            ease: 'easeInOut',
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Right Column: Step Label and Friendly Detail */}
-                  <div className={styles.stepContentCol}>
-                    <h3 className={styles.stepLabel}>{t(step.labelKey)}</h3>
-                    {step.isCurrent && (
-                      <p className={styles.stepCurrentMessage}>{t(step.messageKey)}</p>
-                    )}
-                  </div>
+                  <span className={styles.price}>{(itemRecord.unitPrice * itemRecord.quantity).toFixed(2)} ₾</span>
                 </div>
               );
             })}
-          </div>
-
-          {/* Cancel Order Button (Only visible during "Order received") */}
-          {progress.canCancel && (
-            <div className={styles.cancelWrap}>
-              <button
-                type="button"
-                onClick={() => setShowCancelModal(true)}
-                className={styles.cancelTriggerBtn}
-              >
-                {t('tracking.cancelOrderBtn')}
-              </button>
+            <div className={styles.summaryRow}>
+              <span className={styles.muted}>{t('cartDrawer.subtotal')}</span>
+              <span className={styles.price}>{order.subtotal.toFixed(2)} ₾</span>
             </div>
-          )}
-        </section>
-
-        {/* 3. Below Timeline: Order Summary, Destination, Phone, Reorder Button */}
-        <section className={styles.detailsGrid}>
-          {/* Order Summary Card */}
-          <div className={styles.card}>
-            <h2 className={styles.cardTitle}>{t('tracking.orderSummary')}</h2>
-
-            <div className={styles.orderItemsList}>
-              {order.items.map((itemRecord, i) => {
-                const trans = getItemTranslation(itemRecord.itemId);
-                const itemTotal = itemRecord.unitPrice * itemRecord.quantity;
-
-                return (
-                  <div key={i} className={styles.orderItemRow}>
-                    <div className={styles.orderItemInfo}>
-                      <span className={styles.orderItemName}>
-                        <span className={styles.orderItemQty}>{itemRecord.quantity}×</span>{' '}
-                        {trans.name || itemRecord.itemId}
-                      </span>
-                      {renderCustomizationLines(itemRecord.customization, trans.name || itemRecord.itemId)}
-                    </div>
-                    <span className={styles.orderItemPrice}>
-                      {itemTotal.toFixed(2)} ₾
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Calculations breakdown */}
-            <div className={styles.breakdown}>
-              <div className={styles.breakdownRow}>
-                <span>{t('cartDrawer.subtotal')}</span>
-                <span>{order.subtotal.toFixed(2)} ₾</span>
+            {order.deliveryFee > 0 && (
+              <div className={styles.summaryRow}>
+                <span className={styles.muted}>{t('cartDrawer.deliveryFee')}</span>
+                <span className={styles.price}>{order.deliveryFee.toFixed(2)} ₾</span>
               </div>
-
-              {order.deliveryFee > 0 && (
-                <div className={styles.breakdownRow}>
-                  <span>{t('cartDrawer.deliveryFee')}</span>
-                  <span>{order.deliveryFee.toFixed(2)} ₾</span>
-                </div>
-              )}
-
-              {order.discountAmount > 0 && (
-                <div className={`${styles.breakdownRow} ${styles.discountRow}`}>
-                  <span>{language === 'ka' ? 'ფასდაკლება' : 'Discount'}</span>
-                  <span>-{order.discountAmount.toFixed(2)} ₾</span>
-                </div>
-              )}
-
-              {order.tipAmount > 0 && (
-                <div className={styles.breakdownRow}>
-                  <span>{t('cartDrawer.gratuity')}</span>
-                  <span>{order.tipAmount.toFixed(2)} ₾</span>
-                </div>
-              )}
-
-              <div className={styles.totalRow}>
-                <span>{t('cartDrawer.grandTotal')}</span>
-                <span>{order.grandTotal.toFixed(2)} ₾</span>
+            )}
+            {order.discountAmount > 0 && (
+              <div className={styles.summaryRow}>
+                <span className={styles.muted}>{ka ? 'ფასდაკლება' : 'Discount'}</span>
+                <span className={styles.price}>-{order.discountAmount.toFixed(2)} ₾</span>
               </div>
-            </div>
-
-            {/* Reorder Button */}
-            <div className={styles.reorderWrap}>
-              <button
-                type="button"
-                onClick={handleReorder}
-                className={`${styles.reorderBtn} ${
-                  reorderedFeedback ? styles.reorderedSuccess : ''
-                }`}
-              >
-                <RotateCcw size={16} />
-                <span>
-                  {reorderedFeedback
-                    ? t('tracking.reorderedSuccess')
-                    : t('tracking.reorder')}
-                </span>
-              </button>
+            )}
+            {order.tipAmount > 0 && (
+              <div className={styles.summaryRow}>
+                <span className={styles.muted}>{t('cartDrawer.gratuity')}</span>
+                <span className={styles.price}>{order.tipAmount.toFixed(2)} ₾</span>
+              </div>
+            )}
+            <div className={styles.totalRow}>
+              <span>{t('cartDrawer.grandTotal')}</span>
+              <span>{order.grandTotal.toFixed(2)} ₾</span>
             </div>
           </div>
-
-          {/* Fulfillment & Contact Card */}
-          <div className={styles.card}>
-            <h2 className={styles.cardTitle}>
-              {isDelivery
-                ? t('tracking.deliveryAddress')
-                : t('tracking.pickupLocation')}
-            </h2>
-
-            <div className={styles.fulfillmentInfo}>
-              <div className={styles.infoBlock}>
-                <MapPin className={styles.infoIcon} aria-hidden="true" />
-                <div className={styles.infoText}>
-                  <strong className={styles.destinationName}>
-                    {isDelivery ? order.customerName : ORDER_TRACKING_CONFIG.flagshipName}
-                  </strong>
-                  <span className={styles.destinationAddress}>
-                    {isDelivery
-                      ? `${order.address || ''} ${order.apartment || ''}`.trim()
-                      : ORDER_TRACKING_CONFIG.flagshipAddress}
-                  </span>
-
-                  {!isDelivery && (
-                    <a
-                      href={ORDER_TRACKING_CONFIG.flagshipDirectionsUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.directionsLink}
-                    >
-                      {t('tracking.getDirections')}
-                    </a>
-                  )}
-                </div>
-              </div>
-
-              {/* Tappable Restaurant Support Phone */}
-              <div className={styles.infoBlock}>
-                <Phone className={styles.infoIcon} aria-hidden="true" />
-                <div className={styles.infoText}>
-                  <span className={styles.phoneLabel}>
-                    {language === 'ka' ? 'შეკვეთის მხარდაჭერა' : 'Questions about your order?'}
-                  </span>
-                  <a
-                    href={ORDER_TRACKING_CONFIG.supportPhoneHref}
-                    className={styles.phoneLink}
-                  >
-                    {ORDER_TRACKING_CONFIG.supportPhone}
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Cancel Confirmation Modal */}
-        {showCancelModal && (
-          <div
-            className={styles.modalOverlay}
-            onClick={() => setShowCancelModal(false)}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="cancel-title"
+          <button
+            type="button"
+            onClick={handleReorder}
+            className={`${styles.btnOutline} ${reorderedFeedback ? styles.btnDone : ''}`}
           >
-            <div
-              className={styles.modalContent}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className={styles.modalIconWrap}>
-                <ShieldAlert size={28} className={styles.shieldIcon} />
-              </div>
-              <h3 id="cancel-title" className={styles.modalTitle}>
-                {t('tracking.cancelConfirmTitle')}
-              </h3>
-              <p className={styles.modalText}>
-                {t('tracking.cancelConfirmText')}
-              </p>
+            {reorderedFeedback ? t('tracking.reorderedSuccess') : t('tracking.reorder')}
+          </button>
+        </section>
 
-              <div className={styles.modalActions}>
-                <button
-                  type="button"
-                  onClick={handleConfirmCancel}
-                  className={styles.modalConfirmBtn}
-                >
-                  {t('tracking.cancelConfirmYes')}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowCancelModal(false)}
-                  className={styles.modalCancelBtn}
-                >
-                  {t('tracking.cancelConfirmNo')}
-                </button>
+        <aside className={styles.aside}>
+          <div className={styles.placeCard}>
+            <div className={styles.placeMap}>
+              {isDelivery ? (
+                <iframe
+                  title={ka ? 'რუკა' : 'Map'}
+                  src={`https://maps.google.com/maps?q=${mapQuery}&z=15&hl=${ka ? 'ka' : 'en'}&output=embed`}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              ) : (
+                <KitchenMap selectedId={flagship.id} focus="selected" controls={false} ids={[flagship.id]} initialZoom={16} />
+              )}
+            </div>
+            <div className={styles.placeBody}>
+              <span className={styles.kicker}>
+                {isDelivery ? t('tracking.deliveryAddress') : t('tracking.pickupLocation')}
+              </span>
+              <span className={styles.placeName}>
+                {isDelivery ? order.customerName : flagship.shortName.toUpperCase()}
+              </span>
+              <span>
+                {isDelivery ? `${order.address || ''} ${order.apartment || ''}`.trim() : ORDER_TRACKING_CONFIG.flagshipAddress}
+              </span>
+              <div className={styles.placeActions}>
+                {!isDelivery && (
+                  <a
+                    href={ORDER_TRACKING_CONFIG.flagshipDirectionsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.btnOutlineSmall}
+                  >
+                    {t('tracking.getDirections').replace(/\s*[→↗]\s*$/, '')} <ArrowIcon size={16} />
+                  </a>
+                )}
+                <a href={ORDER_TRACKING_CONFIG.supportPhoneHref} className={styles.textLink}>
+                  {ka ? 'დარეკე სამზარეულოში' : 'Call kitchen'}
+                </a>
               </div>
             </div>
           </div>
-        )}
+          <p className={styles.muted}>
+            {ka ? 'კითხვა შეკვეთაზე? ' : 'Questions about your order? '}
+            <a href={ORDER_TRACKING_CONFIG.supportPhoneHref} className={styles.phone}>
+              {ORDER_TRACKING_CONFIG.supportPhone}
+            </a>
+          </p>
+        </aside>
       </div>
+
+      {showCancelModal && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setShowCancelModal(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="cancel-title"
+        >
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <h3 id="cancel-title" className={styles.modalTitle}>
+              {t('tracking.cancelConfirmTitle')}
+            </h3>
+            <p className={styles.muted}>{t('tracking.cancelConfirmText')}</p>
+            <div className={styles.modalActions}>
+              <button type="button" onClick={handleConfirmCancel} className={styles.modalConfirmBtn}>
+                {t('tracking.cancelConfirmYes')}
+              </button>
+              <button type="button" onClick={() => setShowCancelModal(false)} className={styles.btnOutlineSmall}>
+                {t('tracking.cancelConfirmNo')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

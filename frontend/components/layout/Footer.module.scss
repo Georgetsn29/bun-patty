@@ -1,133 +1,118 @@
 @use '@/src/styles/abstracts' as *;
 
 .footer {
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  background-color: #070D0E;
-  padding-top: $mobile-section-spacing; // 48px
-  padding-bottom: 36px;
-  margin-top: auto;
-  font-family: $font-fira;
-  color: #FFFFFF;
-}
+  background: $ink;
+  color: $paper;
+  padding: clamp(64px, 8vw, 112px) $gutter 36px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(48px, 7vw, 96px);
+  overflow: hidden;
 
-.inner {
-  max-width: 930px;
-  margin: 0 auto;
-  padding: 0 $mobile-pad; // 16px
-  box-sizing: border-box;
-}
+  a {
+    color: $paper;
+    transition: color 0.15s ease;
 
-// Mobile: Single stacked column
-// Desktop (>=768px): 3 columns
-.locationsGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 28px;
-  padding-bottom: 36px;
-  text-align: left;
-
-  @include respond-to('md') {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 32px;
-    padding-bottom: 48px;
+    &:hover {
+      color: $mustard;
+    }
   }
 }
 
-.locationCol {
+.top {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.locationName {
-  font-size: 0.9rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #FFFFFF;
-}
-
-.locationRow {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  font-size: 14px;
-  color: #8A9698;
-  line-height: 1.45;
-}
-
-.locationIcon {
-  color: #E27344;
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  margin-top: 2px;
-}
-
-.locationLink {
-  color: #FFFFFF;
-  text-decoration: underline;
-  text-decoration-color: #E27344;
-  text-underline-offset: 2px;
-  transition: color 0.15s ease;
-
-  &:hover {
-    color: #E27344;
-  }
-}
-
-.footerCenter {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 32px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-
-.footerLogo {
-  font-size: 1.25rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #FFFFFF;
-}
-
-.socialRow {
-  display: flex;
-  align-items: center;
-  gap: 14px;
   flex-wrap: wrap;
-  justify-content: center;
+  gap: 48px;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
-.socialLink {
-  @include button-reset;
-  color: #8A9698;
-  font-size: 0.85rem;
-  font-weight: 600;
-  min-height: 36px;
-  display: inline-flex;
-  align-items: center;
-  transition: color 0.15s ease;
-  cursor: pointer;
+.cta {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.ctaTitle {
+  @include display(clamp(56px, 8.4vw, 120px));
+  margin: 0;
+  color: $paper;
+}
+
+.dot {
+  color: $red;
+}
+
+.ctaButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.btnRed {
+  @include btn-red;
 
   &:hover {
-    color: #E27344;
+    color: $paper !important;
   }
 }
 
-.socialDot {
-  color: rgba(255, 255, 255, 0.2);
-  font-size: 0.8rem;
+.btnOutline {
+  @include btn-outline(true);
+
+  &:hover {
+    color: $ink !important;
+  }
 }
 
-.copyrightLine {
-  margin-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  padding-top: 18px;
+.columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px 48px;
+  font-size: 16px;
+
+  @media (min-width: $bp-lg) {
+    display: flex;
+    gap: 32px 72px;
+  }
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+
+  a {
+    overflow-wrap: anywhere;
+  }
+}
+
+.colLabel {
+  @include mono(12px);
+  color: $muted-on-ink;
+}
+
+.wordmark {
+  @include display(clamp(56px, 9vw, 150px));
+  letter-spacing: -0.02em;
+  line-height: 0.85;
+  white-space: nowrap;
+  color: $paper;
   text-align: center;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.4);
-  letter-spacing: 0.03em;
+}
+
+.amp {
+  color: $logo-orange;
+}
+
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  justify-content: space-between;
+  border-top: 1px solid $rule-on-ink;
+  padding-top: 24px;
+  @include mono(12px);
+  color: $muted-on-ink;
 }

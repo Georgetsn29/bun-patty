@@ -1,305 +1,577 @@
 @use '@/src/styles/abstracts' as *;
 
 .locations {
-  @include container;
-  padding-top: $space-8;
-  padding-bottom: $space-24;
-  color: $color-text;
-  display: flex;
-  flex-direction: column;
-  gap: $space-16;
+  background: $paper;
+  color: $ink;
+}
 
-  @include respond-to('sm') {
-    padding-top: $space-16;
+/* ── Hero ───────────────────────────────────────────── */
+.hero {
+  padding: 56px $gutter 48px;
+  border-bottom: $rule-strong;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  justify-content: space-between;
+  align-items: flex-end;
+
+  @media (max-width: #{$bp-md - 1px}) {
+    padding: 24px $mobile-pad 24px;
+    gap: 20px;
+    align-items: stretch;
   }
 }
 
-.header {
-  max-width: 48rem;
+.heroText {
   display: flex;
   flex-direction: column;
-  gap: $space-3;
-  padding-bottom: $space-8;
-  border-bottom: 1px solid rgba($color-text, 0.15);
+  gap: 16px;
 }
 
 .kicker {
-  font-family: $font-mono;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: $color-text-muted;
-  display: block;
+  @include mono(12px);
+  color: $muted;
 }
 
 .title {
-  font-family: $font-serif;
-  font-size: 2.25rem;
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  color: $color-text;
+  @include display(clamp(60px, 11.7vw, 168px));
+  margin: 0;
 
-  @include respond-to('sm') {
-    font-size: 3rem;
+  :global(html[lang='ka']) & {
+    font-size: clamp(40px, 7vw, 100px);
+    line-height: 1.05;
   }
+}
 
-  @include respond-to('lg') {
-    font-size: 3.75rem;
+.dot {
+  color: $red;
+}
+
+.heroSide {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+
+  @media (max-width: #{$bp-md - 1px}) {
+    align-items: stretch;
   }
+}
+
+.filter {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: $rule-strong;
+}
+
+.filterBtn {
+  @include button-reset;
+  padding: 12px 22px;
+  @include display(18px, 700);
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  color: $ink;
+
+  &:hover {
+    background: $paper-deep;
+  }
+}
+
+.filterBtnActive {
+  background: $ink;
+  color: $paper;
+
+  &:hover {
+    background: $ink;
+  }
+}
+
+.filterCount {
+  @include mono(11px);
+  margin-left: 6px;
+  opacity: 0.75;
 }
 
 .headerNote {
-  font-size: 0.875rem;
-  font-family: $font-sans;
-  color: rgba($color-text, 0.8);
-  line-height: 1.6;
-  max-width: 36rem;
+  font-size: 14px;
+  color: $muted;
 }
 
-.locationsList {
-  border-top: 1px solid rgba($color-text, 0.15);
-  border-bottom: 1px solid rgba($color-text, 0.15);
+/* ── List + map ─────────────────────────────────────── */
+.split {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
 }
 
-.locationRow {
-  padding: $space-12 0;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: $space-8;
-  align-items: flex-start;
-  border-bottom: 1px solid rgba($color-text, 0.15);
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  @include respond-to('lg') {
-    grid-template-columns: repeat(12, 1fr);
-  }
-}
-
-.nameCol {
+.list {
+  flex: 1 1 520px;
+  max-width: 680px;
+  padding: 32px 40px 56px $gutter;
   display: flex;
   flex-direction: column;
-  gap: $space-2;
 
-  @include respond-to('lg') {
-    grid-column: span 4;
+  @media (max-width: #{$bp-lg - 1px}) {
+    max-width: none;
+    padding: 24px $gutter 40px;
   }
+
+  @media (max-width: #{$bp-md - 1px}) {
+    padding: 8px $mobile-pad 32px;
+  }
+}
+
+.empty {
+  padding: 28px 0;
+  color: $muted;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 28px;
+  border-bottom: $rule-soft;
+  border-left: 6px solid transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+
+  @media (max-width: #{$bp-md - 1px}) {
+    padding: 24px 0;
+    border-left: 0;
+  }
+}
+
+.cardActive {
+  background: $paper-deep;
+  border-left-color: $red;
+
+  @media (max-width: #{$bp-md - 1px}) {
+    background: transparent;
+  }
+}
+
+.cardTop {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.cardImage {
+  width: 148px;
+  height: 110px;
+  object-fit: cover;
+  display: block;
+  flex: none;
+
+  @media (max-width: #{$bp-sm - 1px}) {
+    width: 96px;
+    height: 96px;
+  }
+}
+
+.cardHead {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cardMeta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .locationIndex {
-  font-family: $font-mono;
-  font-size: 0.75rem;
-  color: $color-tomato;
-  display: block;
-}
-
-.locationName {
-  font-family: $font-serif;
-  font-size: 1.5rem;
-  font-weight: 400;
-  color: $color-text;
-
-  @include respond-to('sm') {
-    font-size: 1.875rem;
-  }
+  @include mono(12px);
+  color: $red;
 }
 
 .flagshipTag {
-  align-self: flex-start;
-  font-family: $font-mono;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  background-color: $color-accent;
-  color: $color-text;
-  padding: 2px $space-2;
-  margin-top: 4px;
+  @include mono(11px);
+  background: $mustard;
+  padding: 3px 7px;
 }
 
-.detailsCol {
-  display: flex;
-  flex-direction: column;
-  gap: $space-4;
-  font-family: $font-mono;
-  font-size: 0.75rem;
-  color: rgba($color-text, 0.85);
-
-  @include respond-to('lg') {
-    grid-column: span 4;
-  }
-}
-
-.detailGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.detailLabel {
-  color: rgba($color-text, 0.5);
-  text-transform: uppercase;
-  font-size: 10px;
-  display: block;
-}
-
-.detailAddress {
-  font-family: $font-sans;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: $color-text;
-}
-
-.transitNote {
-  color: $color-text-muted;
-}
-
-.mediaCol {
-  display: flex;
-  flex-direction: column;
-  gap: $space-3;
-
-  @include respond-to('lg') {
-    grid-column: span 4;
-  }
-}
-
-.orderLocationBtn {
+.locationName {
   @include button-reset;
+  @include display(56px);
+  text-align: left;
+  color: $ink;
+
+  &:hover {
+    color: $red;
+  }
+
+  @media (max-width: #{$bp-sm - 1px}) {
+    font-size: 42px;
+  }
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  @include mono(12px);
+  color: $muted;
+}
+
+.statusOpen {
+  color: $open-green;
+}
+
+.statusClosed {
+  color: $red;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.cardDetails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+}
+
+.addrBlock {
+  flex: 1 1 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detailPrimary {
+  font-size: 16px;
+}
+
+.detailSecondary {
+  font-size: 14px;
+  color: $muted;
+}
+
+.phone {
+  @include mono(13px);
+  letter-spacing: 0;
+
+  &:hover {
+    color: $red;
+  }
+}
+
+.hoursGrid {
+  width: 200px;
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: space-between;
+  gap: 6px 16px;
+  @include mono(12px);
+
+  span:nth-child(odd) {
+    color: $muted;
+  }
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  @include mono(11px);
+  border: $rule-soft;
+  padding: 5px 10px;
+  color: $muted;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  align-items: center;
+}
+
+.primaryBtn {
+  @include btn-red;
+  font-size: 20px;
+  padding: 14px 20px 14px 24px;
+}
+
+.primaryBtnQuiet {
+  background: transparent;
+  color: $ink;
+  border-color: $ink;
+
+  &:hover {
+    background: $ink;
+    border-color: $ink;
+    color: $paper;
+  }
+}
+
+.textBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 4px;
+  @include display(18px, 700);
+  line-height: 1;
+  color: $ink;
+
+  &:hover {
+    color: $red;
+  }
+}
+
+/* Map */
+.mapPane {
+  flex: 999 1 480px;
+  min-width: 0;
+  min-height: 480px;
+  position: relative;
+  background: $paper-deep;
+  border-left: $rule-strong;
+
+  @media (max-width: #{$bp-lg - 1px}) {
+    order: -1;
+    flex-basis: 100%;
+    border-left: 0;
+    border-bottom: $rule-strong;
+    min-height: 0;
+  }
+}
+
+.mapSticky {
+  position: sticky;
+  top: var(--header-h, 80px);
+  height: calc(100vh - var(--header-h, 80px));
+  min-height: 480px;
+
+  @media (max-width: #{$bp-lg - 1px}) {
+    position: relative;
+    top: 0;
+    height: 52vh;
+    min-height: 320px;
+  }
+}
+
+.mapFrame {
   width: 100%;
-  padding: 10px $space-4;
-  background-color: $color-text;
-  color: $color-bg;
-  font-size: 0.75rem;
-  font-family: $font-mono;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  text-align: center;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: $color-tomato;
-  }
+  height: 100%;
+  border: 0;
+  display: block;
+  // Same warm tint as the canvas map so Google's colours sit on paper
+  filter: saturate(0.45) sepia(0.22);
 }
 
-.cateringBox {
-  padding: $space-8;
-  background-color: rgba($color-bg-alt, 0.4);
-  border: 1px solid rgba($color-text, 0.15);
+.mapSwitcher {
+  position: absolute;
+  left: 24px;
+  bottom: 24px;
   display: flex;
-  flex-direction: column;
-  gap: $space-6;
-  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
 
-  @include respond-to('md') {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+  @media (max-width: #{$bp-md - 1px}) {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
   }
 }
 
-.cateringTitle {
-  font-family: $font-serif;
-  font-size: 1.25rem;
-  font-weight: 400;
-  color: $color-text;
-  margin-bottom: 4px;
-}
-
-.cateringText {
-  font-size: 0.75rem;
-  font-family: $font-mono;
-  color: $color-text-muted;
-}
-
-.cateringBtn {
+.mapPin {
   @include button-reset;
-  padding: 10px $space-6;
-  border: 1px solid $color-text;
-  font-family: $font-mono;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  transition: all 0.2s ease;
-  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: $paper;
+  border: $rule-strong;
+  padding: 10px 14px 10px 10px;
+  @include display(18px, 800);
+  line-height: 1;
+  color: $ink;
+  box-shadow: 0 4px 12px rgba($ink, 0.15);
 
   &:hover {
-    background-color: $color-text;
-    color: $color-bg;
+    background: $paper-deep;
   }
 }
 
-// Delivery Coverage & Rates Section
+.mapPinActive {
+  background: $ink;
+  color: $paper;
+
+  &:hover {
+    background: $ink;
+  }
+
+  .mapPinNum {
+    background: $red;
+  }
+}
+
+.mapPinNum {
+  @include mono(11px);
+  letter-spacing: 0;
+  background: $ink;
+  color: $paper;
+  padding: 3px 5px;
+}
+
+/* ── Delivery details ───────────────────────────────── */
 .deliveryInfoSection {
+  padding: clamp(64px, 8vw, 112px) $gutter;
+  border-top: $rule-strong;
   display: flex;
   flex-direction: column;
-  gap: $space-6;
-  padding: $space-8 0;
-  border-bottom: 1px solid rgba($color-text, 0.15);
+  gap: 40px;
+
+  @media (max-width: #{$bp-md - 1px}) {
+    padding: 48px $mobile-pad;
+    gap: 28px;
+  }
 }
 
 .deliverySectionHeader {
   display: flex;
   flex-direction: column;
-  gap: $space-2;
+  gap: 16px;
+
+  .kicker {
+    color: $red;
+  }
 }
 
 .deliverySectionTitle {
-  font-family: $font-serif;
-  font-size: 1.5rem;
-  font-weight: 400;
-  color: $color-text;
-
-  @include respond-to('md') {
-    font-size: 1.75rem;
-  }
+  @include display(clamp(44px, 6vw, 88px));
+  margin: 0;
 }
 
 .deliveryGrid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: $space-4;
-
-  @include respond-to('md') {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: $space-6;
-  }
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0 40px;
+  counter-reset: delivery;
 }
 
 .deliveryCard {
-  background-color: rgba($color-bg-alt, 0.5);
-  border: 1px solid rgba($color-text, 0.12);
-  border-radius: 8px;
-  padding: $space-5;
+  counter-increment: delivery;
   display: flex;
   flex-direction: column;
-  gap: $space-3;
-}
+  gap: 12px;
+  padding: 24px 0;
+  border-top: $rule-strong;
 
-.deliveryCardTop {
-  display: flex;
-  align-items: center;
-  gap: $space-3;
-}
-
-.cardIcon {
-  color: $color-tomato;
-  flex-shrink: 0;
+  &::before {
+    content: '0' counter(delivery);
+    @include mono(12px);
+    color: $red;
+  }
 }
 
 .cardTitle {
-  font-family: $font-serif;
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #FFFFFF;
+  @include display(32px, 800);
   margin: 0;
 }
 
 .cardText {
-  font-size: 0.85rem;
+  font-size: 16px;
   line-height: 1.5;
-  color: $color-text-muted;
+  color: $muted;
+}
+
+/* ── Catering ───────────────────────────────────────── */
+.cateringBox {
+  background: $red;
+  color: $paper;
+  padding: clamp(48px, 6vw, 80px) $gutter;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  justify-content: space-between;
+  align-items: flex-end;
+
+  .kicker {
+    color: $paper;
+    opacity: 0.8;
+  }
+
+  @media (max-width: #{$bp-md - 1px}) {
+    padding: 40px $mobile-pad;
+  }
+}
+
+.cateringText {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 760px;
+}
+
+.cateringTitle {
+  @include display(clamp(40px, 5vw, 72px));
   margin: 0;
 }
 
+.cateringNote {
+  font-size: 17px;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+.cateringBtn {
+  @include btn-outline(true);
+
+  &:hover {
+    color: $red;
+  }
+}
+
+
+// =============================================================================
+// Store-locator layout v2: list + map share exactly one screen height on wide
+// screens. The list scrolls inside; the map always fills its side.
+// =============================================================================
+@media (min-width: $bp-lg) {
+  .split {
+    flex-wrap: nowrap;
+    height: calc(100vh - var(--header-h, 80px));
+    min-height: 560px;
+    border-bottom: $rule-strong;
+  }
+
+  .list {
+    flex: 0 0 min(560px, 42%);
+    max-width: none;
+    overflow-y: auto;
+    padding: 24px 32px 32px $gutter;
+    scrollbar-width: thin;
+    scrollbar-color: $rule transparent;
+  }
+
+  .mapPane {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .mapSticky {
+    position: relative;
+    top: 0;
+    height: 100%;
+    min-height: 0;
+  }
+}
+
+.deliveryInfoSection {
+  border-top: 0;
+}

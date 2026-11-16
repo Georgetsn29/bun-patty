@@ -1,111 +1,310 @@
 @use '@/src/styles/abstracts' as *;
 
+$radius: 16px;
+$hairline: rgba($color-text, 0.1);
+$green: #2E7A44;
+$red: #C8321D;
+$soft-red: #C8321D;
+
 .checkout {
-  max-width: 930px;
-  margin: 0 auto;
-  padding: 24px $mobile-pad 80px;
-  width: 100%;
-  box-sizing: border-box;
-  font-family: $font-fira;
-  color: #FFFFFF;
+  @include container;
+  padding-top: $space-6;
+  padding-bottom: $space-12;
+  color: $color-text;
+  display: flex;
+  flex-direction: column;
+  gap: $space-5;
 
   @include respond-to('md') {
-    padding: 32px 16px 80px;
+    padding-top: $space-12;
+    padding-bottom: $space-24;
+    gap: $space-8;
   }
 }
 
+// ---------- Header ----------
 .header {
-  margin-bottom: 24px;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $space-2;
 }
 
-.kicker {
+.backLink {
+  @include button-reset;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  font-family: $font-mono;
   font-size: 0.75rem;
-  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #E27344;
+  letter-spacing: 0.06em;
+  color: $color-text-muted;
+  transition: color 0.2s ease;
+
+  :global(html[lang='ka']) & {
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  &:hover {
+    color: $color-accent;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-accent;
+    outline-offset: 2px;
+    border-radius: 0;
+  }
 }
 
 .title {
-  font-size: $mobile-title; // 32px
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  color: #FFFFFF;
-  margin: 6px 0 0;
-  line-height: 1.15;
+  font-family: $font-serif;
+  text-transform: uppercase;
+  font-size: 2.25rem;
+  line-height: 1.05;
+  font-weight: 500;
+  letter-spacing: -0.03em;
 
   @include respond-to('md') {
-    font-size: 1.75rem;
+    font-size: 3.25rem;
   }
 }
 
-.checkoutGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 28px;
+.secureNote {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: $font-mono;
+  font-size: 0.72rem;
+  color: $color-text-muted;
 
-  @include respond-to('md') {
-    grid-template-columns: 1.4fr 1fr;
-    gap: 40px;
+  svg {
+    color: $green;
+  }
+}
+
+// ---------- Layout ----------
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: $space-6;
+  align-items: start;
+
+  @include respond-to('lg') {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: $space-8;
   }
 }
 
 .formCol {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-}
+  gap: $space-4;
+  min-width: 0;
 
-.sectionHeader {
-  font-size: 0.85rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #FFFFFF;
-  display: block;
-}
-
-.toggleGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  background-color: #131E21;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: $mobile-radius;
-  overflow: hidden;
-}
-
-.toggleBtn {
-  @include button-reset;
-  height: $mobile-control-min-height; // 48px
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 12px;
-  font-size: 14px;
-  font-weight: 700;
-  text-align: center;
-  color: #8A9698;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &.active {
-    background-color: #E27344;
-    color: #FFFFFF;
+  @include respond-to('md') {
+    gap: $space-5;
   }
 }
 
-.form {
+// ---------- Steps ----------
+.step {
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: $space-4;
+  padding: $space-5 $space-4;
+  border-radius: 0;
+  border: 1px solid $hairline;
+  background: $color-bg-alt;
+
+  @include respond-to('sm') {
+    padding: $space-6;
+  }
 }
 
-// 1-column on mobile
+.stepTitle {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: $space-3;
+  margin: 0;
+  font-family: $font-serif;
+  text-transform: uppercase;
+  font-size: 1.15rem;
+  font-weight: 600;
+
+  @include respond-to('md') {
+    font-size: 1.25rem;
+  }
+}
+
+.stepNum {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: $color-accent-light;
+  color: $color-accent;
+  font-family: $font-mono;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.stepOptional {
+  margin-left: auto;
+  font-family: $font-mono;
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: $color-text-muted;
+}
+
+// Option cards (delivery / pickup, pickup location)
+.typeGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: $space-2;
+
+  @include respond-to('sm') {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.typeCard,
+.pickupCard {
+  -webkit-tap-highlight-color: transparent;
+  @include button-reset;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  min-height: 64px;
+  padding: $space-3 $space-4;
+  border-radius: 0;
+  border: 1px solid $hairline;
+  background: $paper;
+  text-align: left;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+
+  &:hover {
+    border-color: rgba(23, 18, 15, 0.22);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 3px rgba($color-accent, 0.35);
+  }
+}
+
+.typeCardActive {
+  border-color: $color-accent !important;
+  background: rgba($color-accent, 0.08);
+
+  .typeIcon {
+    background: $color-accent;
+    color: $color-on-accent;
+  }
+}
+
+.typeIcon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: $color-accent-light;
+  color: $color-accent;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.typeText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.typeTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-2;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.typeSub {
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: $color-text-muted;
+  overflow-wrap: break-word;
+}
+
+.radio {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid rgba(23, 18, 15, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-on-accent;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.radioOn {
+  border-color: $color-accent;
+  background: $color-accent;
+}
+
+.pickupList {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.status {
+  padding: 1px 8px;
+  border-radius: 0;
+  font-family: $font-mono;
+  font-size: 0.6rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.statusOpen {
+  color: $green;
+  background: rgba($green, 0.12);
+}
+
+.statusClosed {
+  color: $color-text-muted;
+  background: $color-sage-light;
+}
+
+// ---------- Form fields ----------
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
 .formRow {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: $space-4;
 
   @include respond-to('sm') {
     grid-template-columns: 1fr 1fr;
@@ -115,440 +314,854 @@
 .formRow3 {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: $space-4;
 
   @include respond-to('sm') {
     grid-template-columns: 2fr 1fr;
   }
 }
 
+.span2 {
+  min-width: 0;
+}
+
 .formGroup {
   display: flex;
   flex-direction: column;
   gap: 6px;
-}
-
-.formGroupSpan2 {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  min-width: 0;
 }
 
 .formLabel {
-  font-size: 0.775rem;
-  font-weight: 700;
-  color: #8A9698;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: $color-text-muted;
 }
 
-// 16px input font size to prevent mobile browser zoom!
 .input {
-  background-color: #131E21;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: $mobile-radius;
-  height: $mobile-control-min-height; // 48px
-  padding: 0 14px;
-  font-family: $font-fira;
-  font-size: 16px; // Crucial for iOS Safari non-zoom
-  color: #FFFFFF;
-  outline: none;
-  box-sizing: border-box;
-  transition: border-color 0.2s ease;
-
-  &:focus {
-    border-color: #E27344;
-  }
+  width: 100%;
+  min-height: 50px;
+  padding: 0 $space-4;
+  border-radius: 0;
+  border: 1px solid $color-border-strong;
+  background: $paper;
+  color: $color-text;
+  font-family: $font-sans;
+  font-size: 1rem; // ≥16px avoids iOS zoom
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
   &::placeholder {
-    color: #616F71;
+    color: $color-text-subtle;
   }
-}
 
-.selectWrap {
-  position: relative;
-}
-
-.select {
-  appearance: none;
-  -webkit-appearance: none;
-  background-color: #131E21;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: $mobile-radius;
-  height: $mobile-control-min-height; // 48px
-  padding: 0 40px 0 14px;
-  font-family: $font-fira;
-  font-size: 16px;
-  color: #FFFFFF;
-  outline: none;
-  box-sizing: border-box;
-  cursor: pointer;
-  width: 100%;
+  &:hover {
+    border-color: rgba($color-text, 0.35);
+  }
 
   &:focus {
-    border-color: #E27344;
-  }
-
-  option {
-    background-color: #131E21;
-    color: #FFFFFF;
+    outline: none;
+    border-color: $color-accent;
+    box-shadow: 0 0 0 3px rgba($color-accent, 0.2);
   }
 }
 
-.selectWrap::after {
-  content: '▾';
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #E27344;
-  pointer-events: none;
-  font-size: 1.1rem;
-  line-height: 1;
+.inputError {
+  border-color: rgba($red, 0.7);
+
+  &:focus {
+    border-color: $red;
+    box-shadow: 0 0 0 3px rgba($red, 0.2);
+  }
 }
-
-
 
 .errorText {
-  font-size: 0.725rem;
-  color: #EF4444;
   margin: 0;
+  font-size: 0.78rem;
+  color: $red;
 }
 
-.tipWrap {
-  background-color: #131E21;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: $mobile-radius;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.tipHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #8A9698;
-}
-
+// ---------- Tip ----------
 .tipGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: $space-2;
 }
 
 .tipBtn {
   @include button-reset;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 700;
-  background-color: #ffffff0d;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
-  color: #FFFFFF;
-  cursor: pointer;
-  transition: all 0.15s ease;
-
-  &:hover {
-    // border-color: #E27344;
-    background-color: #ffffff2f;
-  }
-
-  &.active {
-    background-color: #E27344;
-    border-color: #E27344;
-    color: #FFFFFF;
-  }
-}
-
-.policyNoticeBox {
-  background-color: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: $mobile-radius;
-  padding: 12px 14px;
+  min-height: 56px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-radius: 0;
+  border: 1px solid $hairline;
+  background: $paper;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 
-.policyRow {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
+  &:hover {
+    border-color: rgba(23, 18, 15, 0.22);
+  }
 
-.policyIcon {
-  font-size: 14px;
-  line-height: 1.4;
-  flex-shrink: 0;
-}
+  &:focus {
+    outline: none;
+  }
 
-.policyText {
-  margin: 0;
-  font-size: 0.775rem;
-  line-height: 1.45;
-  color: #B0BABC;
-
-  strong {
-    color: #FFFFFF;
+  &:focus-visible {
+    box-shadow: 0 0 0 3px rgba($color-accent, 0.35);
   }
 }
 
-.sandboxBox {
-  background-color: rgba(226, 115, 68, 0.08);
-  border: 1px solid rgba(226, 115, 68, 0.25);
-  border-radius: $mobile-radius;
-  padding: 12px 16px;
-  font-size: 0.8rem;
-  line-height: 1.45;
-  color: #8A9698;
+.tipActive {
+  border-color: $color-accent;
+  background: rgba($color-accent, 0.1);
+
+  .tipPct {
+    color: $color-accent;
+  }
 }
 
-// Sticky "Place Order" button on mobile
-.submitOrderBtn {
+.tipPct {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.tipAmt {
+  font-family: $font-mono;
+  font-size: 0.65rem;
+  color: $color-text-muted;
+}
+
+// ---------- Payment info ----------
+.infoList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+
+  li {
+    display: flex;
+    gap: $space-3;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: $color-text-muted;
+  }
+
+  svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: $color-accent;
+  }
+
+  strong {
+    display: block;
+    color: $color-text;
+    font-weight: 600;
+  }
+}
+
+.sandbox {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  margin: 0;
+  padding: $space-2 $space-3;
+  border-radius: 0;
+  background: rgba(#E9A823, 0.08);
+  border: 1px solid rgba(#E9A823, 0.2);
+  font-size: 0.75rem;
+  color: $color-text-muted;
+
+  svg {
+    flex-shrink: 0;
+    color: #E9A823;
+  }
+}
+
+// ---------- Submit ----------
+.submitBtn {
   @include button-reset;
-  width: 100%;
-  height: $mobile-control-min-height; // 48px
-  min-height: $mobile-control-min-height;
-  padding: 0 16px;
-  background-color: #E27344;
-  color: #FFFFFF;
-  font-size: 16px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  border-radius: $mobile-radius;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  gap: $space-2;
+  min-height: 56px;
+  padding: 0 $space-6;
+  border-radius: 0;
+  background: $color-accent;
+  color: $color-on-accent;
+  font-family: $font-mono;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: background-color 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
 
-  @media (max-width: 767px) {
-    position: sticky;
-    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-    z-index: 20;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+  :global(html[lang='ka']) & {
+    text-transform: none;
+    letter-spacing: 0;
   }
 
   &:hover:not(:disabled) {
-    background-color: #F28555;
+    background: $color-tomato-hover;
   }
 
-  &:active {
-    transform: scale(0.98);
+  &:active:not(:disabled) {
+    transform: scale(0.99);
   }
 
   &:disabled {
     opacity: 0.7;
     cursor: wait;
   }
-}
 
-// Right Summary Column
-.summaryCol {
-  background-color: #131E21;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  height: fit-content;
-}
-
-.summaryTitle {
-  font-size: 1rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #FFFFFF;
-  margin: 0;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.itemsList {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.itemRow {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-
-  &:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
+  &:focus-visible {
+    outline: 2px solid $color-text;
+    outline-offset: 2px;
   }
 }
 
-.itemRowHeader {
+.desktopSubmit {
+  display: none;
+
+  @include respond-to('md') {
+    display: flex;
+  }
+}
+
+.submitTotal {
+  margin-left: auto;
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.spin {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Mobile sticky bar (the bottom tab bar is hidden on this page)
+.mobileBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: $z-header + 50;
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  font-size: 0.85rem;
-  color: #FFFFFF;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-3 $space-4;
+  padding-bottom: calc(#{$space-3} + env(safe-area-inset-bottom, 0px));
+  background: rgba($paper, 0.96);
+  backdrop-filter: saturate(140%) blur(16px);
+  -webkit-backdrop-filter: saturate(140%) blur(16px);
+  border-top: 1px solid $hairline;
+  box-shadow: 0 -8px 24px rgba(23, 18, 15, 0.12);
+
+  .submitBtn {
+    flex: 1;
+    min-height: 52px;
+  }
+
+  @include respond-to('md') {
+    display: none;
+  }
 }
 
-.customizationBullet {
-  font-size: 0.75rem;
-  color: #E27344;
-  margin: 0;
-  line-height: 1.35;
-}
-
-.totalsBox {
+.mobileBarTotal {
+  flex-shrink: 0;
+  white-space: nowrap;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  line-height: 1.15;
+
+  strong {
+    font-family: $font-mono;
+    font-size: 1.1rem;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.mobileBarLabel {
+  font-size: 0.68rem;
+  color: $color-text-muted;
+}
+
+// ---------- Summary ----------
+.mobileSummary {
+  border-radius: 0;
+  border: 1px solid $hairline;
+  background: $color-bg-alt;
+  overflow: hidden;
+
+  @include respond-to('lg') {
+    display: none;
+  }
+}
+
+.mobileSummaryToggle {
+  @include button-reset;
+  width: 100%;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  padding: 0 $space-4;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: $color-accent;
+
+  > span {
+    text-align: left;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-accent;
+    outline-offset: -2px;
+  }
+}
+
+.mobileSummaryCount {
+  color: $color-text-muted;
+  font-weight: 400;
+}
+
+.chevron {
+  transition: transform 0.2s ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.mobileSummaryTotal {
+  margin-left: auto;
+  white-space: nowrap;
+  font-family: $font-mono;
+  font-size: 1rem;
+  color: $color-text;
+  font-variant-numeric: tabular-nums;
+}
+
+.mobileSummaryBody {
+  overflow: hidden;
+}
+
+.mobileSummaryInner {
+  padding: 0 $space-4 $space-4;
+  border-top: 1px solid $hairline;
+}
+
+.summaryCol {
+  display: none;
+
+  @include respond-to('lg') {
+    display: block;
+    position: sticky;
+    top: 96px;
+    padding: $space-6;
+    border-radius: 0;
+    border: 1px solid $hairline;
+    background: $color-bg-alt;
+  }
+}
+
+.summaryTitle {
+  margin: 0 0 $space-2;
+  font-family: $font-serif;
+  text-transform: uppercase;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.summaryItems {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li + li {
+    border-top: 1px solid $hairline;
+  }
+}
+
+.summaryItem {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-3;
+  padding: $space-3 0;
+}
+
+.summaryThumbWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.summaryThumb {
+  display: block;
+  width: 52px;
+  height: 52px;
+  border-radius: 0;
+  object-fit: cover;
+  background: $color-bg-dark;
+}
+
+.summaryQty {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 0;
+  background: $color-text;
+  color: $color-on-accent;
+  font-family: $font-mono;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+}
+
+.summaryInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summaryName {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.summaryChoice {
+  font-weight: 400;
+  color: $color-text-muted;
+}
+
+.summaryMods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+
+  span {
+    padding: 1px 7px;
+    border-radius: 0;
+    font-size: 0.68rem;
+  }
+}
+
+.modRemoved {
+  color: $soft-red;
+  background: rgba($soft-red, 0.1);
+}
+
+.modExtra {
+  color: $color-accent;
+  background: $color-accent-light;
+}
+
+.summaryNote {
+  font-size: 0.72rem;
+  font-style: italic;
+  color: $color-text-muted;
+}
+
+.summaryPrice {
+  font-family: $font-mono;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.totals {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: $space-2 0 0;
+  padding-top: $space-4;
+  border-top: 1px solid $hairline;
 }
 
 .totalLine {
   display: flex;
   justify-content: space-between;
-  font-size: 0.8rem;
-  color: #8A9698;
+  gap: $space-3;
+  font-size: 0.85rem;
+  color: $color-text-muted;
+
+  dt,
+  dd {
+    margin: 0;
+  }
+
+  dd {
+    font-family: $font-mono;
+    color: $color-text;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.totalDiscount dd {
+  color: $green;
+}
+
+.freeValue {
+  color: $green !important;
 }
 
 .grandTotalLine {
   display: flex;
   justify-content: space-between;
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: #FFFFFF;
-  padding-top: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-}
+  align-items: baseline;
+  gap: $space-3;
+  margin-top: $space-2;
+  padding-top: $space-3;
+  border-top: 1px solid $hairline;
 
-// Confirmation
-.confirmationWrap {
-  max-width: 640px;
-  margin: 40px auto 80px;
-  padding: 0 16px;
-  font-family: $font-fira;
-}
+  dt,
+  dd {
+    margin: 0;
+  }
 
-.ticketCard {
-  background-color: #131E21;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
-  padding: 32px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
+  dt {
+    display: flex;
+    flex-direction: column;
+    font-weight: 600;
+  }
 
-.ticketHeader {
-  text-align: center;
-}
-
-.ticketTitle {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: #FFFFFF;
-  margin: 8px 0 0;
-}
-
-.ticketMeta {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 0.825rem;
-  color: #8A9698;
-  background-color: rgba(255, 255, 255, 0.03);
-  padding: 12px 16px;
-  border-radius: 8px;
-}
-
-.ticketActions {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-
-  @include respond-to('sm') {
-    flex-direction: row;
+  dd {
+    font-family: $font-mono;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: $color-accent;
+    font-variant-numeric: tabular-nums;
   }
 }
 
-.ticketPrimaryBtn {
-  @include button-reset;
-  flex: 1;
-  padding: 12px;
-  background-color: #E27344;
-  color: #FFFFFF;
-  font-size: 0.85rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  border-radius: 8px;
-  text-align: center;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #F28555;
-  }
+.vatNote {
+  font-size: 0.68rem;
+  font-weight: 400;
+  color: $color-text-subtle;
 }
 
-.ticketSecondaryBtn {
-  @include button-reset;
-  flex: 1;
-  padding: 12px;
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #FFFFFF;
-  font-size: 0.85rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  border-radius: 8px;
-  text-align: center;
-  cursor: pointer;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-  }
-}
-
+// ---------- Empty ----------
 .emptyState {
-  max-width: 500px;
-  margin: 80px auto;
+  @include container;
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  padding-top: $space-16;
+  padding-bottom: $space-16;
   text-align: center;
-  padding: 0 16px;
-  font-family: $font-fira;
+}
+
+.emptyIcon {
+  width: 60px;
+  height: 60px;
+  border-radius: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: $space-2;
+  background: $color-accent-light;
+  color: $color-accent;
 }
 
 .emptyTitle {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #FFFFFF;
-  margin-bottom: 8px;
+  margin: 0;
+  font-family: $font-serif;
+  text-transform: uppercase;
+  font-size: 1.75rem;
+  font-weight: 500;
 }
 
-.emptyBtn {
+.emptyDesc {
+  margin: 0 0 $space-4;
+  max-width: 24rem;
+  font-size: 0.9rem;
+  color: $color-text-muted;
+}
+
+.primaryBtn {
   @include button-reset;
-  margin-top: 20px;
-  padding: 12px 24px;
-  background-color: #E27344;
-  color: #FFFFFF;
-  font-size: 0.85rem;
-  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  min-height: 48px;
+  padding: 0 $space-6;
+  border-radius: 0;
+  background: $color-accent;
+  color: $color-on-accent;
+  font-family: $font-mono;
+  font-size: 0.78rem;
+  font-weight: 600;
   text-transform: uppercase;
-  border-radius: 8px;
-  cursor: pointer;
+  letter-spacing: 0.05em;
 
   &:hover {
-    background-color: #F28555;
+    background: $color-tomato-hover;
   }
+
+  &:focus-visible {
+    outline: 2px solid $color-text;
+    outline-offset: 2px;
+  }
+}
+
+// Phones: the app bar's back button replaces the in-page "Back to menu" link
+@media (max-width: 767px) {
+  .backLink {
+    display: none;
+  }
+}
+
+// =============================================================================
+// Redesign layer (canvas "Checkout"): open sections divided by ink rules,
+// numbered mono steps, square radio rows, segmented tip control.
+// =============================================================================
+.checkout {
+  max-width: none;
+  padding: 48px $gutter 120px;
+  gap: 32px;
+
+  @media (max-width: #{$bp-md - 1px}) {
+    padding: 20px $mobile-pad 120px;
+    gap: 20px;
+  }
+}
+
+.header {
+  gap: 12px;
+}
+
+.title {
+  @include display(clamp(60px, 8.3vw, 120px));
+  margin: 0;
+}
+
+.titleDot {
+  color: $red;
+}
+
+.grid {
+  @include respond-to('lg') {
+    grid-template-columns: minmax(0, 1fr) minmax(340px, 440px);
+    gap: 64px;
+  }
+}
+
+.formCol {
+  gap: 0;
+  border-bottom: $rule-strong;
+}
+
+.step {
+  gap: 20px;
+  padding: 32px 0;
+  border: 0;
+  border-top: $rule-strong;
+  background: transparent;
+
+  @include respond-to('sm') {
+    padding: 32px 0;
+  }
+}
+
+.stepTitle {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+  @include display(32px, 800);
+  line-height: 1;
+  margin: 0;
+}
+
+.stepNum {
+  width: auto;
+  height: auto;
+  background: none;
+  border: 0;
+  @include mono(12px);
+  color: $red;
+}
+
+.stepOptional {
+  @include mono(11px);
+  color: $muted;
+  margin-left: auto;
+}
+
+.typeIcon {
+  display: none;
+}
+
+.typeCard,
+.pickupCard {
+  border: $rule-strong;
+  background: transparent;
+  padding: 18px 20px;
+
+  &:hover {
+    background: $paper-deep;
+  }
+}
+
+.typeCardActive {
+  background: $paper-deep;
+  border-width: 2px;
+  border-color: $ink;
+  box-shadow: inset 6px 0 0 $red;
+}
+
+.typeTitle {
+  @include display(22px, 700);
+  line-height: 1;
+}
+
+.radio {
+  border-radius: 50%;
+  border: 1.5px solid $ink;
+  background: transparent;
+  color: transparent;
+}
+
+.radioOn {
+  background: $ink;
+  border-color: $ink;
+  color: $paper;
+}
+
+.formLabel {
+  @include mono(12px);
+  color: $muted;
+}
+
+.input {
+  border: $rule-strong;
+  min-height: 52px;
+}
+
+.tipGrid {
+  gap: 0;
+  border: $rule-strong;
+}
+
+.tipBtn {
+  border: 0;
+  border-left: $rule-soft;
+  background: transparent;
+  color: $ink;
+  padding: 14px 8px;
+
+  &:first-child {
+    border-left: 0;
+  }
+
+  &:hover {
+    background: $paper-deep;
+  }
+}
+
+.tipActive {
+  background: $ink;
+  color: $paper;
+
+  &:hover {
+    background: $ink;
+  }
+
+  .tipAmt {
+    color: $muted-on-ink;
+  }
+}
+
+.tipPct {
+  @include display(22px, 700);
+  line-height: 1;
+}
+
+.submitBtn {
+  @include btn-red;
+  width: 100%;
+  justify-content: space-between;
+  padding: 20px 24px;
+}
+
+.desktopSubmit {
+  margin-top: 32px;
+}
+
+.submitTotal {
+  @include mono(16px);
+  letter-spacing: 0;
+}
+
+.summaryCol {
+  @include respond-to('lg') {
+    top: calc(var(--header-h, 80px) + 24px);
+    padding: 28px;
+    border: $rule-strong;
+    background: $paper;
+  }
+}
+
+.summaryTitle {
+  @include display(32px, 800);
+  line-height: 1;
+}
+
+.mobileSummary {
+  border: $rule-strong;
+  background: $paper;
+}
+
+.grandTotalLine {
+  border-top: $rule-strong;
+
+  dt,
+  dd {
+    @include display(28px, 800);
+    color: $ink;
+  }
+}
+
+.sandbox {
+  border: 1px dashed $muted;
+  background: transparent;
+}
+
+.mobileBar {
+  border-top: $rule-strong;
+}
+
+.typeCard.typeCardActive,
+.pickupCard.typeCardActive {
+  border-color: $ink;
+}
+
+.tipBtn.tipActive,
+.tipBtn.tipActive .tipPct {
+  color: $paper;
+}
+
+.grandTotalLine .vatNote {
+  display: block;
+  margin-top: 4px;
+  @include mono(10px);
+  color: $muted;
 }

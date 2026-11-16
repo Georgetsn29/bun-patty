@@ -16,8 +16,13 @@ body {
 }
 
 ::selection {
-  background-color: $color-accent;
-  color: $color-text;
+  background-color: $red;
+  color: $paper;
+}
+
+:focus-visible {
+  outline: 2px solid $red;
+  outline-offset: 2px;
 }
 
 ::-webkit-scrollbar {
@@ -30,11 +35,11 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D4C9BC;
+  background: $rule;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #B8ACA0;
+  background: $muted;
 }
 
 // Global utility classes for simple structure
@@ -43,18 +48,30 @@ body {
   max-width: $max-width-site;
   margin-left: auto;
   margin-right: auto;
-  padding-left: $space-4;
-  padding-right: $space-4;
+  padding-left: $gutter;
+  padding-right: $gutter;
+}
 
-  @media (min-width: $bp-sm) {
-    padding-left: $space-6;
-    padding-right: $space-6;
-  }
+// Brand utilities shared by the redesigned views
+.display {
+  font-family: $font-display;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.015em;
+  line-height: 0.88;
+}
 
-  @media (min-width: $bp-lg) {
-    padding-left: $space-8;
-    padding-right: $space-8;
-  }
+.mono-label {
+  font-family: $font-mono;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+.red-dot {
+  color: $red;
 }
 
 // Intro cover: lock page scroll while it is on screen (set before first paint)
@@ -66,4 +83,36 @@ html[data-intro='on'] body {
 // Main content receives programmatic focus after the intro cover; no visible ring needed
 #main-content:focus {
   outline: none;
+}
+
+// App-like touch behaviour on phones: no 300ms double-tap delay, no accidental
+// text selection or long-press callouts on controls.
+@media (max-width: 767px) {
+  button,
+  a,
+  [role='button'],
+  [role='tab'],
+  [role='radio'] {
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  img {
+    -webkit-touch-callout: none;
+  }
+}
+
+// Visually hidden but announced by screen readers
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

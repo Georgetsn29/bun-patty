@@ -1,0 +1,332 @@
+@use '@/src/styles/abstracts' as *;
+
+$mq-phone: '(max-width: #{$bp-md - 1px})';
+
+.page {
+  background: $paper;
+  color: $ink;
+}
+
+.dot {
+  color: $red;
+}
+
+.kickerRed {
+  @include mono(12px);
+  color: $red;
+}
+
+.btnRed {
+  @include btn-red;
+}
+
+.btnOutline {
+  @include btn-outline;
+}
+
+.hero {
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: $rule-strong;
+}
+
+.heroText {
+  flex: 1 1 520px;
+  padding: 48px $gutter 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  justify-content: flex-end;
+
+  @media #{$mq-phone} {
+    padding: 24px $mobile-pad 32px;
+  }
+}
+
+.breadcrumb {
+  display: flex;
+  gap: 10px;
+  @include mono(12px);
+  color: $muted;
+
+  a {
+    color: $ink;
+
+    &:hover {
+      color: $red;
+    }
+  }
+}
+
+.title {
+  @include display(clamp(72px, 12vw, 180px));
+  line-height: 0.84;
+  margin: 0;
+}
+
+.metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  align-items: center;
+}
+
+.flagshipTag {
+  @include mono(11px);
+  background: $mustard;
+  padding: 4px 8px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  @include mono(12px);
+  color: $muted;
+}
+
+.statusOpen {
+  color: $open-green;
+}
+
+.statusClosed {
+  color: $red;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.address {
+  font-size: 20px;
+  line-height: 1.4;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.heroImage {
+  flex: 1 1 480px;
+  min-width: 0;
+  min-height: 420px;
+  max-height: 640px;
+  object-fit: cover;
+  display: block;
+  border-left: $rule-strong;
+
+  @media #{$mq-phone} {
+    order: -1;
+    min-height: 240px;
+    height: 260px;
+    border-left: 0;
+    border-bottom: $rule-strong;
+  }
+}
+
+.body {
+  padding: clamp(56px, 7vw, 96px) $gutter;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 48px 80px;
+
+  @media #{$mq-phone} {
+    padding: 40px $mobile-pad;
+    gap: 40px;
+  }
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.hoursList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: $rule-strong;
+}
+
+.hoursRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-top: $rule-soft;
+
+  &:first-child {
+    border-top: $rule-strong;
+  }
+}
+
+.hoursToday {
+  background: $paper-deep;
+  box-shadow: inset 4px 0 0 $red;
+  padding-left: 14px;
+  padding-right: 10px;
+}
+
+.day {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  @include display(22px, 700);
+  line-height: 1;
+}
+
+.todayTag {
+  @include mono(10px);
+  background: $red;
+  color: $paper;
+  padding: 3px 6px;
+}
+
+.hoursValue {
+  @include mono(15px);
+  letter-spacing: 0;
+}
+
+.transit {
+  font-size: 20px;
+  line-height: 1.45;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  @include mono(11px);
+  border: $rule-soft;
+  padding: 6px 10px;
+  color: $muted;
+}
+
+.contactList {
+  margin: 8px 0 0;
+  border-bottom: $rule-strong;
+
+  > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 0;
+    border-top: $rule-strong;
+  }
+
+  dt {
+    @include mono(12px);
+    color: $muted;
+  }
+
+  dd {
+    margin: 0;
+
+    a {
+      @include display(22px, 700);
+      line-height: 1;
+      text-transform: none;
+      color: $ink;
+
+      &:hover {
+        color: $red;
+      }
+    }
+  }
+}
+
+.mapFrame {
+  height: clamp(320px, 42vw, 560px);
+  border-top: $rule-strong;
+  border-bottom: $rule-strong;
+  background: $paper-deep;
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+    filter: saturate(0.45) sepia(0.22);
+  }
+}
+
+.others {
+  padding: clamp(56px, 7vw, 96px) $gutter;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  @media #{$mq-phone} {
+    padding: 40px $mobile-pad 56px;
+  }
+}
+
+.othersTitle {
+  @include display(clamp(44px, 6vw, 88px));
+  margin: 0;
+}
+
+.othersList {
+  border-bottom: $rule-strong;
+}
+
+.otherRow {
+  display: flex;
+  align-items: center;
+  gap: 16px 32px;
+  padding: 20px 0;
+  border-top: $rule-strong;
+  color: $ink;
+
+  &:hover {
+    color: $red;
+  }
+
+  > svg {
+    margin-left: auto;
+    flex: none;
+  }
+}
+
+.otherImage {
+  width: 160px;
+  height: 100px;
+  object-fit: cover;
+  flex: none;
+
+  @media #{$mq-phone} {
+    width: 88px;
+    height: 72px;
+  }
+}
+
+.otherName {
+  @include display(56px);
+
+  @media #{$mq-phone} {
+    font-size: 36px;
+  }
+}
+
+.otherAddress {
+  font-size: 16px;
+  color: $muted;
+
+  @media #{$mq-phone} {
+    display: none;
+  }
+}

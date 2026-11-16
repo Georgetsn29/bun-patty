@@ -3,8 +3,7 @@
 import React from 'react';
 import { BUSINESS_CONTENT } from '@/data/businessContent';
 import { useLanguage } from '@/context/LanguageContext';
-import { cleanPlaceholder } from '@/lib/utils';
-import { MapPin, Phone, Clock } from 'lucide-react';
+import { ArrowIcon } from './Header';
 import styles from './Footer.module.scss';
 
 interface FooterProps {
@@ -12,91 +11,87 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
-  const { t } = useLanguage();
+  const { language, t, getCategoryName } = useLanguage();
+  const ka = language === 'ka';
+
+  const go = (route: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    onNavigate(route);
+  };
+  const shortName = (name: string) => name.split(' ')[0];
 
   return (
     <footer className={styles.footer}>
-      <div className={styles.inner}>
-        {/* Locations Grid (Stacked in single column on mobile, 3-column on desktop) */}
-        <div className={styles.locationsGrid}>
-          {BUSINESS_CONTENT.locations.map((loc) => {
-            const cleanedAddress = cleanPlaceholder(loc.address);
-            const cleanedCity = cleanPlaceholder(loc.cityStateZip);
-            const fullAddress = `${cleanedAddress}, ${cleanedCity}`;
-            const mapQuery = encodeURIComponent(`${loc.name}, ${fullAddress}`);
-
-            return (
-              <div key={loc.id} className={styles.locationCol}>
-                <div className={styles.locationName}>{loc.name}</div>
-
-                {/* Tappable Address Link */}
-                <div className={styles.locationRow}>
-                  <MapPin className={styles.locationIcon} aria-hidden="true" />
-                  <a
-                    href={`https://maps.google.com/?q=${mapQuery}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.locationLink}
-                    title="View on Google Maps"
-                  >
-                    {fullAddress}
-                  </a>
-                </div>
-
-                {/* Tappable Phone Link */}
-                <div className={styles.locationRow}>
-                  <Phone className={styles.locationIcon} aria-hidden="true" />
-                  <a href={`tel:${loc.phone}`} className={styles.locationLink}>
-                    {loc.phone}
-                  </a>
-                </div>
-
-                <div className={styles.locationRow}>
-                  <Clock className={styles.locationIcon} aria-hidden="true" />
-                  <span>{loc.hoursDisplay}</span>
-                </div>
-              </div>
-            );
-          })}
+      <div className={styles.top}>
+        <div className={styles.cta}>
+          <h2 className={styles.ctaTitle}>
+            {ka ? 'მოგშივდა?' : 'Hungry?'}
+            <br />
+            {ka ? 'შეუკვეთე წინასწარ' : 'Order ahead'}
+            <span className={styles.dot}>.</span>
+          </h2>
+          <div className={styles.ctaButtons}>
+            <a href="#/shop" onClick={go('shop')} className={styles.btnRed}>
+              {ka ? 'შეკვეთა გასატანად' : 'Order for pickup'} <ArrowIcon size={20} />
+            </a>
+            <a href="#/track" onClick={go('track')} className={styles.btnOutline}>
+              {t('nav.track')} <ArrowIcon size={20} />
+            </a>
+          </div>
         </div>
 
-        {/* Centered Brand Mark & Social Navigation */}
-        <div className={styles.footerCenter}>
-          <div className={styles.footerLogo}>
-            {BUSINESS_CONTENT.brandName.toUpperCase()}
+        <div className={styles.columns}>
+          <div className={styles.col}>
+            <span className={styles.colLabel}>{ka ? 'გვესტუმრე' : 'Visit'}</span>
+            {BUSINESS_CONTENT.locations.map((loc) => (
+              <a key={loc.id} href={`#/locations/${loc.id}`} onClick={go(`locations/${loc.id}`)}>
+                {shortName(loc.name)}
+              </a>
+            ))}
+            <a href="#/locations" onClick={go('locations')}>
+              {ka ? 'სამუშაო საათები' : 'Opening hours'}
+            </a>
           </div>
-
-          <div className={styles.socialRow}>
-            <button
-              type="button"
-              onClick={() => onNavigate('track')}
-              className={styles.socialLink}
-            >
-              {t('nav.track')}
-            </button>
-            <span className={styles.socialDot}>·</span>
-            {BUSINESS_CONTENT.socials.map((soc, idx) => (
-              <React.Fragment key={soc.label}>
-                {idx > 0 && <span className={styles.socialDot}>·</span>}
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (soc.url.startsWith('#/')) {
-                      onNavigate(soc.url.replace('#/', ''));
-                    }
-                  }}
-                  className={styles.socialLink}
-                >
-                  {soc.label}
-                </button>
-              </React.Fragment>
+          <div className={styles.col}>
+            <span className={styles.colLabel}>{t('nav.menu')}</span>
+            {['Burgers', 'Side Dishes', 'Desserts', 'Drinks'].map((c) => (
+              <a key={c} href="#/shop" onClick={go('shop')}>
+                {getCategoryName(c)}
+              </a>
             ))}
           </div>
-
-          <div className={styles.copyrightLine}>
-            {t('footer.copyright')}
+          <div className={styles.col}>
+            <span className={styles.colLabel}>{t('nav.contact')}</span>
+            <a href={`mailto:${BUSINESS_CONTENT.contact.generalEmail}`}>{BUSINESS_CONTENT.contact.generalEmail}</a>
+            <a href={`mailto:${BUSINESS_CONTENT.contact.cateringEmail}`}>{BUSINESS_CONTENT.contact.cateringEmail}</a>
+            <a href={`tel:${BUSINESS_CONTENT.locations[0].phone.replace(/\s/g, '')}`}>
+              {BUSINESS_CONTENT.locations[0].phone}
+            </a>
+          </div>
+          <div className={styles.col}>
+            <span className={styles.colLabel}>{ka ? 'გამოგვყევი' : 'Follow'}</span>
+            {BUSINESS_CONTENT.socials.map((soc) =>
+              soc.url.startsWith('#/') ? (
+                <a key={soc.label} href={soc.url} onClick={go(soc.url.replace('#/', ''))}>
+                  {soc.label}
+                </a>
+              ) : (
+                <a key={soc.label} href={soc.url} target="_blank" rel="noopener noreferrer">
+                  {soc.label}
+                </a>
+              )
+            )}
           </div>
         </div>
+      </div>
+
+      <div className={styles.wordmark} aria-hidden="true">
+        BUN <span className={styles.amp}>&amp;</span> PATTY
+      </div>
+
+      <div className={styles.bottom}>
+        <span>{t('footer.copyright')}</span>
+        <span>{ka ? 'ფასები ლარში' : 'Prices in Georgian lari'}</span>
       </div>
     </footer>
   );

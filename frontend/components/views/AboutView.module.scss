@@ -1,259 +1,322 @@
 @use '@/src/styles/abstracts' as *;
 
+$mq-phone: '(max-width: #{$bp-md - 1px})';
+
 .about {
-  @include container;
-  padding-top: 24px;
-  padding-bottom: $mobile-section-spacing;
-  padding-left: $mobile-pad;
-  padding-right: $mobile-pad;
-  color: $color-text;
-  display: flex;
-  flex-direction: column;
-  gap: $mobile-section-spacing;
-
-  @include respond-to('md') {
-    padding-top: $space-16;
-    padding-bottom: $space-24;
-    gap: $space-24;
-  }
-}
-
-.essayHeader {
-  max-width: 56rem;
-  display: flex;
-  flex-direction: column;
-  gap: $space-4;
+  background: $paper;
+  color: $ink;
 }
 
 .kicker {
-  font-family: $font-mono;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: $color-tomato;
-  display: block;
+  @include mono(12px);
+  color: $muted;
+}
+
+.kickerRed {
+  @include mono(12px);
+  color: $red;
+}
+
+.dot {
+  color: $red;
+}
+
+.btnRed {
+  @include btn-red;
+  align-self: flex-start;
+}
+
+.hero {
+  padding: 56px $gutter;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  justify-content: space-between;
+  align-items: flex-end;
+
+  @media #{$mq-phone} {
+    padding: 28px $mobile-pad 32px;
+    gap: 20px;
+  }
+}
+
+.heroText {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .title {
-  font-family: $font-serif;
-  font-size: $mobile-title; // 32px
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  color: $color-text;
-  line-height: 1.05;
+  @include display(clamp(60px, 11.7vw, 168px));
+  line-height: 0.84;
+  margin: 0;
 
-  @include respond-to('sm') {
-    font-size: 3.75rem;
-  }
-
-  @include respond-to('lg') {
-    font-size: 4.5rem;
+  :global(html[lang='ka']) & {
+    font-size: clamp(40px, 7vw, 100px);
+    line-height: 1.05;
   }
 }
 
-.subtitle {
-  font-size: 1rem;
-  color: rgba($color-text, 0.85);
-  font-family: $font-sans;
-  line-height: 1.6;
+.lead {
+  width: 420px;
+  max-width: 100%;
+  font-size: 20px;
+  line-height: 1.5;
 
-  @include respond-to('sm') {
-    font-size: 1.125rem;
+  @media #{$mq-phone} {
+    font-size: 17px;
   }
 }
 
-.photoCaptionRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding-top: $space-2;
-  font-family: $font-mono;
-  font-size: 11px;
-  color: $color-text-muted;
-}
-
-.argumentsGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: $space-8;
-  align-items: flex-start;
-
-  @include respond-to('lg') {
-    grid-template-columns: repeat(12, 1fr);
-    gap: $space-16;
-  }
-}
-
-.sidebar {
-  font-family: $font-mono;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: $color-text-muted;
-
-  @include respond-to('lg') {
-    grid-column: span 4;
-    position: sticky;
-    top: 7rem;
-  }
-}
-
-.sidebarTag {
-  display: block;
-  margin-bottom: $space-2;
-  color: $color-tomato;
-}
-
-.argumentsContent {
-  display: flex;
-  flex-direction: column;
-  gap: $space-12;
-
-  @include respond-to('lg') {
-    grid-column: span 8;
-  }
-}
-
-.argumentBlock {
-  display: flex;
-  flex-direction: column;
-  gap: $space-3;
-  padding-bottom: $space-8;
-  border-bottom: 1px solid rgba($color-text, 0.15);
-
-  &:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
-}
-
-.argumentTitle {
-  font-family: $font-serif;
-  font-size: 1.5rem;
-  font-weight: 400;
-  color: $color-text;
-
-  @include respond-to('sm') {
-    font-size: 1.875rem;
-  }
-}
-
-.argumentBody {
-  font-size: 0.875rem;
-  color: rgba($color-text, 0.85);
-  font-family: $font-sans;
-  line-height: 1.6;
-}
-
-.quoteBanner {
-  background-color: #131E21;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
-  padding: $space-8;
-  display: flex;
-  flex-direction: column;
-  gap: $space-8;
-
-  @include respond-to('sm') {
-    padding: 3.5rem;
-  }
-}
-
-.quoteText {
-  font-family: $font-serif;
-  font-style: italic;
-  font-size: 1.5rem;
-  color: $color-text;
-  font-weight: 400;
-  line-height: 1.3;
-  max-width: 56rem;
-
-  @include respond-to('sm') {
-    font-size: 1.875rem;
-  }
-
-  @include respond-to('lg') {
-    font-size: 2.25rem;
-  }
-}
-
-.teamGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: $space-8;
-  padding-top: $space-6;
-  border-top: 1px solid rgba($color-text, 0.15);
-  align-items: center;
-
-  @include respond-to('md') {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.teamContent {
-  display: flex;
-  flex-direction: column;
-  gap: $space-4;
-  font-family: $font-sans;
-  font-size: 0.875rem;
-  color: rgba($color-text, 0.85);
-  line-height: 1.6;
-}
-
-.teamTitle {
-  font-family: $font-serif;
-  font-size: 1.5rem;
-  font-weight: 400;
-  color: $color-text;
-}
-
-.closingSection {
-  text-align: center;
-  max-width: 36rem;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: $space-4;
-  padding-top: $space-6;
-}
-
-.closingTitle {
-  font-family: $font-serif;
-  font-size: 1.875rem;
-  font-weight: 400;
-  color: $color-text;
-}
-
-.closingText {
-  font-size: 0.75rem;
-  font-family: $font-mono;
-  color: $color-text-muted;
-}
-
-.orderCta {
-  @include button-reset;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.wideImage {
   width: 100%;
-  height: $mobile-control-min-height; // 48px
-  min-height: $mobile-control-min-height;
-  padding: 0 $space-6;
-  background-color: $color-tomato;
-  color: #fff;
-  border-radius: $mobile-radius;
-  font-family: $font-fira;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 800;
-  transition: background-color 0.2s ease;
+  height: clamp(280px, 44vw, 640px);
+  object-fit: cover;
+  display: block;
+}
 
-  @include respond-to('sm') {
-    width: auto;
+.caption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  justify-content: space-between;
+  padding: 14px $gutter;
+  border-bottom: $rule-strong;
+  @include mono(12px);
+  color: $muted;
+
+  @media #{$mq-phone} {
+    padding: 12px $mobile-pad;
+  }
+}
+
+.story {
+  padding: clamp(64px, 8.3vw, 120px) $gutter;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 48px;
+
+  > .kickerRed {
+    flex: 1 1 280px;
+    max-width: 380px;
   }
 
-  &:hover {
-    background-color: $color-tomato-hover;
+  @media #{$mq-phone} {
+    padding: 48px $mobile-pad;
+  }
+}
+
+.storyBody {
+  flex: 999 1 560px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.pull {
+  font-family: $font-quote;
+  font-style: italic;
+  font-size: clamp(28px, 3.3vw, 48px);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+}
+
+.storyCols {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 40px;
+
+  p {
+    flex: 1 1 280px;
+    font-size: 16px;
+    line-height: 1.6;
+    color: $muted;
+  }
+}
+
+.numbersWrap {
+  padding: 0 $gutter;
+
+  @media #{$mq-phone} {
+    padding: 0 $mobile-pad;
+  }
+}
+
+.numbers {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  border-top: $rule-strong;
+  border-bottom: $rule-strong;
+
+  @media #{$mq-phone} {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.number {
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 8px;
+  border-left: $rule-strong;
+
+  &:first-child {
+    border-left: 0;
+  }
+
+  dt {
+    @include mono(12px);
+    color: $muted;
+  }
+
+  dd {
+    margin: 0;
+    display: flex;
+    gap: 6px;
+    align-items: baseline;
+  }
+
+  @media #{$mq-phone} {
+    padding: 24px 16px;
+
+    &:nth-child(odd) {
+      border-left: 0;
+    }
+
+    &:nth-child(n + 3) {
+      border-top: $rule-strong;
+    }
+  }
+}
+
+.numberValue {
+  @include display(120px);
+
+  @media #{$mq-phone} {
+    font-size: 64px;
+  }
+}
+
+.numberUnit {
+  @include display(36px, 800);
+  color: $red;
+
+  @media #{$mq-phone} {
+    font-size: 24px;
+  }
+}
+
+.pillarsSection {
+  padding: clamp(64px, 8.3vw, 120px) $gutter;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+
+  @media #{$mq-phone} {
+    padding: 48px $mobile-pad;
+    gap: 32px;
+  }
+}
+
+.sectionHead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 32px;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.sectionTitleWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionTitle {
+  @include display(clamp(52px, 8.3vw, 120px));
+  margin: 0;
+
+  :global(html[lang='ka']) & {
+    font-size: clamp(34px, 5vw, 72px);
+    line-height: 1.1;
+  }
+}
+
+.aside {
+  width: 320px;
+  max-width: 100%;
+  font-size: 16px;
+  color: $muted;
+}
+
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+
+  @media #{$mq-phone} {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+.pillar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: $muted;
+  }
+}
+
+.pillarImage {
+  width: 100%;
+  height: clamp(280px, 36vw, 520px);
+  object-fit: cover;
+  display: block;
+}
+
+.pillarHead {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding-top: 8px;
+
+  h3 {
+    @include display(48px);
+    margin: 0;
+  }
+}
+
+.guarantee {
+  background: $red;
+  color: $paper;
+  padding: 96px $gutter;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @media #{$mq-phone} {
+    padding: 56px $mobile-pad;
+  }
+}
+
+.guaranteeLabel {
+  @include mono(12px);
+}
+
+.guaranteeText {
+  @include display(clamp(40px, 5.6vw, 80px));
+  max-width: 1200px;
+
+  :global(html[lang='ka']) & {
+    font-size: clamp(28px, 3.6vw, 52px);
+    line-height: 1.15;
   }
 }

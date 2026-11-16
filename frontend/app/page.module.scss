@@ -4,17 +4,29 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #0B1416;
-  color: #FFFFFF;
-  font-family: $font-fira;
+  background-color: $paper;
+  color: $ink;
+  font-family: $font-sans;
+
+  // Room for the fixed mobile bottom tab bar
+  @media (max-width: 767px) {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+
+    // Extra room when the floating "View order" bar is showing
+    &:has([data-cartbar]) {
+      padding-bottom: calc(148px + env(safe-area-inset-bottom, 0px));
+    }
+  }
 
   ::selection {
-    background-color: #E27344;
-    color: #FFFFFF;
+    background-color: $red;
+    color: $paper;
   }
 }
 
 .mainContent {
   flex: 1 1 0%;
-  background-color: #0B1416;
+  // Hide the sideways slide overflow without breaking position: sticky inside pages.
+  overflow-x: clip;
+  background-color: $paper;
 }

@@ -3,255 +3,269 @@
 .card {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  border: $rule-strong;
+  background: $paper;
+  min-width: 0;
   height: 100%;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  padding: 0;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
 
-  // On desktop: center-aligned cards
-  @include respond-to('md') {
-    align-items: center;
-    text-align: center;
+  @media (hover: hover) {
+    &:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 6px 6px 0 $ink;
+    }
   }
 }
 
 .imageContainer {
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  border-radius: $mobile-radius; // 12px
-  overflow: hidden;
+  @include button-reset;
   position: relative;
-  cursor: pointer;
-  background-color: #111A1D;
-  margin-bottom: 12px;
-  contain: layout paint;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-bottom: $rule-strong;
+  overflow: hidden;
+  background: $paper-deep;
 }
 
 .cardImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
   display: block;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.4s ease;
 
-  .imageContainer:hover & {
-    transform: scale(1.04);
+  .card:hover & {
+    transform: scale(1.03);
   }
 }
 
 .badgeTag {
   position: absolute;
-  top: 8px;
-  left: 8px;
-  background-color: rgba(226, 115, 68, 0.95);
-  color: #FFFFFF;
-  font-size: 0.72rem;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 4px;
-  z-index: 2;
-  letter-spacing: 0.02em;
+  top: 12px;
+  left: 12px;
+  z-index: 1;
+  padding: 5px 8px;
+  background: $mustard;
+  color: $ink;
+  @include mono(11px);
 }
 
 .infoWrap {
-  width: 100%;
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-family: $font-fira;
+  gap: 10px;
+  padding: 18px 20px 20px;
+  flex: 1;
 
-  @include respond-to('md') {
-    align-items: center;
-  }
-}
-
-// Mobile: Name left-aligned, price right-aligned on the SAME row!
-.namePriceLine {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  width: 100%;
-  cursor: pointer;
-
-  @include respond-to('md') {
-    justify-content: center;
+  @media (max-width: #{$bp-md - 1px}) {
+    padding: 14px 14px 16px;
     gap: 8px;
   }
 }
 
-.title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #FFFFFF;
-  margin: 0;
-  line-height: 1.25;
-  text-align: left;
-  transition: color 0.15s ease;
+.namePriceLine {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
 
-  @include respond-to('md') {
-    font-size: 1rem;
-    text-align: center;
-  }
+.title {
+  margin: 0;
+  min-width: 0;
+}
+
+.titleButton {
+  @include button-reset;
+  @include display(30px, 800);
+  line-height: 1;
+  color: $ink;
+  text-align: left;
 
   &:hover {
-    color: #E27344;
+    color: $red;
+  }
+
+  @media (max-width: #{$bp-md - 1px}) {
+    font-size: 24px;
   }
 }
 
 .price {
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: #FFFFFF;
-  font-variant-numeric: tabular-nums;
+  @include mono(15px);
+  letter-spacing: 0;
   white-space: nowrap;
-
-  @include respond-to('md') {
-    font-size: 1rem;
-    font-weight: 700;
-  }
-}
-
-.calories {
-  font-size: 0.75rem;
-  color: $color-text-subtle;
-  font-variant-numeric: tabular-nums;
-  margin: -4px 0 4px;
-  text-align: left;
-
-  @include respond-to('md') {
-    text-align: center;
-  }
+  padding-top: 4px;
 }
 
 .shortDescription {
-  font-size: 0.85rem;
-  color: #8A9698;
-  margin: 4px 0 6px;
-  line-height: 1.45;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-align: left;
+  font-size: 14px;
+  line-height: 1.5;
+  color: $muted;
+  flex: 1;
+  @include line-clamp(3);
+}
 
-  @include respond-to('md') {
-    font-size: 0.8rem;
-    text-align: center;
-    max-width: 95%;
+.actionsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.meta {
+  @include mono(11px);
+  color: $muted;
+  min-width: 0;
+  @include truncate;
+}
+
+.actionBtns {
+  display: flex;
+  gap: 6px;
+  flex: none;
+}
+
+.customizeBtn {
+  @include button-reset;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: $rule-strong;
+  color: $ink;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: $ink;
+    color: $paper;
   }
 }
 
-// Desktop Customize Link & small pill button
-.desktopCustomizeLink {
-  display: none;
+.addBtn {
+  @include button-reset;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 10px 12px 10px 14px;
+  background: $ink;
+  color: $paper;
+  font-family: $font-display;
+  font-weight: 700;
+  font-size: 16px;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
 
-  @include respond-to('md') {
-    @include button-reset;
-    display: inline-block;
-    font-size: 0.775rem;
-    color: #8A9698;
-    cursor: pointer;
-    margin-top: 4px;
-    padding: 2px 8px;
-    border-radius: 4px;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    transition: color 0.15s ease;
+  &:hover {
+    background: $red;
+  }
+}
+
+.added {
+  background: $open-green;
+
+  &:hover {
+    background: $open-green;
+  }
+}
+
+/* Phones: compact list row (canvas App-Menu) — 104px photo, name, 2-line
+   description, price and a square "+" button. */
+@media (max-width: #{$bp-md - 1px}) {
+  .card {
+    display: grid;
+    grid-template-columns: 104px minmax(0, 1fr);
+    gap: 14px;
+    border: 0;
+    border-bottom: $rule-soft;
+    padding: 16px 0;
+    background: transparent;
+    height: auto;
 
     &:hover {
-      color: #E27344;
+      transform: none;
+      box-shadow: none;
+    }
+  }
+
+  .imageContainer {
+    width: 104px;
+    height: 104px;
+    aspect-ratio: auto;
+    border: $rule-strong;
+  }
+
+  .badgeTag {
+    display: none;
+  }
+
+  .infoWrap {
+    padding: 0;
+    gap: 6px;
+  }
+
+  .namePriceLine {
+    display: block;
+  }
+
+  .namePriceLine .price {
+    display: none;
+  }
+
+  .titleButton {
+    font-size: 22px;
+  }
+
+  .shortDescription {
+    font-size: 13px;
+    @include line-clamp(2);
+  }
+
+  .actionsRow {
+    margin-top: auto;
+    padding-top: 0;
+  }
+
+  .meta {
+    @include mono(14px);
+    letter-spacing: 0;
+    color: $ink;
+    overflow: visible;
+  }
+
+  .customizeBtn {
+    display: none;
+  }
+
+  .addBtn {
+    width: 36px;
+    min-height: 36px;
+    height: 36px;
+    padding: 0;
+    justify-content: center;
+
+    span {
+      display: none;
     }
   }
 }
 
-.desktopActionsRow {
+.metaPhone {
   display: none;
-
-  @include respond-to('md') {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: auto;
-    padding-top: 8px;
-  }
 }
 
-.addToCartBtn {
-  @include button-reset;
-  padding: 5px 14px;
-  font-size: 0.775rem;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  color: #8A9698;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
-  transition: all 0.2s ease;
-  cursor: pointer;
-
-  &:hover {
-    color: #FFFFFF;
-    // border-color: #E27344;
-    background-color: rgba(226, 115, 68, 0.12);
-  }
-
-  &.added {
-    color: #E27344;
-    border-color: #E27344;
-    background-color: rgba(226, 115, 68, 0.1);
-  }
-}
-
-// Mobile Full-Width Button (at least 48px high)
-.mobileActionButtonWrap {
-  width: 100%;
-  margin-top: auto;
-  padding-top: 8px;
-
-  @include respond-to('md') {
+@media (max-width: #{$bp-md - 1px}) {
+  .metaWide {
     display: none;
   }
-}
 
-.mobilePrimaryBtn {
-  @include button-reset;
-  width: 100%;
-  height: $mobile-control-min-height; // 48px
-  min-height: $mobile-control-min-height;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: $mobile-radius; // 12px
-  background-color: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #FFFFFF;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
-
-  &:hover {
-    background-color: #E27344;
-    border-color: #E27344;
-  }
-
-  &:active {
-    transform: scale(0.98);
-  }
-
-  &.added {
-    background-color: #16A34A;
-    border-color: #16A34A;
-  }
-
-  &:focus-visible {
-    outline: 2px solid #E27344;
-    outline-offset: 2px;
+  .metaPhone {
+    display: inline;
   }
 }

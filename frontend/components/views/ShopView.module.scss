@@ -1,12 +1,96 @@
 @use '@/src/styles/abstracts' as *;
 
 .shopWrapper {
-  background-color: #0B1416;
-  color: #FFFFFF;
-  font-family: $font-fira;
+  background-color: $paper;
+  color: $ink;
+  font-family: $font-sans;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+// =============================================================================
+// Page header — "The menu." + order-type toggle
+// =============================================================================
+.hero {
+  padding: 48px $gutter 40px;
+  border-bottom: $rule-strong;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 32px;
+  justify-content: space-between;
+  align-items: flex-end;
+
+  @media (max-width: #{$bp-md - 1px}) {
+    padding: 24px $mobile-pad 24px;
+    align-items: stretch;
+  }
+}
+
+.heroText {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.kicker {
+  @include mono(12px);
+  color: $muted;
+}
+
+.heroTitle {
+  @include display(clamp(64px, 11vw, 160px));
+  margin: 0;
+}
+
+.heroDot {
+  color: $red;
+}
+
+.heroSide {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-end;
+
+  @media (max-width: #{$bp-md - 1px}) {
+    width: 100%;
+    align-items: stretch;
+  }
+}
+
+.modeToggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: $rule-strong;
+}
+
+.modeBtn {
+  @include button-reset;
+  padding: 12px 22px;
+  @include display(18px, 700);
+  line-height: 1;
+  text-align: center;
+  color: $ink;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: $paper-deep;
+  }
+}
+
+.modeBtnActive {
+  background: $ink;
+  color: $paper;
+
+  &:hover {
+    background: $ink;
+  }
+}
+
+.heroNote {
+  @include mono(12px);
+  color: $red;
 }
 
 // =============================================================================
@@ -15,27 +99,23 @@
 // =============================================================================
 .stickyToolbar {
   position: sticky;
-  top: $mobile-header-height; // 56px on mobile (< 768px)
+  top: var(--header-h, 62px);
   z-index: $z-category; // 90
-  background-color: #121E21; // ~4% lighter than page background #0B1416
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: rgba($paper, 0.94);
+  backdrop-filter: saturate(140%) blur(14px);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+  border-bottom: $rule-strong;
   padding: 12px 0;
   width: 100%;
   box-sizing: border-box;
 
-  @include respond-to('md') {
-    top: 72px; // 72px on desktop (>= 768px)
-  }
 }
 
 // Aligned to exactly the same left and right edges as the item grid (1120px max-width)
 .toolbarContainer {
-  max-width: $max-width-site; // 1120px
+  max-width: none;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 $gutter;
   width: 100%;
   box-sizing: border-box;
 
@@ -72,17 +152,21 @@
 // Category Chips: Pill-shaped, 40px high, 16px horizontal padding, 8px between chips
 .categoryChip {
   @include button-reset;
+  position: relative;
+  isolation: isolate;
   height: 40px;
   padding: 0 16px;
-  border-radius: 20px;
+  border-radius: 0;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   background-color: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #B0BABC;
-  font-size: 14px;
-  font-weight: 500;
+  border: $rule-strong;
+  color: $ink;
+  font-family: $font-display;
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: 700;
   cursor: pointer;
   flex-shrink: 0;
   white-space: nowrap;
@@ -98,16 +182,16 @@
   }
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-    color: #FFFFFF;
-    border-color: rgba(255, 255, 255, 0.22);
+    background-color: rgba(23, 18, 15, 0.08);
+    color: #17120F;
+    border-color: rgba(23, 18, 15, 0.22);
   }
 
   &.chipActive {
-    background-color: #E27344;
-    color: #0B1416;
+    background-color: transparent;
+    color: #F2EBDF;
     font-weight: 700;
-    border-color: #E27344;
+    border-color: transparent;
     text-decoration: none;
 
     :global(:lang(ka)) &,
@@ -116,15 +200,23 @@
     }
 
     .chipCount {
-      color: rgba(11, 20, 22, 0.85);
+      color: $muted-on-ink;
       font-weight: 700;
     }
   }
 
   &:focus-visible {
-    outline: 2px solid #E27344;
+    outline: 2px solid #C8321D;
     outline-offset: 2px;
   }
+}
+
+.chipPill {
+  position: absolute;
+  inset: -1.5px;
+  z-index: -1;
+  border-radius: inherit;
+  background-color: $ink;
 }
 
 .chipText {
@@ -132,8 +224,9 @@
 }
 
 .chipCount {
-  font-size: 12px;
-  color: #8A9698;
+  font-family: $font-mono;
+  font-size: 11px;
+  color: $muted;
   font-weight: 500;
   line-height: 1;
   transition: color 200ms ease;
@@ -169,8 +262,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background-color: transparent;
+  border: $rule-strong;
   box-sizing: border-box;
   transition: border-color 200ms ease, background-color 200ms ease;
 
@@ -178,7 +271,7 @@
   @media (min-width: 1024px) {
     width: 280px;
     height: 40px;
-    border-radius: 20px;
+    border-radius: 0;
     padding: 0 14px;
   }
 
@@ -186,7 +279,7 @@
   @media (min-width: 640px) and (max-width: 1023px) {
     flex: 1;
     height: 44px;
-    border-radius: 22px;
+    border-radius: 0;
     padding: 0 14px;
   }
 
@@ -194,18 +287,19 @@
   @media (max-width: 639px) {
     flex: 1;
     height: 44px;
-    border-radius: 12px;
+    border-radius: 0;
     padding: 0 12px;
   }
 
   &:focus-within {
-    // border-color: #E27344;
-    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(200, 50, 29, 0.6);
+    background-color: rgba(23, 18, 15, 0.08);
+    box-shadow: 0 0 0 3px rgba(200, 50, 29, 0.15);
   }
 }
 
 .searchIcon {
-  color: #8A9698;
+  color: #6F635A;
   flex-shrink: 0;
 }
 
@@ -213,7 +307,7 @@
   background: transparent;
   border: none;
   outline: none;
-  color: #FFFFFF;
+  color: #17120F;
   font-size: 13px;
   font-family: $font-fira;
   width: 100%;
@@ -221,21 +315,21 @@
   line-height: 1.4;
 
   &::placeholder {
-    color: #8A9698;
+    color: #6F635A;
     opacity: 0.9;
   }
 }
 
 .searchClear {
   @include button-reset;
-  color: #8A9698;
+  color: #6F635A;
   font-size: 13px;
   cursor: pointer;
   padding: 4px;
   line-height: 1;
 
   &:hover {
-    color: #FFFFFF;
+    color: #17120F;
   }
 }
 
@@ -244,9 +338,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 20px;
+  background-color: transparent;
+  border: $rule-strong;
+  border-radius: 0;
   padding: 0 14px;
   height: 40px;
   box-sizing: border-box;
@@ -255,7 +349,7 @@
 
   &:hover,
   &:focus-within {
-    border-color: rgba(255, 255, 255, 0.25);
+    border-color: rgba(23, 18, 15, 0.25);
   }
 }
 
@@ -267,9 +361,9 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 22px;
+    background-color: rgba(23, 18, 15, 0.05);
+    border: 1px solid $rule;
+    border-radius: 0;
     padding: 0 16px;
     height: 44px;
     box-sizing: border-box;
@@ -278,7 +372,7 @@
 }
 
 .sortIcon {
-  color: #8A9698;
+  color: #6F635A;
   flex-shrink: 0;
 }
 
@@ -298,7 +392,7 @@
   padding: 0 14px;
   background: transparent;
   border: none;
-  color: #FFFFFF;
+  color: #17120F;
   font-size: 13px;
   font-family: $font-fira;
   font-weight: 600;
@@ -313,13 +407,13 @@
   }
 
   &:focus-visible {
-    outline: 2px solid #E27344;
+    outline: 2px solid #C8321D;
     outline-offset: 2px;
   }
 }
 
 .sortChevron {
-  color: #8A9698;
+  color: #6F635A;
   flex-shrink: 0;
   transition: transform 200ms ease;
 }
@@ -336,10 +430,10 @@
   margin: 0;
   padding: 6px;
   list-style: none;
-  background-color: #121E21;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 14px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  background-color: #E7DCCB;
+  border: 1px solid $rule;
+  border-radius: 0;
+  box-shadow: 0 12px 32px rgba(23, 18, 15, 0.16);
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -352,10 +446,10 @@
   justify-content: space-between;
   gap: 16px;
   padding: 10px 12px;
-  border-radius: 10px;
+  border-radius: 0;
   font-size: 13px;
   font-weight: 500;
-  color: #FFFFFF;
+  color: #17120F;
   cursor: pointer;
   white-space: nowrap;
   transition: background-color 150ms ease;
@@ -367,11 +461,11 @@
 }
 
 .sortMenuItemFocused {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: rgba(23, 18, 15, 0.08);
 }
 
 .sortMenuItemSelected {
-  color: #E27344;
+  color: #C8321D;
   font-weight: 700;
 }
 
@@ -383,10 +477,10 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  border-radius: 12px;
-  background-color: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #FFFFFF;
+  border-radius: 0;
+  background-color: rgba(23, 18, 15, 0.06);
+  border: 1px solid $rule;
+  color: #17120F;
   cursor: pointer;
   flex-shrink: 0;
   position: relative;
@@ -397,7 +491,7 @@
   }
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(23, 18, 15, 0.1);
   }
 
   &:active {
@@ -405,9 +499,9 @@
   }
 
   &.phoneSortBtnActive {
-    border-color: #E27344;
-    color: #E27344;
-    background-color: rgba(226, 115, 68, 0.12);
+    border-color: #C8321D;
+    color: #C8321D;
+    background-color: rgba(200, 50, 29, 0.12);
   }
 }
 
@@ -418,7 +512,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background-color: #E27344;
+  background-color: #C8321D;
 }
 
 // Active Filter Strip
@@ -429,7 +523,7 @@
   gap: 12px;
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid $rule;
 }
 
 .filterSummary {
@@ -442,16 +536,16 @@
 .resultsCount {
   font-size: 13px;
   font-weight: 700;
-  color: #FFFFFF;
+  color: #17120F;
 }
 
 .filterTag {
   font-size: 12px;
   font-weight: 500;
-  color: #E27344;
-  background-color: rgba(226, 115, 68, 0.12);
+  color: #C8321D;
+  background-color: rgba(200, 50, 29, 0.12);
   padding: 2px 8px;
-  border-radius: 6px;
+  border-radius: 0;
   white-space: nowrap;
 }
 
@@ -459,7 +553,7 @@
   @include button-reset;
   font-size: 13px;
   font-weight: 700;
-  color: #E27344;
+  color: #C8321D;
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
@@ -468,7 +562,7 @@
   transition: color 150ms ease;
 
   &:hover {
-    color: #F28555;
+    color: #A22612;
   }
 }
 
@@ -476,14 +570,14 @@
 // Main Content Area & Unified Item Grid
 // =============================================================================
 .mainContent {
-  max-width: $max-width-site; // 1120px
+  max-width: none;
   margin: 0 auto;
-  padding: 28px 20px 80px;
+  padding: 48px $gutter 120px;
   width: 100%;
   box-sizing: border-box;
 
   @media (max-width: 639px) {
-    padding: 24px 16px 80px;
+    padding: 28px $mobile-pad 64px;
   }
 }
 
@@ -501,15 +595,32 @@
   }
 }
 
-.categoryTitle {
-  font-size: $mobile-section-title; // 22px
-  font-weight: 800;
-  color: #FFFFFF;
-  text-align: center;
+.categoryHeader {
+  display: flex;
+  align-items: flex-end;
+  gap: $space-4;
   margin-bottom: 24px;
-  line-height: 1.4;
-  letter-spacing: 0;
-  text-transform: none;
+}
+
+.categoryIndex {
+  @include mono(12px);
+  color: $red;
+  padding-bottom: 6px;
+}
+
+.categoryTitle {
+  flex: 1;
+  min-width: 0;
+  @include display(clamp(48px, 5vw, 72px));
+  margin: 0;
+  color: $ink;
+}
+
+.categoryCount {
+  @include mono(12px);
+  color: $muted;
+  white-space: nowrap;
+  padding-bottom: 6px;
 }
 
 // Small subheading for a subgroup inside a category (e.g. "Coffee" in Drinks)
@@ -568,33 +679,75 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 24px;
   }
+
+  @media (min-width: 1400px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 // Empty State
 .emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-2;
   text-align: center;
-  padding: 64px 20px;
-  color: #8A9698;
+  padding: $space-12 $space-6;
+  border-radius: 0;
+  border: 1px dashed rgba(23, 18, 15, 0.15);
+  background: rgba($color-bg-alt, 0.6);
+  color: #6F635A;
+}
+
+.emptyIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: $space-2;
+  background: $color-accent-light;
+  color: $color-accent;
 }
 
 .emptyStateTitle {
-  font-size: 16px;
-  color: #FFFFFF;
-  margin-bottom: 12px;
-  font-weight: 600;
+  font-family: $font-serif;
+  text-transform: uppercase;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #17120F;
+}
+
+.emptyStateDesc {
+  font-size: 0.9rem;
+  margin-bottom: $space-3;
 }
 
 .emptyClearBtn {
   @include button-reset;
-  color: #E27344;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 $space-5;
+  border-radius: 0;
+  background: $color-accent;
+  color: $color-on-accent;
+  font-family: $font-mono;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   cursor: pointer;
-  font-weight: 700;
-  font-size: 14px;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  transition: background-color 0.2s ease;
 
   &:hover {
-    color: #F28555;
+    background: $color-tomato-hover;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-accent;
+    outline-offset: 2px;
   }
 }
 
@@ -605,7 +758,7 @@
   position: fixed;
   inset: 0;
   z-index: $z-modal; // 400
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(23, 18, 15, 0.22);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;
@@ -615,12 +768,12 @@
 
 .sortSheetModal {
   width: 100%;
-  background-color: #121E21;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 20px 20px 0 0;
+  background-color: #E7DCCB;
+  border-top: 1px solid $rule;
+  border-radius: 0;
   padding: 12px 20px calc(24px + env(safe-area-inset-bottom, 16px));
   box-sizing: border-box;
-  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 -10px 40px rgba(23, 18, 15, 0.17);
 }
 
 .sortSheetHeader {
@@ -633,8 +786,8 @@
 .sortSheetHandle {
   width: 40px;
   height: 4px;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 2px;
+  background-color: rgba(23, 18, 15, 0.2);
+  border-radius: 0;
   margin-bottom: 12px;
 }
 
@@ -648,7 +801,7 @@
 .sortSheetTitle {
   font-size: 18px;
   font-weight: 700;
-  color: #FFFFFF;
+  color: #17120F;
   margin: 0;
 }
 
@@ -660,12 +813,12 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.08);
-  color: #FFFFFF;
+  background-color: rgba(23, 18, 15, 0.08);
+  color: #17120F;
   cursor: pointer;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(23, 18, 15, 0.15);
   }
 }
 
@@ -680,13 +833,13 @@
   width: 100%;
   height: 48px;
   padding: 0 16px;
-  border-radius: 12px;
+  border-radius: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #FFFFFF;
+  background-color: rgba(23, 18, 15, 0.04);
+  border: 1px solid $rule;
+  color: #17120F;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
@@ -698,13 +851,13 @@
   }
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.08);
+    background-color: rgba(23, 18, 15, 0.08);
   }
 
   &.sortOptionSelected {
-    background-color: rgba(226, 115, 68, 0.15);
-    border-color: #E27344;
-    color: #E27344;
+    background-color: rgba(200, 50, 29, 0.15);
+    border-color: #C8321D;
+    color: #C8321D;
     font-weight: 700;
   }
 }
@@ -714,6 +867,215 @@
 }
 
 .checkIcon {
-  color: #E27344;
+  color: #C8321D;
   flex-shrink: 0;
+}
+
+// =============================================================================
+// Wide screens (≥ 1180px): category column · menu · "Your order" panel
+// (canvas Menu board). Narrower screens keep the sticky chip toolbar.
+// =============================================================================
+$menu-wide: 1180px;
+
+.sideNav,
+.cartCol {
+  display: none;
+}
+
+@media (min-width: $menu-wide) {
+  .menuLayout {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr) 360px;
+    gap: 40px;
+    padding: 40px $gutter 120px;
+    align-items: start;
+  }
+
+  .stickyToolbar {
+    display: none;
+  }
+
+  .sideNav,
+  .cartCol {
+    display: block;
+    align-self: stretch;
+  }
+
+  .sideSticky {
+    position: sticky;
+    top: calc(var(--header-h, 80px) + 24px);
+  }
+
+  .mainContent {
+    padding: 0;
+  }
+
+  .productGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .categoryHeader {
+    margin-bottom: 24px;
+  }
+}
+
+@media (min-width: 1500px) {
+  .productGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.sideLink {
+  @include button-reset;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: $rule-soft;
+  color: $muted;
+  transition: color 0.15s ease;
+
+  &:first-child {
+    border-top: $rule-strong;
+  }
+
+  &:hover {
+    color: $ink;
+  }
+}
+
+.sideLinkActive {
+  color: $ink;
+  box-shadow: inset 4px 0 0 $red;
+  padding-left: 14px;
+}
+
+.sideLabel {
+  @include display(24px, 700);
+  line-height: 1;
+}
+
+.sideCount {
+  @include mono(12px);
+}
+
+.sideSearch {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 28px;
+}
+
+.sideSearchLabel {
+  @include mono(12px);
+  color: $muted;
+}
+
+.sideSearchInput {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  border: $rule-strong;
+  border-radius: 0;
+  background: $paper;
+  color: $ink;
+  font-size: 14px;
+
+  &:focus {
+    outline: none;
+    border-color: $red;
+  }
+}
+
+/* Phones: compact app header + underline category tabs (canvas App-Menu) */
+@media (max-width: #{$bp-md - 1px}) {
+  .hero {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 16px $mobile-pad 14px;
+    border-bottom: 0;
+  }
+
+  .heroText {
+    gap: 0;
+  }
+
+  .heroText .kicker {
+    display: none;
+  }
+
+  .heroTitle {
+    font-size: 52px;
+  }
+
+  .heroSide {
+    width: auto;
+    align-items: flex-end;
+  }
+
+  .modeToggle {
+    display: none;
+  }
+
+  .heroNote {
+    color: $muted;
+    text-align: right;
+    padding-bottom: 4px;
+  }
+
+  .stickyToolbar {
+    padding: 0 0 0;
+    border-top: 0;
+  }
+
+  .chipsScrollArea {
+    gap: 22px;
+  }
+
+  .categoryChip {
+    height: auto;
+    padding: 4px 0 12px;
+    border: 0;
+    font-size: 19px;
+    color: $muted;
+    background: transparent;
+
+    &:hover {
+      background: transparent;
+    }
+
+    &.chipActive {
+      color: $ink;
+      box-shadow: inset 0 -3px 0 $red;
+
+      .chipCount {
+        color: $ink;
+      }
+    }
+  }
+
+  .chipPill {
+    display: none;
+  }
+
+  .categoryHeader {
+    margin-bottom: 0;
+    padding-bottom: 8px;
+    border-bottom: $rule-strong;
+  }
+
+  .categoryTitle {
+    font-size: 40px;
+  }
+
+  .productGrid {
+    gap: 0;
+  }
+
+  .menuSection {
+    margin-bottom: 36px;
+  }
 }

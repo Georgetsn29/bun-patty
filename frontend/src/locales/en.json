@@ -36,7 +36,7 @@
   },
   "nav": {
     "menu": "Menu",
-    "about": "About",
+    "about": "Our kitchen",
     "locations": "Locations",
     "contact": "Contact",
     "home": "Home",
@@ -241,7 +241,7 @@
     "practicalStripKicker": "Flagship Address",
     "serviceHoursKicker": "Service Hours",
     "placeOrderOnlineBtn": "Place Order Online",
-    "allLocationsBtn": "All 3 Neighborhood Outposts"
+    "allLocationsBtn": "All 4 Neighborhood Kitchens"
   },
   "about": {
     "kicker": "Origin & Discipline",

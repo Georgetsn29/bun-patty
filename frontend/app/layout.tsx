@@ -4,7 +4,10 @@ import '@fontsource/firago/400.css';
 import '@fontsource/firago/500.css';
 import '@fontsource/firago/600.css';
 import '@fontsource/firago/700.css';
+import '@fontsource/firago/800.css';
+import '@fontsource/fira-sans-extra-condensed/latin-700.css';
 import '@fontsource/fira-sans-extra-condensed/latin-800.css';
+import '@fontsource/fira-sans-extra-condensed/latin-900.css';
 import fs from 'node:fs';
 import path from 'node:path';
 import { IntroCover } from '@/components/layout/IntroCover';
@@ -17,9 +20,20 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   viewportFit: 'cover',
+  // Colours the phone's status bar / browser chrome to match the app
+  themeColor: '#F2EBDF',
+  colorScheme: 'light',
 };
 
 export const metadata: Metadata = {
+  applicationName: 'BUN & PATTY',
+  // "Add to Home Screen" on iOS opens full-screen like a native app
+  appleWebApp: {
+    capable: true,
+    title: 'BUN & PATTY',
+    statusBarStyle: 'default',
+  },
+  formatDetection: { telephone: false },
   title: 'BUN & PATTY | ბურგერ-ბარი თბილისში · Burger Bar Tbilisi',
   description: 'დამოუკიდებელი ბურგერ-ბარი თბილისში. 260°C ნახშირბადოვან ფოლადზე შემწვარი დაძველებული სმაშ-ბურგერები და რძიანი ბრიოში.',
   openGraph: {

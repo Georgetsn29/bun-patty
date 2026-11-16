@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useActiveOrders, useLiveTimestamp, calculateOrderProgress } from '@/services/orders';
-import { ShoppingBag, Menu as MenuIcon, Clock } from 'lucide-react';
+import { LOCATIONS, isLocationOpen } from '@/data/locations';
 import { MobileMenu } from './MobileMenu';
 import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
 import styles from './Header.module.scss';
@@ -15,9 +15,55 @@ interface HeaderProps {
   onNavigate: (route: string) => void;
 }
 
+/* Line icons drawn to match the redesign (1.75 stroke, square caps) */
+const BagIcon = ({ size = 22 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M4 7h16l-1.2 13H5.2L4 7Z" stroke="currentColor" strokeWidth="1.75" />
+    <path d="M8.5 7V5.5a3.5 3.5 0 0 1 7 0V7" stroke="currentColor" strokeWidth="1.75" />
+  </svg>
+);
+export const ArrowIcon = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2.25" strokeLinecap="square" />
+  </svg>
+);
+const BackIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M15 5l-7 7 7 7" stroke="currentColor" strokeWidth="2.25" strokeLinecap="square" />
+  </svg>
+);
+const MenuLinesIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.75" />
+  </svg>
+);
+const TAB_ICONS: Record<string, React.ReactNode> = {
+  home: <path d="M4 10.5 12 4l8 6.5V20h-5.5v-6h-5v6H4v-9.5Z" stroke="currentColor" strokeWidth="1.75" strokeLinejoin="round" />,
+  shop: <path d="M4 9h16M5 9c0-3 3-5 7-5s7 2 7 5M4 13h16M5 17h14l-1 3H6l-1-3Z" stroke="currentColor" strokeWidth="1.75" strokeLinejoin="round" />,
+  track: (
+    <>
+      <path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Z" stroke="currentColor" strokeWidth="1.75" strokeLinejoin="round" />
+      <path d="M9 8h6M9 12h6" stroke="currentColor" strokeWidth="1.75" />
+    </>
+  ),
+  locations: (
+    <>
+      <path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z" stroke="currentColor" strokeWidth="1.75" />
+      <circle cx="12" cy="9.5" r="2.5" stroke="currentColor" strokeWidth="1.75" />
+    </>
+  ),
+};
+
+export const Logo: React.FC<{ className?: string }> = ({ className }) => (
+  <span className={className}>
+    BUN <span className={styles.logoAmp}>&amp;</span> PATTY
+  </span>
+);
+
 export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
-  const { totalItemCount, subtotal, setIsCartOpen } = useCart();
+  const { totalItemCount, setIsCartOpen, isCartOpen, grandTotal, orderType } = useCart();
   const { language, t } = useLanguage();
+  const ka = language === 'ka';
   const shouldReduceMotion = useReducedMotion();
   const activeOrders = useActiveOrders();
   const now = useLiveTimestamp();
@@ -25,283 +71,287 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isPulsing, setIsPulsing] = useState(false);
+  const [openCount, setOpenCount] = useState<number | null>(null);
 
-  // Responsive desktop navigation fit state
-  const [showDesktopNav, setShowDesktopNav] = useState(false);
-
-  // Active orders state
   const hasActiveOrders = activeOrders.length > 0;
   const hasInProgressOrder = activeOrders.some((order) => {
     const progress = calculateOrderProgress(order, now);
     return !progress.isReadyOrFinished && !order.cancelledAt;
   });
 
-  const prevCountRef = useRef(totalItemCount);
-  const logoRef = useRef<HTMLButtonElement>(null);
-  const actionsRef = useRef<HTMLDivElement>(null);
-  const navMeasureRef = useRef<HTMLDivElement>(null);
+  // Publish the real header height so sticky page toolbars can sit right under it
+  const headerRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const set = () => document.documentElement.style.setProperty('--header-h', `${el.offsetHeight}px`);
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
+  const prevCountRef = useRef(totalItemCount);
   useEffect(() => {
     if (totalItemCount > prevCountRef.current) {
       setIsPulsing(true);
       const timer = setTimeout(() => setIsPulsing(false), 400);
+      prevCountRef.current = totalItemCount;
       return () => clearTimeout(timer);
     }
     prevCountRef.current = totalItemCount;
   }, [totalItemCount]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-
+    const handleScroll = () => setIsScrolled(window.scrollY > 40);
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Desktop Navigation Links: Home, Menu, About, Locations, Contact
-  const navItems = [
-    { id: 'home', label: t('nav.home') },
-    { id: 'shop', label: t('nav.menu') },
-    { id: 'about', label: t('nav.about') },
-    { id: 'locations', label: t('nav.locations') },
-    { id: 'contact', label: t('nav.contact') },
-  ];
-
-  // Dynamic link measurement & breakpoint enforcement:
-  // - Minimum threshold: below 980px in Georgian and below 920px in English -> switch to hamburger
-  // - Measurement: calculate available space in center column:
-  //     availableSpace = headerContentWidth - logoWidth - actionsWidth - (gap * 2)
-  //   If required link width > availableSpace -> switch to hamburger
-  const checkNavFit = useCallback(() => {
-    if (typeof window === 'undefined') return;
-
-    const width = window.innerWidth;
-    const minThreshold = language === 'ka' ? 980 : 920;
-
-    if (width < minThreshold) {
-      setShowDesktopNav(false);
-      return;
-    }
-
-    const headerMax = 1120;
-    const sidePadding = width < 768 ? 32 : 40; // 20px padding left & right
-    const containerWidth = Math.min(headerMax, width) - sidePadding;
-
-    const logoW = logoRef.current ? logoRef.current.offsetWidth : 180;
-    const actionsW = actionsRef.current ? actionsRef.current.offsetWidth : 240;
-    const gapTotal = 32 * 2; // at least 32px gap between columns
-
-    const availableCenterWidth = containerWidth - logoW - actionsW - gapTotal;
-    const requiredNavWidth = navMeasureRef.current ? navMeasureRef.current.scrollWidth : 0;
-
-    if (requiredNavWidth > 0 && availableCenterWidth < requiredNavWidth + 8) {
-      setShowDesktopNav(false);
-      return;
-    }
-
-    setShowDesktopNav(true);
-  }, [language]);
-
+  // Opening status is time-dependent, so compute it on the client only (no hydration mismatch)
   useEffect(() => {
-    const handleResize = () => {
-      checkNavFit();
-    };
+    const update = () => setOpenCount(LOCATIONS.filter(isLocationOpen).length);
+    update();
+    const id = setInterval(update, 60_000);
+    return () => clearInterval(id);
+  }, []);
 
-    const frameId = requestAnimationFrame(() => {
-      checkNavFit();
-    });
+  const navItems = useMemo(
+    () => [
+      { id: 'home', label: t('nav.home') },
+      { id: 'shop', label: t('nav.menu') },
+      { id: 'about', label: t('nav.about') },
+      { id: 'locations', label: t('nav.locations') },
+      { id: 'contact', label: t('nav.contact') },
+    ],
+    [t]
+  );
 
-    const timer = setTimeout(() => {
-      checkNavFit();
-    }, 220);
+  const isActive = (id: string) => currentRoute === id || currentRoute.startsWith(`${id}/`);
 
-    window.addEventListener('resize', handleResize, { passive: true });
-
-    if (typeof document !== 'undefined' && 'fonts' in document) {
-      document.fonts.ready.then(() => {
-        requestAnimationFrame(() => {
-          checkNavFit();
-        });
-      });
-    }
-
-    return () => {
-      cancelAnimationFrame(frameId);
-      clearTimeout(timer);
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [checkNavFit, hasActiveOrders]);
-
-  const handleNav = (route: string) => {
-    onNavigate(route);
-  };
+  // Mobile app bar: inner pages get a back button that returns to their parent
+  const backTarget: string | null = currentRoute.startsWith('locations/')
+    ? 'locations'
+    : currentRoute === 'checkout'
+      ? 'shop'
+      : currentRoute === '404'
+        ? 'home'
+        : null;
 
   const primaryOrderNum = activeOrders[0]?.orderNumber;
   const trackRoute = primaryOrderNum ? `track/${primaryOrderNum}` : 'track';
 
+  const cartLabel = `${t('common.cart')} (${totalItemCount})`;
+  const openLabel =
+    openCount === null
+      ? ''
+      : ka
+        ? `ახლა ღიაა ${openCount} / ${LOCATIONS.length} ფილიალი`
+        : `${openCount} of ${LOCATIONS.length} kitchens open now`;
+
+  const tabs = [
+    { id: 'home', route: 'home', label: t('nav.home') },
+    { id: 'shop', route: 'shop', label: t('nav.menu') },
+    { id: 'track', route: trackRoute, label: ka ? 'შეკვეთები' : 'Orders' },
+    { id: 'locations', route: 'locations', label: ka ? 'ფილიალები' : 'Kitchens' },
+  ];
+
   return (
     <>
-      {/* 1. Slim Announcement Bar */}
+      {/* 1. Ink announcement bar (desktop + tablet) */}
       <div className={styles.announcementBar}>
-        <span>
-          {t('common.topAnnouncementPrefix')}{' '}
-          <span className={styles.announcementAccent}>{t('common.topAnnouncementHighlight')}</span>
+        <span className={styles.openStatus}>
+          <span className={`${styles.statusDot} ${openCount === 0 ? styles.statusDotClosed : ''}`} aria-hidden="true" />
+          {openLabel || ' '}
         </span>
+        <span className={styles.announcementMuted}>
+          {t('common.topAnnouncementPrefix')} {t('common.topAnnouncementHighlight')}
+        </span>
+        <LanguageSwitcher variant="onInk" />
       </div>
 
-      {/* Hidden off-screen measurement element to accurately measure unconstrained links width */}
-      <div ref={navMeasureRef} className={styles.measureNav} aria-hidden="true">
-        {navItems.map((item) => (
-          <span key={item.id} className={styles.measureItem}>
-            {item.label}
-          </span>
-        ))}
-      </div>
+      {/* 2. Sticky header */}
+      <header ref={headerRef} className={`${styles.header} ${isScrolled ? styles.scrolled : ''}`}>
+        {/* Mobile app bar (< 768px): menu/back · logo · cart */}
+        <div className={styles.appBar}>
+          {backTarget ? (
+            <button
+              type="button"
+              onClick={() => onNavigate(backTarget)}
+              className={styles.appBarIconBtn}
+              aria-label={ka ? 'უკან' : 'Back'}
+            >
+              <BackIcon />
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(true)}
+              className={styles.appBarIconBtn}
+              aria-label={ka ? 'მენიუ' : 'Open menu'}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation-panel"
+            >
+              <MenuLinesIcon />
+            </button>
+          )}
 
-      {/* 2. Main Sticky Header (72px on desktop, 56px on mobile) */}
-      <header className={`${styles.header} ${isScrolled ? styles.scrolled : ''}`}>
-        <div className={styles.inner}>
-          {/* Column 1: Logo (Left, single line, does not shrink or wrap) */}
           <button
-            ref={logoRef}
             type="button"
-            onClick={() => handleNav('home')}
+            onClick={() => onNavigate('home')}
+            className={styles.appBarLogo}
+            aria-label={`${t('common.brandName')} - ${t('nav.home')}`}
+          >
+            <Logo />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setIsCartOpen(true)}
+            className={styles.appBarIconBtn}
+            aria-label={cartLabel}
+          >
+            <BagIcon />
+            {totalItemCount > 0 && (
+              <span className={`${styles.appBarBadge} ${isPulsing ? styles.badgePulsing : ''}`}>
+                {totalItemCount}
+              </span>
+            )}
+          </button>
+        </div>
+
+        {/* Desktop / tablet bar */}
+        <div className={styles.inner}>
+          <button
+            type="button"
+            onClick={() => onNavigate('home')}
             className={styles.logoButton}
             aria-label={`${t('common.brandName')} - ${t('nav.home')}`}
           >
-            <span className={styles.logoText}>BUN & PATTY</span>
+            <Logo className={styles.logoText} />
+            <span className={styles.logoTagline}>
+              {ka ? 'სმაშ-ბურგერ ბარი' : 'Smash burger bar'}
+              <br />
+              {ka ? 'თბილისი' : 'Tbilisi'}
+            </span>
           </button>
 
-          {/* Column 2: Center Navigation (only visible when links fit and above min threshold) */}
-          <nav
-            className={`${styles.navCenter} ${showDesktopNav ? styles.navCenterVisible : styles.navCenterHidden}`}
-            aria-label={t('nav.menu')}
-          >
-            {navItems.map((item) => {
-              const isActive = currentRoute === item.id;
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => handleNav(item.id)}
-                  className={styles.navLink}
-                  aria-current={isActive ? 'page' : undefined}
-                >
-                  {item.label}
-                </button>
-              );
-            })}
+          <nav className={styles.navCenter} aria-label={ka ? 'მთავარი ნავიგაცია' : 'Main'}>
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => onNavigate(item.id)}
+                className={styles.navLink}
+                aria-current={isActive(item.id) ? 'page' : undefined}
+              >
+                {item.label}
+                {isActive(item.id) && (
+                  <motion.span
+                    layoutId="nav-underline"
+                    className={styles.navUnderline}
+                    transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 420, damping: 36 }}
+                    aria-hidden="true"
+                  />
+                )}
+              </button>
+            ))}
           </nav>
 
-          {/* Column 3: Actions Right (Language switcher, Track button, Cart button, Hamburger toggle) */}
-          <div ref={actionsRef} className={styles.actionsRight}>
-            {/* Desktop Segmented Control Language Switcher: 36px high, 92px wide, sliding pill */}
-            <LanguageSwitcher variant="desktop" className={styles.desktopLangSwitcher} />
+          <div className={styles.actionsRight}>
+            <button
+              type="button"
+              onClick={() => onNavigate(trackRoute)}
+              className={`${styles.textAction} ${currentRoute.startsWith('track') ? styles.textActionActive : ''}`}
+            >
+              {t('nav.track')}
+              {hasInProgressOrder && <span className={styles.liveDot} aria-hidden="true" />}
+            </button>
 
-            {/* Desktop Track Order Button: ONLY shown when customer has active order */}
-            <AnimatePresence>
-              {hasActiveOrders && (
-                <motion.button
-                  key="desktop-track-btn"
-                  type="button"
-                  onClick={() => handleNav(trackRoute)}
-                  className={`${styles.desktopTrackBtn} ${currentRoute.startsWith('track') ? styles.trackActive : ''}`}
-                  aria-label={t('nav.track')}
-                  title={t('nav.track')}
-                  initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: 8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: 8 }}
-                  transition={{ duration: shouldReduceMotion ? 0 : 0.2, ease: 'easeOut' }}
-                >
-                  <Clock size={20} aria-hidden="true" />
-                  {hasInProgressOrder && (
-                    <span className={styles.desktopTrackAccentDot} aria-hidden="true" />
-                  )}
-                </motion.button>
-              )}
-            </AnimatePresence>
-
-            {/* Desktop Cart Button (44px high, icon and "კალათა" on one line without wrapping) */}
             <button
               type="button"
               onClick={() => setIsCartOpen(true)}
-              className={styles.desktopCartButton}
-              aria-label={`${t('common.cart')} (${totalItemCount})`}
+              className={styles.cartButton}
+              aria-label={cartLabel}
             >
-              <ShoppingBag size={18} className={styles.cartBagIcon} aria-hidden="true" />
+              <BagIcon />
               <span className={styles.cartLabel}>{t('common.cart')}</span>
-              {totalItemCount > 0 && (
-                <span className={`${styles.cartBadge} ${isPulsing ? styles.badgePulsing : ''}`}>
-                  {totalItemCount}
-                </span>
-              )}
-              {totalItemCount > 0 && subtotal > 0 && (
-                <span className={styles.cartTotal}>· {subtotal.toFixed(2)} ₾</span>
-              )}
+              <span className={`${styles.cartBadge} ${isPulsing ? styles.badgePulsing : ''}`}>{totalItemCount}</span>
             </button>
 
-            {/* Mobile Track Icon: 44px transparent icon button ONLY when customer has active order */}
-            <AnimatePresence>
-              {hasActiveOrders && (
-                <motion.button
-                  key="mobile-track-btn"
-                  type="button"
-                  onClick={() => handleNav(trackRoute)}
-                  className={`${styles.mobileTrackIconBtn} ${currentRoute.startsWith('track') ? styles.trackActive : ''}`}
-                  aria-label={t('nav.track')}
-                  title={t('nav.track')}
-                  initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: 8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: 8 }}
-                  transition={{ duration: shouldReduceMotion ? 0 : 0.2, ease: 'easeOut' }}
-                >
-                  <Clock size={20} aria-hidden="true" />
-                  {hasInProgressOrder && (
-                    <span className={styles.mobileTrackAccentDot} aria-hidden="true" />
-                  )}
-                </motion.button>
-              )}
-            </AnimatePresence>
+            <button type="button" onClick={() => onNavigate('shop')} className={styles.orderButton}>
+              {ka ? 'შეკვეთა' : 'Order now'}
+              <ArrowIcon />
+            </button>
 
-            {/* Mobile Cart Icon: 44px transparent icon button shown on screens < 768px */}
             <button
               type="button"
-              onClick={() => setIsCartOpen(true)}
-              className={styles.mobileCartIconBtn}
-              aria-label={`${t('common.cart')} (${totalItemCount})`}
+              onClick={() => setMobileMenuOpen(true)}
+              className={styles.menuToggle}
+              aria-label={ka ? 'მენიუ' : 'Open menu'}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation-panel"
             >
-              <ShoppingBag size={22} aria-hidden="true" />
-              {totalItemCount > 0 && (
-                <span className={`${styles.mobileCartBadge} ${isPulsing ? styles.badgePulsing : ''}`}>
-                  {totalItemCount}
-                </span>
-              )}
+              <MenuLinesIcon />
             </button>
-
-            {/* Hamburger Toggle (Shown whenever desktop nav is hidden) */}
-            {!showDesktopNav && (
-              <button
-                type="button"
-                onClick={() => setMobileMenuOpen(true)}
-                className={styles.mobileMenuToggle}
-                aria-label="Open navigation menu"
-                aria-expanded={mobileMenuOpen}
-                aria-controls="mobile-navigation-panel"
-              >
-                <MenuIcon size={24} aria-hidden="true" />
-              </button>
-            )}
           </div>
         </div>
       </header>
 
-      {/* 3. Mobile Navigation Drawer */}
+      {/* 3. Mobile bottom tab bar (< 768px) */}
+      <nav
+        className={`${styles.bottomNav} ${currentRoute === 'checkout' ? styles.bottomNavHidden : ''}`}
+        aria-label={ka ? 'აპის ნავიგაცია' : 'App'}
+      >
+        {tabs.map((tab) => {
+          const active = isActive(tab.id);
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => onNavigate(tab.route)}
+              className={`${styles.tab} ${active ? styles.tabActive : ''}`}
+              aria-current={active ? 'page' : undefined}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                {TAB_ICONS[tab.id]}
+              </svg>
+              <span className={styles.tabLabel}>{tab.label}</span>
+              {tab.id === 'track' && hasActiveOrders && (
+                <AnimatePresence>
+                  <motion.span
+                    className={styles.tabDot}
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    aria-hidden="true"
+                  />
+                </AnimatePresence>
+              )}
+            </button>
+          );
+        })}
+      </nav>
+
+      {/* 3b. Floating "View order" bar above the tab bar (phones, canvas App-Home/App-Menu) */}
+      {totalItemCount > 0 && !isCartOpen && currentRoute !== 'checkout' && !currentRoute.startsWith('track') && (
+        <button type="button" data-cartbar onClick={() => setIsCartOpen(true)} className={styles.cartBar}>
+          <span className={styles.cartBarInfo}>
+            <span className={styles.cartBarMeta}>
+              {ka ? `${totalItemCount} პოზიცია` : `${totalItemCount} ${totalItemCount === 1 ? 'item' : 'items'}`} ·{' '}
+              {orderType === 'pickup' ? (ka ? 'გატანა' : 'Pickup') : ka ? 'მიწოდება' : 'Delivery'}
+            </span>
+            <span className={styles.cartBarTotal}>{grandTotal.toFixed(2)} ₾</span>
+          </span>
+          <span className={styles.cartBarCta}>{ka ? 'შეკვეთის ნახვა →' : 'View order →'}</span>
+        </button>
+      )}
+
+      {/* 4. Navigation drawer (phones + narrow desktops) */}
       <MobileMenu
         isOpen={mobileMenuOpen}
         currentRoute={currentRoute}
-        onNavigate={handleNav}
+        onNavigate={onNavigate}
         onClose={() => setMobileMenuOpen(false)}
       />
     </>

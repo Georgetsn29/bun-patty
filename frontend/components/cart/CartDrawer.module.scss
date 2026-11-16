@@ -1,434 +1,838 @@
 @use '@/src/styles/abstracts' as *;
 
+$radius: 16px;
+$hairline: rgba($color-text, 0.1);
+$green: #2E7A44;
+$red: #C8321D;
+
+// =============================================================================
+// Shell — phones: bottom sheet · tablet/desktop: right-hand panel
+// =============================================================================
 .backdrop {
   position: fixed;
   inset: 0;
-  background-color: rgba(5, 10, 11, 0.85);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
   z-index: $z-drawer;
-  transition: opacity 0.25s ease;
+  background-color: rgba(5, 10, 11, 0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 .drawer {
   position: fixed;
-  top: 0;
+  left: 0;
   right: 0;
   bottom: 0;
-  width: 100%;
-  max-width: 100vw;
-  height: 100dvh;
-  background-color: #0E181B;
-  color: #FFFFFF;
-  border-left: 1px solid rgba(255, 255, 255, 0.12);
-  z-index: $z-drawer + 10;
+  z-index: $z-drawer + 1;
+  height: 92dvh;
   display: flex;
   flex-direction: column;
-  box-shadow: -15px 0 35px rgba(0, 0, 0, 0.6);
-  font-family: $font-fira;
+  background-color: $color-bg;
+  color: $color-text;
+  font-family: $font-sans;
+  border-top: 1px solid $color-border-strong;
+  border-radius: 0;
+  box-shadow: 0 -20px 50px rgba(23, 18, 15, 0.21);
+  overflow: hidden;
+  outline: none;
 
   @include respond-to('md') {
+    top: 0;
+    left: auto;
+    height: 100dvh;
+    width: 100%;
     max-width: 440px;
+    border-top: none;
+    border-left: 1px solid $color-border-strong;
+    border-radius: 0;
+    box-shadow: -20px 0 50px rgba(23, 18, 15, 0.17);
   }
 }
 
+// =============================================================================
+// Header
+// =============================================================================
 .header {
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  padding: $space-2 $space-4 $space-4;
+  border-bottom: 1px solid $hairline;
+  touch-action: pan-x; // the vertical drag is ours (swipe to close)
+
+  @include respond-to('md') {
+    padding: $space-5 $space-6 $space-4;
+    touch-action: auto;
+  }
+}
+
+.dragHandle {
+  align-self: center;
+  width: 40px;
+  height: 4px;
+  border-radius: 0;
+  background-color: rgba(23, 18, 15, 0.25);
+  margin-bottom: $space-1;
+
+  @include respond-to('md') {
+    display: none;
+  }
+}
+
+.headerRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #0B1416;
-  flex-shrink: 0;
+  gap: $space-3;
 }
 
 .heading {
-  font-size: 1.1rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #FFFFFF;
   margin: 0;
+  font-family: $font-serif;
+  text-transform: uppercase;
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .subheading {
-  font-size: 0.75rem;
-  color: #8A9698;
   margin: 2px 0 0;
+  font-family: $font-mono;
+  font-size: 0.72rem;
+  color: $color-text-muted;
 }
 
 .closeButton {
   @include button-reset;
-  font-size: 0.775rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #8A9698;
-  padding: 4px 8px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: color 0.15s ease;
-
-  &:hover {
-    color: #FFFFFF;
-  }
-}
-
-.fulfillment {
-  padding: 12px 20px;
-  background-color: rgba(255, 255, 255, 0.02);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.fulfillmentToggle {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  background-color: #131E21;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.toggleButton {
-  @include button-reset;
-  padding: 8px 12px;
-  font-size: 0.775rem;
-  font-weight: 700;
-  text-align: center;
-  color: #8A9698;
-  cursor: pointer;
-  transition: all 0.15s ease;
-
-  &Active {
-    background-color: #E27344;
-    color: #FFFFFF;
-  }
-}
-
-.toggleButtonBorderLeft {
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.itemList {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
-
-  &::-webkit-scrollbar {
-    width: 5px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 3px;
-  }
-}
-
-.emptyState {
-  display: flex;
-  flex-direction: column;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  padding: 60px 20px;
-  gap: 16px;
-}
-
-.emptyTitle {
-  font-size: 0.95rem;
-  color: #8A9698;
-}
-
-.browseButton {
-  @include button-reset;
-  padding: 10px 18px;
-  background-color: rgba(226, 115, 68, 0.15);
-  // border: 1px solid #E27344;
-  color: #E27344;
-  font-size: 0.8rem;
-  font-weight: 700;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.15s ease;
+  background: rgba(23, 18, 15, 0.06);
+  border: 1px solid $hairline;
+  color: $color-text;
+  transition: background-color 0.15s ease;
 
   &:hover {
-    background-color: #E27344;
-    color: #FFFFFF;
+    background: rgba(23, 18, 15, 0.12);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-accent;
+    outline-offset: 2px;
   }
 }
 
-.itemRow {
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+// Delivery / pickup segmented control
+.segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 0;
+  background: $color-bg-alt;
+  border: 1px solid $hairline;
+}
+
+.segment {
+  @include button-reset;
+  position: relative;
+  isolation: isolate;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: $color-text-muted;
+  transition: color 0.2s ease;
+
+  &:focus-visible {
+    outline: 2px solid $color-accent;
+    outline-offset: 1px;
+  }
+}
+
+.segmentActive {
+  color: $color-on-accent;
+
+  .segmentTime {
+    color: rgba($color-on-accent, 0.7);
+  }
+}
+
+.segmentPill {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: $color-accent;
+}
+
+.segmentTime {
+  font-family: $font-mono;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: $color-text-subtle;
+}
+
+// Free-delivery progress
+.freeBar {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.itemHeader {
+.freeText {
+  margin: 0;
+  font-size: 0.8rem;
+  color: $color-text-muted;
+
+  strong {
+    color: $color-text;
+    font-weight: 600;
+  }
+}
+
+.freeDone {
+  color: $green !important;
+}
+
+.freeTrack {
+  height: 4px;
+  border-radius: 0;
+  background: rgba(23, 18, 15, 0.08);
+  overflow: hidden;
+}
+
+.freeFill {
+  height: 100%;
+  border-radius: inherit;
+  background: $color-accent;
+  transform-origin: left center;
+}
+
+.freeFillDone {
+  background: $green;
+}
+
+// =============================================================================
+// Items
+// =============================================================================
+.itemList {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: $space-3 $space-4;
+
+  @include respond-to('md') {
+    padding: $space-4 $space-6;
+  }
+}
+
+.items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.itemRow {
+  display: flex;
+  gap: $space-3;
+  padding: $space-3;
+  border-radius: 0;
+  background: $color-bg-alt;
+  border: 1px solid $hairline;
+}
+
+.thumb {
+  flex: 0 0 64px;
+  width: 64px;
+  height: 64px;
+  border-radius: 0;
+  object-fit: cover;
+  background: $color-bg-dark;
+}
+
+.itemBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.itemTop {
+  display: flex;
+  align-items: baseline;
   justify-content: space-between;
-  gap: 12px;
+  gap: $space-2;
 }
 
 .itemName {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #FFFFFF;
   margin: 0;
-}
-
-.itemChoiceSubtitle {
-  font-size: 0.775rem;
+  min-width: 0;
+  font-family: $font-serif;
+  text-transform: uppercase;
+  font-size: 0.95rem;
   font-weight: 600;
-  color: #E27344;
-  margin: 2px 0 0;
+  line-height: 1.3;
 }
 
-.itemUnitPrice {
-  font-size: 0.75rem;
-  color: #8A9698;
-  margin: 2px 0 0;
+.itemChoice {
+  font-family: $font-sans;
+  font-weight: 400;
+  color: $color-text-muted;
 }
 
 .itemTotalPrice {
-  font-size: 0.95rem;
-  font-weight: 800;
-  color: #FFFFFF;
+  font-family: $font-mono;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: $color-accent;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
-.customizationList {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin: 4px 0 0;
-  padding: 0;
+.modList {
   list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
-.customizationItem {
-  font-size: 0.775rem;
-  color: #E27344;
-  line-height: 1.35;
+.modChip {
+  padding: 2px 8px;
+  border-radius: 0;
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+.modRemoved {
+  color: $red;
+  background: rgba($red, 0.1);
+}
+
+.modExtra {
+  color: $color-accent;
+  background: $color-accent-light;
 }
 
 .kitchenNote {
+  margin: 0;
   font-size: 0.75rem;
   font-style: italic;
-  color: #8A9698;
-  margin: 2px 0 0;
+  color: $color-text-muted;
+  @include line-clamp(2);
 }
 
-.itemActionsRow {
+.itemActions {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 8px;
+  gap: $space-2;
+  margin-top: 2px;
 }
 
 .editButton {
   @include button-reset;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #8A9698;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 36px;
+  padding: 0 $space-2;
+  margin-left: -$space-2;
+  border-radius: 0;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: $color-text-muted;
   transition: color 0.15s ease;
 
   &:hover {
-    color: #E27344;
+    color: $color-accent;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-accent;
+    outline-offset: 1px;
   }
 }
 
 .qtyControl {
   display: flex;
   align-items: center;
-  background-color: #131E21;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
+  gap: 2px;
   padding: 2px;
+  border-radius: 0;
+  background: $paper;
+  border: 1px solid $hairline;
 }
 
 .qtyButton {
   @include button-reset;
-  width: 24px;
-  height: 24px;
-  display: flex;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #FFFFFF;
-  cursor: pointer;
+  color: $color-text;
+  transition: background-color 0.15s ease, color 0.15s ease;
 
   &:hover {
-    color: #E27344;
+    background: rgba(23, 18, 15, 0.08);
+    color: $color-accent;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-accent;
+    outline-offset: 1px;
+  }
+}
+
+.qtyRemove {
+  color: $red;
+
+  &:hover {
+    color: $red;
+    background: rgba($red, 0.12);
   }
 }
 
 .qtyDisplay {
-  min-width: 20px;
+  min-width: 22px;
   text-align: center;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #FFFFFF;
+  font-family: $font-mono;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
-.removeButton {
+// Empty
+.emptyState {
+  height: 100%;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  padding: $space-8 $space-4;
+  text-align: center;
+}
+
+.emptyIcon {
+  width: 60px;
+  height: 60px;
+  border-radius: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: $space-2;
+  background: $color-accent-light;
+  color: $color-accent;
+}
+
+.emptyTitle {
+  margin: 0;
+  font-family: $font-serif;
+  text-transform: uppercase;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.emptyDesc {
+  margin: 0 0 $space-3;
+  max-width: 20rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: $color-text-muted;
+}
+
+.browseButton {
   @include button-reset;
-  font-size: 0.75rem;
-  color: #8A9698;
-  cursor: pointer;
-  transition: color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  min-height: 48px;
+  padding: 0 $space-6;
+  border-radius: 0;
+  background: $color-accent;
+  color: $color-on-accent;
+  font-family: $font-mono;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: background-color 0.2s ease;
 
   &:hover {
-    color: #EF4444;
+    background: $color-tomato-hover;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-text;
+    outline-offset: 2px;
   }
 }
 
+// =============================================================================
+// Footer
+// =============================================================================
 .footer {
-  padding: 16px 20px;
-  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  background-color: #0B1416;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  flex-shrink: 0;
-  position: sticky;
-  bottom: 0;
-  z-index: 5;
+  gap: $space-3;
+  padding: $space-3 $space-4;
+  padding-bottom: calc(#{$space-3} + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid $hairline;
+  background: $paper;
+
+  @include respond-to('md') {
+    padding: $space-4 $space-6 $space-5;
+  }
+}
+
+.promoToggle {
+  @include button-reset;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: $color-text-muted;
+  transition: color 0.15s ease;
+
+  svg {
+    color: $color-accent;
+  }
+
+  &:hover {
+    color: $color-text;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-accent;
+    outline-offset: 2px;
+    border-radius: 0;
+  }
 }
 
 .promoForm {
   display: flex;
-  gap: 8px;
+  gap: $space-2;
 }
 
 .promoInput {
   flex: 1;
-  background-color: #131E21;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
-  padding: 6px 10px;
-  font-size: 0.775rem;
-  color: #FFFFFF;
+  min-width: 0;
+  height: 44px;
+  padding: 0 $space-3;
+  border-radius: 0;
+  border: 1px solid $color-border-strong;
+  background: $color-bg-alt;
+  color: $color-text;
+  font-family: $font-mono;
+  font-size: 1rem; // ≥16px avoids iOS zoom
   text-transform: uppercase;
+
+  &::placeholder {
+    color: $color-text-subtle;
+    text-transform: none;
+  }
 
   &:focus {
     outline: none;
-    border-color: #E27344;
-  }
-
-  &::placeholder {
-    color: #616F71;
+    border-color: $color-accent;
+    box-shadow: 0 0 0 3px rgba($color-accent, 0.2);
   }
 }
 
 .promoSubmit {
   @include button-reset;
-  padding: 6px 12px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
-  font-size: 0.775rem;
-  font-weight: 700;
-  color: #FFFFFF;
-  cursor: pointer;
+  height: 44px;
+  padding: 0 $space-4;
+  border-radius: 0;
+  border: 1px solid $color-border-strong;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 
   &:hover {
-    background-color: #E27344;
-    border-color: #E27344;
+    border-color: $color-text;
+    background: rgba(23, 18, 15, 0.05);
   }
 }
 
-.promoRow {
+.promoApplied {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  font-size: 0.775rem;
-  color: #E27344;
-  background-color: rgba(226, 115, 68, 0.1);
-  padding: 6px 10px;
-  border-radius: 6px;
+  gap: $space-2;
+  padding: $space-2 $space-3;
+  border-radius: 0;
+  background: rgba($green, 0.1);
+  border: 1px solid rgba($green, 0.25);
+  font-size: 0.82rem;
+  color: $green;
+
+  span {
+    flex: 1;
+  }
+
+  strong {
+    font-family: $font-mono;
+  }
 }
 
-.removePromo {
+.promoRemove {
   @include button-reset;
-  color: #8A9698;
-  font-size: 0.75rem;
-  cursor: pointer;
+  min-height: 32px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: $color-text-muted;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 
   &:hover {
-    color: #EF4444;
+    color: $color-text;
   }
+}
+
+.promoMessage {
+  margin: 0;
+  font-size: 0.75rem;
+  color: $color-accent;
+}
+
+.promoOk {
+  color: $green;
 }
 
 .breakdown {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 8px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 4px;
+  margin: 0;
 }
 
 .breakdownRow {
   display: flex;
   justify-content: space-between;
-  font-size: 0.8rem;
-  color: #8A9698;
+  gap: $space-3;
+  font-size: 0.85rem;
+  color: $color-text-muted;
 
-  &Discount {
-    color: #E27344;
+  dt,
+  dd {
+    margin: 0;
+  }
+
+  dd {
+    font-family: $font-mono;
+    font-variant-numeric: tabular-nums;
+    color: $color-text;
   }
 }
 
-.totalRow {
-  display: flex;
-  justify-content: space-between;
-  font-size: 1rem;
-  font-weight: 800;
-  color: #FFFFFF;
-  padding-top: 4px;
+.breakdownDiscount dd {
+  color: $green;
+}
+
+.freeValue {
+  color: $green !important;
 }
 
 .checkoutButton {
   @include button-reset;
-  width: 100%;
-  height: $mobile-control-min-height; // 48px
-  min-height: $mobile-control-min-height;
-  padding: 0 16px;
-  border-radius: $mobile-radius; // 12px
-  background-color: #E27344;
-  color: #FFFFFF;
-  font-size: 15px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
   display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  justify-content: space-between;
+  gap: $space-3;
+  min-height: 56px;
+  padding: 0 $space-5;
+  border-radius: 0;
+  background: $color-accent;
+  color: $color-on-accent;
+  transition: background-color 0.2s ease, transform 0.15s ease;
 
   &:hover {
-    background-color: #F28555;
+    background: $color-tomato-hover;
   }
 
   &:active {
-    transform: scale(0.98);
+    transform: scale(0.99);
   }
 
   &:focus-visible {
-    outline: 2px solid #FFFFFF;
+    outline: 2px solid $color-text;
     outline-offset: 2px;
   }
+}
+
+.checkoutLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-family: $font-mono;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+
+  :global(html[lang='ka']) & {
+    text-transform: none;
+    letter-spacing: 0;
+  }
+}
+
+.checkoutSub {
+  font-family: $font-sans;
+  font-size: 0.65rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  opacity: 0.7;
+}
+
+.checkoutTotal {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  font-family: $font-mono;
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+// =============================================================================
+// Redesign layer (canvas "Cart — drawer open")
+// =============================================================================
+.backdrop {
+  background: rgba($ink, 0.6);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.drawer {
+  background: $paper;
+
+  @include respond-to('md') {
+    width: 500px;
+    max-width: 100%;
+    border-left: $rule-strong;
+    box-shadow: none;
+  }
+}
+
+.header {
+  border-bottom: $rule-strong;
+}
+
+.heading {
+  @include display(48px);
+  line-height: 0.9;
+}
+
+.subheading {
+  @include mono(12px);
+  color: $muted;
+}
+
+.closeButton {
+  width: 44px;
+  height: 44px;
+  border-radius: 0;
+  border: $rule-strong;
+  background: transparent;
+  color: $ink;
+
+  &:hover {
+    background: $ink;
+    color: $paper;
+  }
+}
+
+.segmented {
+  border: $rule-strong;
+  background: transparent;
+  padding: 0;
+}
+
+.segmentPill {
+  inset: 0;
+  background: $ink;
+}
+
+.segment {
+  @include display(18px, 700);
+}
+
+.segmentActive {
+  color: $paper;
+}
+
+.freeTrack {
+  background: $rule;
+  height: 4px;
+}
+
+.itemRow {
+  background: transparent;
+  border: 0;
+  border-bottom: $rule-soft;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.itemName {
+  @include display(22px, 800);
+  line-height: 1;
+}
+
+.itemTotalPrice {
+  @include mono(14px);
+  letter-spacing: 0;
+  color: $ink;
+}
+
+.qtyControl {
+  border: $rule-strong;
+  background: transparent;
+}
+
+.qtyButton {
+  border-radius: 0;
+  background: transparent;
+  color: $ink;
+
+  &:hover {
+    background: $paper-deep;
+  }
+}
+
+.footer {
+  border-top: $rule-strong;
+}
+
+.checkoutButton {
+  border-radius: 0;
+}
+
+.upsellWrap {
+  padding: 20px 0 8px;
 }

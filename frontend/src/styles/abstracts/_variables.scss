@@ -1,41 +1,69 @@
-// Unified Dark Restaurant Design System (Matching Menu Layout Reference)
-$color-bg: #0B1416;
-$color-bg-alt: #131E21;
-$color-bg-dark: #070D0E;
+// ───────────────────────────────────────────────────────────────
+// BUN & PATTY — brand tokens (redesign, Nov 2026)
+// Warm paper + ink, one tomato red, square corners, 1.5px ink rules.
+// Source of truth: the "Bun & Patty — Website Redesign" canvas (Foundations board).
+// ───────────────────────────────────────────────────────────────
 
-$color-text: #FFFFFF;
-$color-text-light: #FFFFFF;
-$color-text-muted: #8A9698;
-$color-text-subtle: #616F71;
+// Core palette
+$paper: #F2EBDF;
+$paper-deep: #E7DCCB;
+$ink: #17120F;
+$muted: #6F635A;
+$muted-on-ink: #A79A8F;
+$rule: #CFC3B1;
+$rule-on-ink: #3A302A;
+$red: #C8321D;
+$red-deep: #A22612;
+$logo-orange: #E8601C;
+$mustard: #E9A823;
+$open-green: #2E7A44;
 
-$color-accent: #E27344;
-$color-accent-light: rgba(226, 115, 68, 0.15);
-$color-sage: #8A9698;
-$color-sage-light: rgba(138, 150, 152, 0.15);
-$color-butter: #E27344;
-$color-butter-light: rgba(226, 115, 68, 0.1);
+// Semantic aliases (names kept from the previous system so every module re-skins)
+$color-bg: $paper;
+$color-bg-alt: $paper-deep;
+$color-bg-dark: $ink;          // solid ink surfaces and backdrop overlays
+$color-on-accent: $paper;      // text sitting on red / ink fills
 
-$color-tomato: #E27344;
-$color-tomato-hover: #F28555;
+$color-text: $ink;
+$color-text-light: $paper;
+$color-text-muted: $muted;
+$color-text-subtle: #8A7D72;
 
-$color-border: rgba(255, 255, 255, 0.1);
-$color-border-dark: rgba(255, 255, 255, 0.08);
-$color-border-strong: rgba(255, 255, 255, 0.2);
+$color-accent: $red;
+$color-accent-light: rgba($red, 0.1);
+$color-sage: $muted;
+$color-sage-light: rgba($ink, 0.06);
+$color-butter: $mustard;
+$color-butter-light: rgba($mustard, 0.18);
 
-// Menu Specific Palette
-$color-menu-bg: #0B1416;
-$color-menu-surface: #131E21;
-$color-menu-text: #FFFFFF;
-$color-menu-muted: #8A9698;
-$color-menu-border: rgba(255, 255, 255, 0.1);
-$color-menu-accent: #E27344;
-$color-menu-accent-hover: #F28555;
+$color-tomato: $red;
+$color-tomato-hover: $red-deep;
+$color-success: $open-green;
 
-// Unified Typography with Full Georgian Support (Fira Sans + FiraGO)
-$font-serif: "Fira Sans", "FiraGO", sans-serif;
-$font-sans: "Fira Sans", "FiraGO", sans-serif;
-$font-mono: 'JetBrains Mono', "FiraGO", monospace;
-$font-fira: "Fira Sans", "FiraGO", sans-serif;
+$color-border: $rule;
+$color-border-dark: $rule;
+$color-border-strong: $ink;
+
+$color-menu-bg: $paper;
+$color-menu-surface: $paper-deep;
+$color-menu-text: $ink;
+$color-menu-muted: $muted;
+$color-menu-border: $rule;
+$color-menu-accent: $red;
+$color-menu-accent-hover: $red-deep;
+
+// Rules
+$rule-strong: 1.5px solid $ink;
+$rule-soft: 1px solid $rule;
+
+// Typography
+// Display: Fira Sans Extra Condensed (uppercase, 800–900). Georgian falls back to FiraGO.
+$font-display: 'Fira Sans Extra Condensed', 'FiraGO', sans-serif;
+$font-serif: $font-display; // legacy name: every heading in the modules uses it
+$font-sans: 'Fira Sans', 'FiraGO', sans-serif;
+$font-fira: $font-sans;
+$font-mono: 'JetBrains Mono', 'FiraGO', monospace;
+$font-quote: 'Instrument Serif', Georgia, serif;
 
 // Spacing scale
 $space-1: 0.25rem;   // 4px
@@ -52,13 +80,16 @@ $space-20: 5rem;     // 80px
 $space-24: 6rem;     // 96px
 $space-32: 8rem;     // 128px
 
+// Page gutter used by the redesign: 16px on phones → 48px on wide screens
+$gutter: clamp(16px, 3.4vw, 48px);
+
 // Breakpoints
 $bp-sm: 640px;
 $bp-md: 768px;
 $bp-lg: 1024px;
 $bp-xl: 1280px;
 
-// Z-Indices (Required Hierarchy)
+// Z-Indices
 $z-negative: -1;
 $z-base: 0;
 $z-page: 1;
@@ -69,16 +100,16 @@ $z-menu: 300;
 $z-modal: 400;
 $z-toast: 500;
 
-// Mobile Foundations (< 768px)
-$mobile-pad: 16px;
+// Mobile foundations (< 768px) — square corners everywhere
+$mobile-pad: 20px;
 $mobile-section-spacing: 48px;
-$mobile-title: 32px;
-$mobile-section-title: 22px;
+$mobile-title: 40px;
+$mobile-section-title: 28px;
 $mobile-body: 16px;
 $mobile-small: 14px;
 $mobile-control-min-height: 48px;
-$mobile-radius: 12px;
-$mobile-header-height: 56px;
+$mobile-radius: 0;
+$mobile-header-height: 60px;
 
 // Container
-$max-width-site: 1120px;
+$max-width-site: 1440px;
