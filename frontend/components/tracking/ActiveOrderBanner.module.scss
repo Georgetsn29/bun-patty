@@ -2,8 +2,8 @@
 
 .banner {
   width: 100%;
-  background-color: #172427;
-  border-bottom: 1px solid rgba(226, 115, 68, 0.35);
+  background-color: #E7DCCB;
+  border-bottom: 1px solid rgba(200, 50, 29, 0.35);
   position: relative;
   z-index: 105; // directly visible above headers
   font-family: $font-fira;
@@ -30,11 +30,11 @@
   cursor: pointer;
   text-align: left;
   font-size: 13px;
-  color: #FFFFFF;
+  color: #17120F;
   line-height: 1.3;
 
   &:hover .trackLink {
-    color: #F28555;
+    color: #A22612;
     text-decoration: underline;
   }
 }
@@ -43,9 +43,9 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #E27344;
+  background-color: #C8321D;
   flex-shrink: 0;
-  box-shadow: 0 0 0 0 rgba(226, 115, 68, 0.7);
+  box-shadow: 0 0 0 0 rgba(200, 50, 29, 0.7);
   animation: pulse-ring 1.8s infinite cubic-bezier(0.45, 0, 0.55, 1);
 
   @media (prefers-reduced-motion: reduce) {
@@ -55,28 +55,28 @@
 
 @keyframes pulse-ring {
   0% {
-    box-shadow: 0 0 0 0 rgba(226, 115, 68, 0.7);
+    box-shadow: 0 0 0 0 rgba(200, 50, 29, 0.7);
   }
   70% {
-    box-shadow: 0 0 0 6px rgba(226, 115, 68, 0);
+    box-shadow: 0 0 0 6px rgba(200, 50, 29, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(226, 115, 68, 0);
+    box-shadow: 0 0 0 0 rgba(200, 50, 29, 0);
   }
 }
 
 .orderLabel {
-  color: #8A9698;
+  color: #6F635A;
   white-space: nowrap;
 
   strong {
-    color: #FFFFFF;
+    color: #17120F;
     letter-spacing: 0.02em;
   }
 }
 
 .statusLabel {
-  color: #E27344;
+  color: #C8321D;
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
@@ -87,7 +87,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  color: #E27344;
+  color: #C8321D;
   font-weight: 700;
   margin-left: 4px;
   white-space: nowrap;
@@ -110,14 +110,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #8A9698;
-  border-radius: 6px;
+  color: #6F635A;
+  border-radius: 0;
   cursor: pointer;
   flex-shrink: 0;
   transition: color 150ms ease, background-color 150ms ease;
 
   &:hover {
-    color: #FFFFFF;
-    background-color: rgba(255, 255, 255, 0.08);
+    color: #17120F;
+    background-color: rgba(23, 18, 15, 0.08);
+  }
+}
+
+// The phone home shows its own live-order card (canvas App-Home)
+.hideOnPhone {
+  @media (max-width: #{$bp-md - 1px}) {
+    display: none;
   }
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { CartProvider, CartItem, ItemCustomization } from '@/context/CartContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { Header } from '@/components/layout/Header';
@@ -17,13 +17,47 @@ import { HomeView } from '@/components/views/HomeView';
 import { ShopView } from '@/components/views/ShopView';
 import { AboutView } from '@/components/views/AboutView';
 import { LocationsView } from '@/components/views/LocationsView';
+import { LocationDetailView } from '@/components/views/LocationDetailView';
+import { LOCATIONS } from '@/data/locations';
 import { ContactView } from '@/components/views/ContactView';
 import { CheckoutView } from '@/components/views/CheckoutView';
 import { TrackingView } from '@/components/views/TrackingView';
 import { NotFoundView } from '@/components/views/NotFoundView';
 
+// Order used to decide which way pages slide. Sub-routes (e.g. locations/x)
+// sit just "after" their parent so they slide in as a step forward.
+const ROUTE_ORDER = ['home', 'shop', 'about', 'locations', 'contact', 'checkout', 'track'];
+function routeRank(route: string): number {
+  const [base, sub] = route.split('/');
+  const idx = ROUTE_ORDER.indexOf(base);
+  return (idx === -1 ? ROUTE_ORDER.length : idx) + (sub ? 0.5 : 0);
+}
+
+const SLIDE_DISTANCE = 56;
+const pageVariants = {
+  enter: (dir: number) => ({ x: dir * SLIDE_DISTANCE, opacity: 0 }),
+  center: { x: 0, opacity: 1 },
+  exit: (dir: number) => ({ x: dir * -SLIDE_DISTANCE, opacity: 0 }),
+};
+const fadeVariants = {
+  enter: { opacity: 0 },
+  center: { opacity: 1 },
+  exit: { opacity: 0 },
+};
+
 export default function App() {
   const [currentRoute, setCurrentRoute] = useState<string>('home');
+  const reduceMotion = useReducedMotion();
+
+  // Track slide direction: +1 = forward (slide left), -1 = back (slide right).
+  // Updated during render (React's "previous value" pattern) so the very
+  // render that swaps the page already knows its direction.
+  const [prevRoute, setPrevRoute] = useState(currentRoute);
+  const [direction, setDirection] = useState(1);
+  if (prevRoute !== currentRoute) {
+    setPrevRoute(currentRoute);
+    setDirection(routeRank(currentRoute) >= routeRank(prevRoute) ? 1 : -1);
+  }
   const [selectedProduct, setSelectedProduct] = useState<MenuItem | null>(null);
   const [editingCustomization, setEditingCustomization] = useState<ItemCustomization | null>(null);
   const [editingCartItemId, setEditingCartItemId] = useState<string | null>(null);
@@ -58,6 +92,11 @@ export default function App() {
 
       if (!hash || hash === '') {
         setCurrentRoute('home');
+      } else if (
+        hash.startsWith('locations/') &&
+        LOCATIONS.some((l) => l.id === hash.slice('locations/'.length))
+      ) {
+        setCurrentRoute(hash);
       } else if (hash === 'track' || hash.startsWith('track/')) {
         setCurrentRoute(hash);
       } else if (
@@ -117,6 +156,15 @@ export default function App() {
       );
     }
 
+    if (currentRoute.startsWith('locations/')) {
+      return (
+        <LocationDetailView
+          locationId={currentRoute.slice('locations/'.length)}
+          onNavigate={navigateTo}
+        />
+      );
+    }
+
     switch (currentRoute) {
       case 'home':
         return (
@@ -137,7 +185,7 @@ export default function App() {
       case 'locations':
         return <LocationsView onNavigate={navigateTo} />;
       case 'contact':
-        return <ContactView />;
+        return <ContactView onNavigate={navigateTo} />;
       case 'checkout':
         return <CheckoutView onNavigate={navigateTo} />;
       default:
@@ -160,13 +208,18 @@ export default function App() {
 
           {/* Main Content Area */}
           <main id="main-content" tabIndex={-1} className={styles.mainContent}>
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="wait" custom={direction} initial={false}>
               <motion.div
                 key={currentRoute}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                custom={direction}
+                variants={reduceMotion ? fadeVariants : pageVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{
+                  x: { duration: 0.32, ease: [0.16, 1, 0.3, 1] },
+                  opacity: { duration: 0.2, ease: 'easeOut' },
+                }}
               >
                 {renderCurrentView()}
               </motion.div>

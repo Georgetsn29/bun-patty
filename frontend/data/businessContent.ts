@@ -96,6 +96,24 @@ export const BUSINESS_CONTENT = {
       transit: '3 min walk from Liberty Square Metro Station',
       isPlaceholder: true,
     },
+    {
+      id: 'nutsubidze-kitchen',
+      name: 'Nutsubidze Kitchen',
+      isFlagship: false,
+      address: '215 Shalva Nutsubidze St',
+      cityStateZip: 'Tbilisi 0168, Georgia',
+      neighborhood: 'Nutsubidze Slope',
+      /* [PLACEHOLDER] phone, email, hours and features until the new kitchen's own details are confirmed.
+         Phone and email point to the flagship / general inbox so customers still reach us. */
+      phone: '+995 32 255 0194',
+      email: 'hello@bunandpatty.ge',
+      hoursWeekday: '12:00 – 22:30',
+      hoursWeekend: '11:30 – 00:00',
+      hoursDisplay: 'Mon–Thu til 22:30 · Fri–Sun til 00:00',
+      features: [],
+      transit: 'On Shalva Nutsubidze St, Nutsubidze Slope (Vake district)',
+      isPlaceholder: true,
+    },
   ] as BusinessLocation[],
 
   // Primary Contact Info (Tbilisi)

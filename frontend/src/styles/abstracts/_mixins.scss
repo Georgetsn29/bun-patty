@@ -31,17 +31,81 @@
   max-width: $max-width-site;
   margin-left: auto;
   margin-right: auto;
-  padding-left: $space-4;
-  padding-right: $space-4;
+  padding-left: $gutter;
+  padding-right: $gutter;
+}
 
-  @include respond-to('sm') {
-    padding-left: $space-6;
-    padding-right: $space-6;
+// Display heading: condensed, uppercase, tight
+@mixin display($size: 64px, $weight: 900) {
+  font-family: $font-display;
+  font-weight: $weight;
+  font-size: $size;
+  text-transform: uppercase;
+  letter-spacing: -0.015em;
+  line-height: 0.88;
+}
+
+// Small uppercase monospace label
+@mixin mono($size: 12px) {
+  font-family: $font-mono;
+  font-weight: 500;
+  font-size: $size;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+// Primary red button with arrow slot
+@mixin btn-red {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 16px 24px 16px 28px;
+  background: $red;
+  color: $paper;
+  border: 1.5px solid $red;
+  font-family: $font-display;
+  font-weight: 700;
+  font-size: 22px;
+  text-transform: uppercase;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: $red-deep;
+    border-color: $red-deep;
   }
+}
 
-  @include respond-to('lg') {
-    padding-left: $space-8;
-    padding-right: $space-8;
+// Outlined ink button
+@mixin btn-outline($on-ink: false) {
+  $fg: $ink;
+  $bg: $paper;
+  @if $on-ink {
+    $fg: $paper;
+    $bg: $ink;
+  }
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 16px 24px 16px 28px;
+  background: transparent;
+  color: $fg;
+  border: 1.5px solid $fg;
+  font-family: $font-display;
+  font-weight: 700;
+  font-size: 22px;
+  text-transform: uppercase;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: $fg;
+    color: $bg;
   }
 }
 
@@ -110,4 +174,41 @@
 
 @mixin safe-area-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+// Phones only: turn a grid of cards into a horizontal, snap-scrolling row
+// that bleeds to the screen edges. Children get a fixed share of the width
+// so the next card peeks in, hinting that the row scrolls.
+@mixin mobile-carousel($item-width: 80%) {
+  @media (max-width: #{$bp-md - 1px}) {
+    display: flex;
+    grid-template-columns: none;
+    gap: $space-3;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: $mobile-pad;
+    margin-inline: (-$mobile-pad);
+    padding-inline: $mobile-pad;
+    padding-bottom: $space-1;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    > * {
+      flex: 0 0 $item-width;
+      min-width: 0;
+      scroll-snap-align: start;
+    }
+  }
+}
+
+// Phones only: four stat cells in a single compact row
+@mixin mobile-stat-row {
+  @media (max-width: #{$bp-md - 1px}) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }

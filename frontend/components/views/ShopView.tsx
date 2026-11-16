@@ -4,8 +4,10 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { MENU_ITEMS, CATEGORIES, MenuItem } from '@/data/menu';
 import { ProductCard } from '@/components/product/ProductCard';
 import { useLanguage } from '@/context/LanguageContext';
-import { Search, ArrowUpDown, Check, X, ChevronDown } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { useCart } from '@/context/CartContext';
+import { MenuCartPanel } from '@/components/cart/MenuCartPanel';
+import { Search, ArrowUpDown, Check, X, ChevronDown, SearchX } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import kaData from '@/src/locales/ka.json';
 import enData from '@/src/locales/en.json';
 import styles from './ShopView.module.scss';
@@ -122,8 +124,11 @@ interface ShopViewProps {
   onNavigate?: (route: string) => void;
 }
 
-export const ShopView: React.FC<ShopViewProps> = ({ onOpenProductModal }) => {
+export const ShopView: React.FC<ShopViewProps> = ({ onOpenProductModal, onNavigate }) => {
   const { t, getCategoryName, language } = useLanguage();
+  const { orderType, setOrderType } = useCart();
+  const ka = language === 'ka';
+  const reduceMotion = useReducedMotion();
   const [activeCategory, setActiveCategory] = useState<string>(CATEGORIES[0]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'default' | 'price-asc' | 'price-desc'>('default');
@@ -233,7 +238,9 @@ export const ShopView: React.FC<ShopViewProps> = ({ onOpenProductModal }) => {
   // Scroll-spy using IntersectionObserver for sticky category highlighting
   useEffect(() => {
     const getTopOffset = () => {
-      const headerHeight = window.innerWidth >= 768 ? 72 : 56;
+      const headerHeight =
+        parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) ||
+        (window.innerWidth >= 768 ? 80 : 62);
       const toolbarHeight =
         toolbarRef.current?.offsetHeight || (window.innerWidth >= 1024 ? 64 : 118);
       return headerHeight + toolbarHeight;
@@ -344,7 +351,9 @@ export const ShopView: React.FC<ShopViewProps> = ({ onOpenProductModal }) => {
     const sectionId = `section-${category.toLowerCase().replace(/\s+/g, '-')}`;
     const el = document.getElementById(sectionId);
     if (el) {
-      const headerHeight = window.innerWidth >= 768 ? 72 : 56;
+      const headerHeight =
+        parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) ||
+        (window.innerWidth >= 768 ? 80 : 62);
       const toolbarHeight =
         toolbarRef.current?.offsetHeight || (window.innerWidth >= 1024 ? 64 : 118);
       const totalOffset = headerHeight + toolbarHeight + 12;
@@ -377,6 +386,44 @@ export const ShopView: React.FC<ShopViewProps> = ({ onOpenProductModal }) => {
 
   return (
     <div className={styles.shopWrapper}>
+      {/* Page header */}
+      <header className={styles.hero}>
+        <div className={styles.heroText}>
+          <span className={styles.kicker}>
+            {ka ? `${MENU_ITEMS.length} პოზიცია · ფასები ლარში` : `${MENU_ITEMS.length} items · Prices in GEL`}
+          </span>
+          <h1 className={styles.heroTitle}>
+            {ka ? 'მენიუ' : 'The menu'}
+            <span className={styles.heroDot}>.</span>
+          </h1>
+        </div>
+        <div className={styles.heroSide}>
+          <div role="radiogroup" aria-label={ka ? 'შეკვეთის ტიპი' : 'Order type'} className={styles.modeToggle}>
+            {(['pickup', 'delivery'] as const).map((mode) => (
+              <button
+                key={mode}
+                type="button"
+                role="radio"
+                aria-checked={orderType === mode}
+                onClick={() => setOrderType(mode)}
+                className={`${styles.modeBtn} ${orderType === mode ? styles.modeBtnActive : ''}`}
+              >
+                {mode === 'pickup' ? (ka ? 'გატანა' : 'Pickup') : ka ? 'მიწოდება' : 'Delivery'}
+              </button>
+            ))}
+          </div>
+          <span className={styles.heroNote}>
+            {orderType === 'pickup'
+              ? ka
+                ? 'მზადაა ~20 წუთში'
+                : 'Ready in ~20 min'
+              : ka
+                ? '25–40 წთ · უფასო 50 ₾-დან'
+                : '25–40 min · free over 50 ₾'}
+          </span>
+        </div>
+      </header>
+
       {/* Sticky Combined Toolbar: Categories, Search, and Sort directly below header */}
       <div ref={toolbarRef} className={styles.stickyToolbar}>
         <div className={styles.toolbarContainer}>
@@ -403,6 +450,16 @@ export const ShopView: React.FC<ShopViewProps> = ({ onOpenProductModal }) => {
                     onClick={() => scrollToCategory(cat)}
                     className={`${styles.categoryChip} ${isActive ? styles.chipActive : ''}`}
                   >
+                    {isActive && (
+                      <motion.span
+                        layoutId="menu-chip-pill"
+                        className={styles.chipPill}
+                        transition={
+                          reduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 420, damping: 36 }
+                        }
+                        aria-hidden="true"
+                      />
+                    )}
                     <span className={styles.chipText}>{getCategoryName(cat)}</span>
                     <span className={styles.chipCount}>{categoryCounts[cat] || 0}</span>
                   </button>
@@ -523,10 +580,57 @@ export const ShopView: React.FC<ShopViewProps> = ({ onOpenProductModal }) => {
       </div>
 
       {/* Main Scrolling Menu Content */}
+      <div className={styles.menuLayout}>
+        {/* Wide screens: category column (canvas Menu board) */}
+        <nav className={styles.sideNav} aria-label={ka ? 'კატეგორიები' : 'Categories'}>
+          <div className={styles.sideSticky}>
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => scrollToCategory(cat)}
+                className={`${styles.sideLink} ${activeCategory === cat ? styles.sideLinkActive : ''}`}
+                aria-current={activeCategory === cat ? 'true' : undefined}
+              >
+                <span className={styles.sideLabel}>{getCategoryName(cat)}</span>
+                <span className={styles.sideCount}>{String(categoryCounts[cat] || 0).padStart(2, '0')}</span>
+              </button>
+            ))}
+            <label className={styles.sideSearch}>
+              <span className={styles.sideSearchLabel}>{ka ? 'ძიება' : 'Search'}</span>
+              <input
+                type="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={t('shop.searchPlaceholder')}
+                className={styles.sideSearchInput}
+              />
+            </label>
+            <label className={styles.sideSearch}>
+              <span className={styles.sideSearchLabel}>{t('shop.sortLabel')}</span>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                className={styles.sideSearchInput}
+              >
+                {sortOptions.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {t(o.labelKey)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        </nav>
+
       <main className={styles.mainContent}>
         {totalResults === 0 ? (
           <div className={styles.emptyState}>
+            <span className={styles.emptyIcon}>
+              <SearchX size={24} aria-hidden="true" />
+            </span>
             <p className={styles.emptyStateTitle}>{t('shop.noResultsTitle')}</p>
+            <p className={styles.emptyStateDesc}>{t('shop.noResultsDesc')}</p>
             <button
               type="button"
               onClick={handleClearFilters}
@@ -536,7 +640,7 @@ export const ShopView: React.FC<ShopViewProps> = ({ onOpenProductModal }) => {
             </button>
           </div>
         ) : (
-          CATEGORIES.map((category) => {
+          CATEGORIES.map((category, catIdx) => {
             const items = filteredAndSortedItemsByCategory[category];
             if (!items || items.length === 0) return null;
 
@@ -551,8 +655,15 @@ export const ShopView: React.FC<ShopViewProps> = ({ onOpenProductModal }) => {
                 data-category={category}
                 className={styles.menuSection}
               >
-                {/* Category Title */}
-                <h2 className={styles.categoryTitle}>{getCategoryName(category)}</h2>
+                <div className={styles.categoryHeader}>
+                  <span className={styles.categoryIndex}>
+                    {String(catIdx + 1).padStart(2, '0')}
+                  </span>
+                  <h2 className={styles.categoryTitle}>{getCategoryName(category)}</h2>
+                  <span className={styles.categoryCount}>
+                    {items.length} {ka ? 'კერძი' : items.length === 1 ? 'item' : 'items'}
+                  </span>
+                </div>
 
                 {/* Unified Item Grid for ALL categories (subgroups such as Coffee follow under their own subheading) */}
                 {mainItems.length > 0 && (
@@ -586,6 +697,13 @@ export const ShopView: React.FC<ShopViewProps> = ({ onOpenProductModal }) => {
           })
         )}
       </main>
+
+        <div className={styles.cartCol}>
+          <div className={styles.sideSticky}>
+            <MenuCartPanel onCheckout={() => onNavigate?.('checkout')} />
+          </div>
+        </div>
+      </div>
 
       {/* Mobile Sort Bottom Sheet (< 640px) */}
       <AnimatePresence>

@@ -1,16 +1,16 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'motion/react';
-import { MENU_ITEMS, MenuItem } from '@/data/menu';
-import { PRESS_QUOTES, KITCHEN_STANDARDS } from '@/data/testimonials';
-import { BUSINESS_CONTENT } from '@/data/businessContent';
-import { FoodImage } from '@/components/ui/FoodImage';
-import { useCart } from '@/context/CartContext';
+import React, { useEffect, useState } from 'react';
+import { motion, useReducedMotion } from 'motion/react';
+import { MENU_ITEMS, MenuItem, MenuCategory, getMenuItemById } from '@/data/menu';
+import { PRESS_QUOTES } from '@/data/testimonials';
+import { LOCATIONS, locationStatus } from '@/data/locations';
 import { useLanguage } from '@/context/LanguageContext';
-import { cleanPlaceholder } from '@/lib/utils';
-import { formatPrice } from '@/data/settings';
+import { useCart } from '@/context/CartContext';
+import { useActiveOrders, useLiveTimestamp, calculateOrderProgress } from '@/services/orders';
+import { cleanPlaceholder, cn } from '@/lib/utils';
 import { ActiveOrderCard } from '@/components/home/ActiveOrderCard';
+import { ArrowIcon } from '@/components/layout/Header';
 import styles from './HomeView.module.scss';
 
 interface HomeViewProps {
@@ -18,285 +18,468 @@ interface HomeViewProps {
   onOpenProductModal: (item: MenuItem) => void;
 }
 
-export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenProductModal }) => {
-  const { addItem } = useCart();
-  const { t, getItemTranslation, getCategoryName, language } = useLanguage();
+const COUNT_EN = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'];
+const COUNT_KA = ['', 'ერთი', 'ორი', 'სამი', 'ოთხი', 'ხუთი', 'ექვსი', 'შვიდი', 'რვა'];
 
-  const signatureItem = MENU_ITEMS.find((i) => i.id === 'bun-patty-smash') || MENU_ITEMS[0];
-  const secondaryItems = MENU_ITEMS.filter(
-    (i) => i.id === 'golden-double-classic' || i.id === 'parmesan-truffle-fries' || i.id === 'roasted-vanilla-bean-shake'
+const CATEGORIES: MenuCategory[] = ['Burgers', 'Side Dishes', 'Sauces', 'Desserts', 'Drinks'];
+
+const Star = () => (
+  <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true" className={styles.marqueeStar}>
+    <path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2L12 16.6 5.7 21l2.3-7.2-6-4.6h7.6z" fill="currentColor" />
+  </svg>
+);
+
+export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenProductModal }) => {
+  const { getCategoryName, getItemTranslation, language, t } = useLanguage();
+  const { orderType, setOrderType, addItem } = useCart();
+  const activeOrders = useActiveOrders();
+  const now = useLiveTimestamp();
+  const ka = language === 'ka';
+  const reduceMotion = useReducedMotion();
+
+  // Opening status depends on the clock: client-only to avoid hydration mismatches.
+  const [statuses, setStatuses] = useState<Record<string, { open: boolean; label: string }> | null>(null);
+  useEffect(() => {
+    const update = () => setStatuses(Object.fromEntries(LOCATIONS.map((l) => [l.id, locationStatus(l, ka)])));
+    update();
+    const id = window.setInterval(update, 60_000);
+    return () => window.clearInterval(id);
+  }, [ka]);
+
+  const fadeUp = (delay = 0) =>
+    reduceMotion
+      ? {}
+      : {
+          initial: { opacity: 0, y: 18 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] as const },
+        };
+
+  const go = (route: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    onNavigate(route);
+  };
+
+  const marquee = ka
+    ? ['სმაშ', 'სტეკი', 'სოუსი', 'მზადაა 20 წუთში', 'ვერა', 'ვაკე', 'სოლოლაკი', 'ნუცუბიძე']
+    : ['Smash', 'Stack', 'Sauce', 'Pickup in 20 min', 'Vera', 'Vake', 'Sololaki', 'Nutsubidze'];
+
+  const standards = [
+    {
+      title: ka ? 'ხორცი' : 'Beef',
+      desc: ka
+        ? '28 დღით დაძველებული ანგუსის ფარფლი, მკერდი და ნეკნი — იფქვება დღეში ორჯერ. არასოდეს გაყინული.'
+        : '28-day dry-aged chuck, brisket and short rib, ground fresh twice a day. Never frozen.',
+      k: '80 / 20',
+    },
+    {
+      title: ka ? 'სიცხე' : 'Heat',
+      desc: ka
+        ? '260°C ნახშირბადოვანი ფოლადის პლანჩა. ერთი მძლავრი დაჭყლეტა პირველ 15 წამში ქმნის ქერქს.'
+        : 'A 260°C carbon-steel plancha. One hard smash in the first fifteen seconds builds the crust.',
+      k: '260°C',
+    },
+    {
+      title: ka ? 'პური' : 'Bread',
+      desc: ka
+        ? 'კარტოფილისა და რძის ბრიოში, 18 საათის ცივი ფერმენტაციით, შემწვარი გადამდნარ კარაქში.'
+        : 'Potato-milk brioche, cold-fermented for eighteen hours and griddled in clarified butter.',
+      k: ka ? '18 სთ' : '18 h',
+    },
+    {
+      title: ka ? 'სოუსი' : 'Sauce',
+      desc: ka
+        ? 'ბეკონის ჯემი, საფერავის ხახვი და სახლის სოუსი — მზადდება ადგილზე, ნახევარფაბრიკატების გარეშე.'
+        : 'Bacon jam, Saperavi onions and house sauce — simmered from scratch, no pre-mixes.',
+      k: ka ? 'ადგილზე' : 'In-house',
+    },
+  ];
+
+  const quote = PRESS_QUOTES[2] ?? PRESS_QUOTES[0];
+
+  // ---------- Phone app home (canvas App-Home) ----------
+  const liveOrder = activeOrders.find((o) => {
+    const p = calculateOrderProgress(o, now || o.createdAt);
+    return !p.isDeliveredOrPickedUp && !p.isCancelled;
+  });
+  const liveProgress = liveOrder ? calculateOrderProgress(liveOrder, now || liveOrder.createdAt) : null;
+  const popular = ['bun-patty-smash', 'golden-double-classic', 'sweet-heat-jalapeno', 'parmesan-truffle-fries']
+    .map((id) => getMenuItemById(id))
+    .filter((m): m is MenuItem => Boolean(m));
+  const quickAdd = (m: MenuItem) =>
+    m.requiredChoice && !m.requiredChoice.defaultOptionId
+      ? onOpenProductModal(m)
+      : addItem(m, 1, {
+          selectedChoiceId: m.requiredChoice?.defaultOptionId,
+          removedIngredientIds: [],
+          extraQuantities: {},
+          notes: '',
+        });
+  const classic = getMenuItemById('golden-double-classic');
+
+  const appHome = (
+    <div className={styles.appHome}>
+      <div role="radiogroup" aria-label={ka ? 'შეკვეთის ტიპი' : 'Order type'} className={styles.appModes}>
+        {(
+          [
+            ['pickup', ka ? 'გატანა' : 'Pickup', ka ? '~20 წთ' : '~20 min'],
+            ['delivery', ka ? 'მიწოდება' : 'Delivery', ka ? '25–40 წთ' : '25–40 min'],
+          ] as const
+        ).map(([id, label, eta]) => (
+          <button
+            key={id}
+            type="button"
+            role="radio"
+            aria-checked={orderType === id}
+            onClick={() => setOrderType(id)}
+            className={cn(styles.appMode, orderType === id && styles.appModeOn)}
+          >
+            <span className={styles.appModeLabel}>{label}</span>
+            <span className={styles.appModeEta}>{eta}</span>
+          </button>
+        ))}
+      </div>
+
+      {liveOrder && liveProgress && (
+        <a href={`#/track/${liveOrder.orderNumber}`} onClick={go(`track/${liveOrder.orderNumber}`)} className={styles.appLive}>
+          <span className={styles.appLiveTop}>
+            <span>
+              {ka ? 'შეკვეთა' : 'Order'} {liveOrder.orderNumber}
+            </span>
+            <span className={styles.appLiveTag}>Live</span>
+          </span>
+          <span className={styles.appLiveMid}>
+            <span className={styles.appLiveStatus}>{t(liveProgress.statusLabelKey)}</span>
+            {liveProgress.remainingMinutes > 0 && (
+              <span className={styles.appLiveEta}>
+                {liveProgress.remainingMinutes} {ka ? 'წთ' : 'min'}
+              </span>
+            )}
+          </span>
+          <span className={styles.appLiveBars}>
+            {liveProgress.timelineSteps.slice(0, 4).map((st) => (
+              <span
+                key={st.status}
+                className={cn(styles.appLiveBar, st.isCompleted && styles.appLiveBarDone, st.isCurrent && styles.appLiveBarNow)}
+              />
+            ))}
+          </span>
+        </a>
+      )}
+
+      {classic && (
+        <button type="button" onClick={() => onOpenProductModal(classic)} className={styles.appPromo}>
+          <span className={styles.appPromoMedia}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/images/hero-burger-table.jpg" alt="" />
+            <span className={styles.appSticker} aria-hidden="true">
+              {ka ? '28 დღით დაძველებული' : (
+                <>
+                  28-day
+                  <br />
+                  dry-aged
+                </>
+              )}
+            </span>
+          </span>
+          <span className={styles.appPromoBody}>
+            <span className={styles.appPromoText}>
+              <span className={styles.appPromoTitle}>
+                {ka ? 'თხლად დაჭყლეტილი' : 'Smashed thin'}
+                <span className={styles.dot}>.</span>
+              </span>
+              <span className={styles.appPromoSub}>
+                {ka ? 'სცადე' : 'Try the'} {getItemTranslation(classic.id).name || classic.name} — {classic.price.toFixed(2)} ₾
+              </span>
+            </span>
+            <span className={styles.appPromoArrow}>
+              <ArrowIcon size={20} />
+            </span>
+          </span>
+        </button>
+      )}
+
+      <div className={styles.appChips}>
+        {CATEGORIES.map((c) => (
+          <a key={c} href="#/shop" onClick={go('shop')} className={styles.appChip}>
+            {getCategoryName(c)}
+          </a>
+        ))}
+      </div>
+
+      <div className={styles.appRowHead}>
+        <h2 className={styles.appH2}>{ka ? 'პოპულარული' : 'Popular now'}</h2>
+        <a href="#/shop" onClick={go('shop')} className={styles.appSeeAll}>
+          {ka ? 'ყველა' : 'See all'}
+        </a>
+      </div>
+      <div className={styles.appPopular}>
+        {popular.map((m) => {
+          const name = getItemTranslation(m.id).name || m.name;
+          return (
+            <div key={m.id} className={styles.appTile}>
+              <button type="button" onClick={() => onOpenProductModal(m)} className={styles.appTileImg} aria-label={name}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={m.imageSlot} alt="" loading="lazy" />
+              </button>
+              <div className={styles.appTileBody}>
+                <button type="button" onClick={() => onOpenProductModal(m)} className={styles.appTileText}>
+                  <span className={styles.appTileName}>{name}</span>
+                  <span className={styles.appTilePrice}>{m.price.toFixed(2)} ₾</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => quickAdd(m)}
+                  className={styles.appPlus}
+                  aria-label={`${ka ? 'დამატება' : 'Add'} ${name}`}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className={styles.appKitchens}>
+        <h2 className={styles.appH2}>{ka ? 'ფილიალები ახლოს' : 'Kitchens near you'}</h2>
+        {LOCATIONS.map((loc) => {
+          const st = statuses?.[loc.id];
+          return (
+            <a key={loc.id} href={`#/locations/${loc.id}`} onClick={go(`locations/${loc.id}`)} className={styles.appKitchen}>
+              <span className={styles.appKitchenText}>
+                <span className={styles.appKitchenName}>{loc.shortName.toUpperCase()}</span>
+                <span className={styles.appKitchenAddr}>{cleanPlaceholder(loc.address)}</span>
+              </span>
+              <span className={cn(styles.status, st && (st.open ? styles.statusOpen : styles.statusClosed))}>
+                <span className={styles.statusDot} aria-hidden="true" />
+                {st ? (st.open ? (ka ? 'ღიაა' : 'Open') : ka ? 'დაკეტილია' : 'Closed') : ''}
+              </span>
+            </a>
+          );
+        })}
+      </div>
+    </div>
   );
 
-  const signatureTrans = getItemTranslation(signatureItem.id);
-  const flagshipAddress = cleanPlaceholder(BUSINESS_CONTENT.locations[0].address);
 
   return (
     <div className={styles.home}>
-      {/* 1. Hero: Oversized Headline & Full-Bleed Real Photography */}
-      <section className={styles.heroSection}>
-        <div className={styles.heroGrid}>
-          {/* Oversized Headline */}
-          <div className={styles.heroLeft}>
-            <span className={styles.kicker}>
-              {BUSINESS_CONTENT.brandName} · {flagshipAddress}, {BUSINESS_CONTENT.locations[0].neighborhood}
-            </span>
+      {appHome}
 
-            <motion.h1
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className={styles.headline}
-            >
-              {t('home.headlineMain')} <br />
-              <span className={styles.headlineItalic}>{t('home.headlineItalic')}</span> <br />
-              {t('home.headlineSub')}
-            </motion.h1>
-
-            {/* Active order card with live countdown timer */}
-            <ActiveOrderCard onNavigate={onNavigate} />
-          </div>
-
-          {/* Subtext & Quick Action */}
-          <div className={styles.heroRight}>
-            <p className={styles.heroSubtext}>
-              {t('home.heroSubtext')}
-            </p>
-
-            <div className={styles.heroActions}>
-              <button
-                type="button"
-                onClick={() => onNavigate('shop')}
-                className={styles.primaryCta}
-              >
-                {t('home.heroCta')}
-              </button>
-              <button
-                type="button"
-                onClick={() => onNavigate('shop')}
-                className={styles.secondaryCta}
-              >
-                {t('home.exploreAllButton', { count: MENU_ITEMS.length })}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Real Food Photography Hero Asset */}
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className={styles.heroImageSlot}
-        >
-          <FoodImage
-            src="/images/hero-burger-table.jpg"
-            alt="Double smash cheeseburger with crispy caramelized edges on rustic wooden table"
-          />
+      <div className={styles.desktopHome}>
+      {/* ---------- Hero ---------- */}
+      <section className={styles.hero}>
+        <motion.div {...fadeUp(0)} className={styles.heroMeta}>
+          <span>{ka ? 'სმაშ-ბურგერები — თბილისი, საქართველო' : 'Smash burgers — Tbilisi, Georgia'}</span>
+          <span>{LOCATIONS.map((l) => l.shortName).join(' · ')}</span>
+          <span>{ka ? 'ღიაა ყოველდღე 11:30-დან' : 'Open daily from 11:30'}</span>
         </motion.div>
-      </section>
 
-      {/* 2. Opinionated Company Story */}
-      <section className={styles.manifestoSection}>
-        <div className={styles.manifestoGrid}>
-          <div className={styles.manifestoSidebar}>
-            <span className={styles.manifestoTag}>[ 01 / {language === 'ka' ? 'სამზარეულოს ფილოსოფია' : 'Kitchen Philosophy'} ]</span>
-            <span>{language === 'ka' ? 'პლანშის წესდება' : 'The Plancha Rulebook'}</span>
-          </div>
+        <motion.h1 {...fadeUp(0.05)} className={styles.headline}>
+          {ka ? 'თხლად დაჭყლეტილი' : 'Smashed thin'}
+          <span className={styles.dot}>.</span>
+          <br />
+          {ka ? 'ხმამაღლა მორთმეული' : 'Served loud'}
+          <span className={styles.dot}>.</span>
+        </motion.h1>
 
-          <div className={styles.manifestoBody}>
-            <blockquote className={styles.pullQuote}>
-              {language === 'ka'
-                ? '„ბურგერი არ არის რვა სახეობის ტრიუფელის მაიონეზის ტილო. ის არის ზუსტი არგუმენტი საქონლის ხორცზე, ცხიმზე, მარილსა და მცხუნვარე სიმხურვალეზე.“'
-                : '“A burger is not a canvas for eight kinds of melted truffle aioli. It is a precise argument about beef, fat, salt, and searing heat.”'}
-            </blockquote>
-
-            <div className={styles.essayColumns}>
-              <div className={styles.essayCol}>
-                <p>
-                  {language === 'ka'
-                    ? 'სწრაფი კვების უმეტესობა იყენებს გაყინულ კატლეტებს და ტკბილი სოუსებით ფარავს ხორცის ბუნებრივი გემოს ნაკლებობას. ჩვენ სრულიად განსხვავებულად ვუდგებით საქმეს.'
-                    : 'Most burger bars take pre-formed frozen patties, cook them on grooved grills, and bury them in sugary sauce to compensate for a lack of beef character. We do the opposite.'}
-                </p>
-                <p>
-                  {language === 'ka'
-                    ? 'ვიწყებთ კახეთისა და ქვემო ქართლის საოჯახო ფერმების ნედლი ხორცით. ანგუსის ნაჭრები იფქვება დღეში ორჯერ და ცივად ინახება 260°C პლანშაზე დადებამდე.'
-                    : 'We start with whole muscle cuts from family farms in Kakheti and Kvemo Kartli. Ground twice a day and kept ice-cold until it hits the carbon steel griddle.'}
-                </p>
-              </div>
-              <div className={styles.essayCol}>
-                <p>
-                  {language === 'ka'
-                    ? 'შეწვა გრძელდება 90 წამზე ნაკლებს. მძიმე ფოლადის წნეხი წამებში წარმოქმნის ხრაშუნა მაიარის ქერქსა და მაქმანისებრ ნაპირებს.'
-                    : 'The sear takes less than ninety seconds. Heavy carbon steel at 260°C forces the meat into direct contact before internal fat liquefies, creating those paper-thin, crispy lacy skirts.'}
-                </p>
-                <p>
-                  {language === 'ka'
-                    ? 'ფუნთუშა ცხვება 18-საათიანი ცივი ფერმენტაციითა და ევროპული კარაქით, რათა ხორცის წვენი იდეალურად შეინარჩუნოს. მარტივი ინგრედიენტები ყოველგვარი კომპრომისის გარეშე.'
-                    : 'The bun is our own potato-milk brioche, griddled lightly in clarified butter so it cradles the juices without dissolving into sponge. Simple ingredients, executed without shortcuts.'}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Showcase Grid */}
-      <section className={styles.menuSection}>
-        <div className={styles.menuSectionHeader}>
-          <div>
-            <span className={styles.kicker}>{t('home.standardsKicker')}</span>
-            <h2 className={styles.sectionTitle}>{t('home.standardsTitle')}</h2>
-          </div>
-          <button
-            type="button"
-            onClick={() => onNavigate('shop')}
-            className={styles.menuLink}
-          >
-            {t('home.exploreAllButton', { count: MENU_ITEMS.length })}
-          </button>
-        </div>
-
-        <div className={styles.showcaseGrid}>
-          {/* Spotlight Item */}
-          <div
-            onClick={() => onOpenProductModal(signatureItem)}
-            className={styles.spotlightCard}
-          >
-            <FoodImage
-              src={signatureItem.imageSlot}
-              alt={signatureTrans.name || signatureItem.name}
+        <div className={styles.heroGrid}>
+          <motion.div {...fadeUp(0.1)} className={styles.heroMedia}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/hero-burger-table.jpg"
+              alt={ka ? 'ორმაგი სმაშ-ჩიზბურგერი კარტოფილით ხის მაგიდაზე' : 'Double smash cheeseburger with fries on a wooden table'}
+              className={styles.heroImage}
+              fetchPriority="high"
             />
-            <div>
-              <div className={styles.spotlightHeader}>
-                <h3 className={styles.spotlightTitle}>{signatureTrans.name || signatureItem.name}</h3>
-                <span className={styles.spotlightPrice}>
-                  {formatPrice(signatureItem.price)}
-                </span>
-              </div>
-              <p className={styles.spotlightDescription}>
-                {signatureTrans.longDescription || signatureItem.longDescription}
+            <span className={styles.sticker} aria-hidden="true">
+              {ka ? (
+                <>
+                  28 დღით
+                  <br />
+                  დაძველებული
+                </>
+              ) : (
+                <>
+                  28-day
+                  <br />
+                  dry-aged
+                  <br />
+                  beef
+                </>
+              )}
+            </span>
+          </motion.div>
+
+          <motion.div {...fadeUp(0.15)} className={styles.heroSide}>
+            <div className={styles.heroCopy}>
+              <p className={styles.lead}>
+                {ka
+                  ? 'ორი კატლეტი დაძველებული ხორცისგან, თხლად დაჭყლეტილი 260°C პლანჩაზე, სანამ კიდეები მაქმანივით არ შეიბრაწება — შემდეგ ყოველ დილით გამომცხვარ ბრიოშში.'
+                  : 'Two patties of dry-aged chuck, smashed paper-thin on a 260°C plancha until the edges go lacy and dark — then stacked into potato-milk brioche we bake every morning.'}
               </p>
+              <div className={styles.heroActions}>
+                <button type="button" onClick={() => onNavigate('shop')} className={styles.btnRed}>
+                  {ka ? 'შეკვეთა გასატანად' : 'Order for pickup'}
+                  <ArrowIcon size={20} />
+                </button>
+                <button type="button" onClick={() => onNavigate('shop')} className={styles.btnOutline}>
+                  {ka ? 'მენიუს ნახვა' : 'See the menu'}
+                </button>
+              </div>
+              <ActiveOrderCard onNavigate={onNavigate} />
             </div>
-            <div className={styles.spotlightFooter}>
-              <span>{signatureTrans.description || signatureItem.description}</span>
-              <span style={{ color: '#E27344', fontWeight: 700 }}>{t('common.customizeIngredients')}</span>
-            </div>
-          </div>
 
-          {/* Secondary Stack */}
-          <div className={styles.sideStack}>
-            {secondaryItems.map((item) => {
-              const trans = getItemTranslation(item.id);
-              return (
-                <div
-                  key={item.id}
-                  onClick={() => onOpenProductModal(item)}
-                  className={styles.sideRow}
-                >
-                  <div className={styles.sideHeader}>
-                    <h4 className={styles.sideTitle}>{trans.name || item.name}</h4>
-                    <span className={styles.sidePrice}>
-                      {formatPrice(item.price)}
-                    </span>
-                  </div>
-                  <p className={styles.sideDescription}>{trans.description || item.description}</p>
-                  <div className={styles.sideFooter}>
-                    <span>{getCategoryName(item.category)}</span>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        addItem(item, 1);
-                      }}
-                      className={styles.quickAddBtn}
-                    >
-                      {t('common.addToCart')}
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+            <dl className={styles.facts}>
+              <div className={styles.fact}>
+                <dt>{ka ? 'გატანა' : 'Pickup'}</dt>
+                <dd>{ka ? '~20 წთ' : '~20 min'}</dd>
+              </div>
+              <div className={styles.fact}>
+                <dt>{ka ? 'კურიერი' : 'Courier'}</dt>
+                <dd>{ka ? '25–40 წთ' : '25–40 min'}</dd>
+              </div>
+              <div className={styles.fact}>
+                <dt>{ka ? 'ფილიალები' : 'Kitchens'}</dt>
+                <dd>{ka ? `${LOCATIONS.length} თბილისში` : `${LOCATIONS.length} in Tbilisi`}</dd>
+              </div>
+            </dl>
+          </motion.div>
         </div>
       </section>
 
-      {/* 4. Kitchen Standards Strip */}
-      <section className={styles.standardsSection}>
-        <div className={styles.standardsWrap}>
-          <span className={styles.kicker} style={{ marginBottom: '1.5rem' }}>
-            {t('home.standardsKicker')}
-          </span>
-          <div className={styles.standardsGrid}>
-            {KITCHEN_STANDARDS.map((std, idx) => (
-              <div key={idx} className={styles.standardCard}>
-                <span className={styles.standardIndex}>0{idx + 1}.</span>
-                <h4 className={styles.standardTitle}>{std.label}</h4>
-                <p className={styles.standardDetail}>{std.detail}</p>
-                <p className={styles.standardNote}>{std.note}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 5. Editorial Press Section */}
-      <section className={styles.pressSection}>
-        <div className={styles.pressGrid}>
-          {PRESS_QUOTES.map((press) => (
-            <div key={press.id} className={styles.pressCard}>
-              <blockquote className={styles.pressQuote}>
-                &ldquo;{press.quote}&rdquo;
-              </blockquote>
-              <div className={styles.pressMeta}>
-                <strong style={{ color: '#FFFFFF' }}>{press.publication}</strong>
-                <span>{press.date}</span>
-              </div>
-            </div>
+      {/* ---------- Marquee ---------- */}
+      <div className={styles.marquee} aria-hidden="true">
+        <div className={styles.marqueeTrack}>
+          {[...marquee, ...marquee].map((w, i) => (
+            <React.Fragment key={i}>
+              <span className={styles.marqueeWord}>{w}</span>
+              <Star />
+            </React.Fragment>
           ))}
         </div>
-      </section>
+      </div>
 
-      {/* 6. Practical Strip: Hours & Neighborhood Details */}
-      <section className={styles.practicalStrip}>
-        <div className={styles.practicalInner}>
-          <div className={styles.practicalGrid}>
-            <div className={styles.practicalAddressCol}>
-              <span className={styles.kicker}>{t('home.practicalStripKicker')}</span>
-              <h3 className={styles.practicalTitle}>
-                {BUSINESS_CONTENT.locations[0].name}
-              </h3>
-              <p style={{ fontSize: '0.825rem', color: '#8A9698', paddingTop: '4px' }}>
-                {flagshipAddress} · {cleanPlaceholder(BUSINESS_CONTENT.locations[0].cityStateZip)}
-              </p>
-            </div>
-
-            <div className={styles.practicalHoursCol}>
-              <span className={styles.kicker}>{t('home.serviceHoursKicker')}</span>
-              <div className={styles.hoursBlock}>
-                <p>{BUSINESS_CONTENT.locations[0].hoursDisplay}</p>
-                <p>{BUSINESS_CONTENT.locations[0].phone}</p>
-              </div>
-            </div>
-
-            <div className={styles.practicalActionsCol}>
-              <button
-                type="button"
-                onClick={() => onNavigate('shop')}
-                className={styles.practicalPrimaryBtn}
-              >
-                {t('home.placeOrderOnlineBtn')}
-              </button>
-              <button
-                type="button"
-                onClick={() => onNavigate('locations')}
-                className={styles.practicalSecondaryBtn}
-              >
-                {t('home.allLocationsBtn')}
-              </button>
-            </div>
+      {/* ---------- 01 Kitchen ---------- */}
+      <section className={cn(styles.section, styles.inkSection)}>
+        <div className={styles.sectionHead}>
+          <div className={styles.sectionTitleWrap}>
+            <span className={cn(styles.kicker, styles.kickerMustard)}>01 — {ka ? 'სამზარეულო' : 'The kitchen'}</span>
+            <h2 className={styles.sectionTitle}>
+              {ka ? 'შორტკატების გარეშე' : 'No shortcuts'}
+              <span className={styles.dot}>.</span>
+              <br />
+              {ka ? 'გამათბობლების გარეშე' : 'No heat lamps'}
+              <span className={styles.dot}>.</span>
+            </h2>
           </div>
+          <p className={cn(styles.asideText, styles.asideLarge)}>
+            {ka
+              ? 'ყველა ბურგერი შეკვეთისას იჭყლიტება. არაფერი ელოდება ნათურის ქვეშ, არაფერია წინასწარ ჩამოსხმული, სოუსები კი ჩვენს სამზარეულოში მზადდება.'
+              : 'Every burger is smashed to order. Nothing sits under a lamp, nothing is pre-formed, and the sauces are cooked in our own kitchen in Vera.'}
+          </p>
+        </div>
+
+        <div className={styles.kitchenGrid}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/menu/the-big-one.jpg"
+            alt={ka ? 'მაღალი ბურგერი დნობადი ჩედერით' : 'A tall stack of smashed patties and melted cheddar'}
+            className={styles.kitchenImage}
+            loading="lazy"
+          />
+          <ol className={styles.standards}>
+            {standards.map((s, i) => (
+              <li key={s.title} className={styles.standard}>
+                <span className={styles.standardNum}>0{i + 1}</span>
+                <div className={styles.standardBody}>
+                  <h3 className={styles.standardTitle}>{s.title}</h3>
+                  <p>{s.desc}</p>
+                </div>
+                <span className={styles.standardKey}>{s.k}</span>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
+
+      {/* ---------- 02 Locations ---------- */}
+      <section className={styles.section}>
+        <div className={styles.sectionHead}>
+          <div className={styles.sectionTitleWrap}>
+            <span className={styles.kicker}>02 — {ka ? 'ფილიალები' : 'Locations'}</span>
+            <h2 className={styles.sectionTitle}>
+              {ka ? `${COUNT_KA[LOCATIONS.length] ?? LOCATIONS.length} სამზარეულო` : `${COUNT_EN[LOCATIONS.length] ?? LOCATIONS.length} kitchens`}
+              <br />
+              {ka ? 'თბილისში' : 'across Tbilisi'}
+            </h2>
+          </div>
+          <a href="#/locations" onClick={go('locations')} className={styles.textLink}>
+            {ka ? 'რუკის გახსნა' : 'Open the map'}
+            <ArrowIcon size={20} />
+          </a>
+        </div>
+
+        <div className={styles.locationList}>
+          {LOCATIONS.map((loc) => {
+            const st = statuses?.[loc.id];
+            return (
+              <div key={loc.id} className={styles.locationRow}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={loc.image} alt="" className={styles.locationImage} loading="lazy" />
+                <div className={styles.locationName}>
+                  <h3>
+                    <a href={`#/locations/${loc.id}`} onClick={go(`locations/${loc.id}`)}>
+                      {loc.shortName}
+                    </a>
+                  </h3>
+                  {loc.isFlagship && <span className={styles.flagTag}>{ka ? 'ფლაგმანი' : 'Flagship'}</span>}
+                </div>
+                <div className={styles.locationAddr}>
+                  <p className={styles.addr}>
+                    {cleanPlaceholder(loc.address)}, {cleanPlaceholder(loc.cityStateZip).replace(/, Georgia$/, '')}
+                  </p>
+                  <p className={styles.note}>{loc.transit}</p>
+                </div>
+                <div className={styles.locationHours}>
+                  <span className={cn(styles.status, st && (st.open ? styles.statusOpen : styles.statusClosed))}>
+                    <span className={styles.statusDot} aria-hidden="true" />
+                    {st ? st.label : ' '}
+                  </span>
+                  <span>
+                    {ka ? 'ორშ–ხუთ' : 'Mon–Thu'} {loc.hoursWeekday}
+                  </span>
+                  <span>
+                    {ka ? 'პარ–კვი' : 'Fri–Sun'} {loc.hoursWeekend}
+                  </span>
+                </div>
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${loc.coordinates.lat},${loc.coordinates.lng}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.btnOutline}
+                >
+                  {ka ? 'მარშრუტი' : 'Directions'}
+                  <ArrowIcon size={20} />
+                </a>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ---------- Quote ---------- */}
+      {quote && (
+        <section className={styles.quoteSection}>
+          <span className={styles.kicker}>{ka ? 'რას ამბობენ' : 'What people say'}</span>
+          <blockquote className={styles.quote}>“{quote.quote}”</blockquote>
+          <span className={styles.quoteMeta}>
+            {quote.publication} · {quote.date}
+          </span>
+        </section>
+      )}
+      </div>
     </div>
   );
 };

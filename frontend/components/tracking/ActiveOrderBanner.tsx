@@ -52,7 +52,7 @@ export const ActiveOrderBanner: React.FC<ActiveOrderBannerProps> = ({
   const statusText = t(progress.statusLabelKey);
 
   return (
-    <aside className={styles.banner} aria-label="Active order status">
+    <aside className={`${styles.banner} ${currentRoute === 'home' ? styles.hideOnPhone : ''}`} aria-label="Active order status">
       <div className={styles.bannerInner}>
         <button
           type="button"

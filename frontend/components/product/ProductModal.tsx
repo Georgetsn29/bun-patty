@@ -31,6 +31,7 @@ const ProductModalContent: React.FC<{
     getExtraName,
     getChoiceOptionName,
     getChoiceGroupTitle,
+    getCategoryName,
     language,
   } = useLanguage();
 
@@ -178,7 +179,6 @@ const ProductModalContent: React.FC<{
       setIsSaved(true);
       setTimeout(() => {
         onClose();
-        setIsCartOpen(true);
       }, 250);
     }
   };
@@ -201,6 +201,15 @@ const ProductModalContent: React.FC<{
         {/* Swipe drag indicator bar for mobile */}
         <div className={styles.dragIndicator} aria-hidden="true" />
 
+        <button
+          type="button"
+          onClick={onClose}
+          className={styles.imageCloseButton}
+          aria-label={t('common.close') || 'Close'}
+        >
+          <CloseIcon size={22} aria-hidden="true" />
+        </button>
+
         {/* Scrollable Content Area */}
         <div ref={scrollRef} className={styles.scrollArea}>
           {/* 1. Full-Width Image at the top with 44px round close button */}
@@ -209,23 +218,34 @@ const ProductModalContent: React.FC<{
               <span className={styles.modalBadge}>{displayBadge}</span>
             )}
 
-            {/* 44px round close button over top-right of image on dark translucent background */}
-            <button
-              type="button"
-              onClick={onClose}
-              className={styles.imageCloseButton}
-              aria-label={t('common.close') || 'Close'}
-            >
-              <CloseIcon size={22} aria-hidden="true" />
-            </button>
-
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={item.imageSlot}
-              alt={displayName}
-              className={styles.modalImage}
-              style={item.imagePosition ? { objectPosition: item.imagePosition } : undefined}
-            />
+            <span className={styles.imageCategory}>{getCategoryName(item.category)}</span>
+            <div className={styles.imageFrame}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={item.imageSlot}
+                alt={displayName}
+                className={styles.modalImage}
+                style={item.imagePosition ? { objectPosition: item.imagePosition } : undefined}
+              />
+            </div>
+            <dl className={styles.imageFacts}>
+              {item.prepTime && (
+                <div>
+                  <dt>{t('common.prepTime')}</dt>
+                  <dd>{item.prepTime}</dd>
+                </div>
+              )}
+              {(displayBeefWeight || displayVolume) && (
+                <div>
+                  <dt>{displayBeefWeight ? t('common.beefWeight') : t('common.volume')}</dt>
+                  <dd>{(displayBeefWeight || displayVolume || '').replace(/\s*\[Placeholder\]/gi, '').replace(/\s*\(.*\)$/, '')}</dd>
+                </div>
+              )}
+              <div>
+                <dt>{language === 'ka' ? 'კალორია' : 'Calories'}</dt>
+                <dd>{item.nutrition.calories} kcal</dd>
+              </div>
+            </dl>
           </div>
 
           {/* 2. Item Name and Price */}
@@ -290,19 +310,19 @@ const ProductModalContent: React.FC<{
             <div className={styles.metaBox}>
               {displayBeefWeight && (
                 <div className={styles.metaRow}>
-                  <strong style={{ color: '#FFFFFF' }}>{t('common.beefWeight')}:</strong>{' '}
+                  <strong style={{ color: '#17120F' }}>{t('common.beefWeight')}:</strong>{' '}
                   <span>{displayBeefWeight}</span>
                 </div>
               )}
               {displayVolume && (
                 <div className={styles.metaRow}>
-                  <strong style={{ color: '#FFFFFF' }}>{t('common.volume')}:</strong>{' '}
+                  <strong style={{ color: '#17120F' }}>{t('common.volume')}:</strong>{' '}
                   <span>{displayVolume}</span>
                 </div>
               )}
               {displayAllergens && (
                 <div className={styles.metaRow}>
-                  <strong style={{ color: '#FFFFFF' }}>{t('common.allergens')}:</strong>{' '}
+                  <strong style={{ color: '#17120F' }}>{t('common.allergens')}:</strong>{' '}
                   <span>{displayAllergens}</span>
                 </div>
               )}
@@ -513,7 +533,7 @@ const ProductModalContent: React.FC<{
               onChange={(e) => setSpecialInstructions(e.target.value)}
               className={styles.instructionsTextarea}
             />
-            <span style={{ fontSize: '0.72rem', color: '#616F71', marginTop: '4px', display: 'block' }}>
+            <span style={{ fontSize: '0.72rem', color: '#8A7D72', marginTop: '4px', display: 'block' }}>
               {t('modal.kitchenNoteDisclaimer')}
             </span>
           </div>

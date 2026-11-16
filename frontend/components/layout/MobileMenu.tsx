@@ -1,12 +1,24 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useReducedMotion, type Variants } from 'motion/react';
-import { X as CloseIcon, ChevronRight, Clock, Phone, MapPin, Instagram } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
+import {
+  X as CloseIcon,
+  ArrowUpRight,
+  ChevronRight,
+  Clock,
+  Info,
+  Instagram,
+  MapPin,
+  MessageSquare,
+  Phone,
+  ShoppingBag,
+} from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useActiveOrders, useLiveTimestamp, calculateOrderProgress } from '@/services/orders';
 import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
-import { BUSINESS_CONTENT } from '@/data/businessContent';
+import { LOCATIONS, isLocationOpen } from '@/data/locations';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { cleanPlaceholder } from '@/lib/utils';
 import styles from './MobileMenu.module.scss';
 
@@ -17,14 +29,11 @@ interface MobileMenuProps {
   onClose: () => void;
 }
 
-export const MobileMenu: React.FC<MobileMenuProps> = ({
-  isOpen,
-  currentRoute,
-  onNavigate,
-  onClose,
-}) => {
+export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, currentRoute, onNavigate, onClose }) => {
   const { language, t } = useLanguage();
-  const shouldReduceMotion = useReducedMotion();
+  const ka = language === 'ka';
+  const reduceMotion = useReducedMotion();
+  const isMobile = useIsMobile();
   const activeOrders = useActiveOrders();
   const now = useLiveTimestamp();
   const hasActiveOrders = activeOrders.length > 0;
@@ -33,36 +42,40 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
     return !progress.isReadyOrFinished && !order.cancelledAt;
   });
 
-  const drawerRef = useRef<HTMLDivElement>(null);
+  const drawerRef = useRef<HTMLElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const touchStartY = useRef<number | null>(null);
 
-  // Lock background scroll and trap focus
+  // Live open/closed status, computed client-side while the menu is open
+  const [openMap, setOpenMap] = useState<Record<string, boolean>>({});
   useEffect(() => {
     if (!isOpen) return;
+    const frame = requestAnimationFrame(() =>
+      setOpenMap(Object.fromEntries(LOCATIONS.map((l) => [l.id, isLocationOpen(l)])))
+    );
+    return () => cancelAnimationFrame(frame);
+  }, [isOpen]);
 
+  // Scroll lock, focus, Escape, focus trap
+  useEffect(() => {
+    if (!isOpen) return;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-
-    // Focus close button on open
-    const timer = setTimeout(() => {
-      closeButtonRef.current?.focus();
-    }, 50);
+    const timer = setTimeout(() => closeButtonRef.current?.focus(), 50);
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose();
         return;
       }
-
       if (e.key === 'Tab' && drawerRef.current) {
         const focusables = drawerRef.current.querySelectorAll<HTMLElement>(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
         );
         if (!focusables.length) return;
-
         const first = focusables[0];
         const last = focusables[focusables.length - 1];
-
         if (e.shiftKey && document.activeElement === first) {
           e.preventDefault();
           last.focus();
@@ -72,212 +85,203 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
         }
       }
     };
-
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
       clearTimeout(timer);
       document.body.style.overflow = originalOverflow;
       window.removeEventListener('keydown', handleKeyDown);
+      previouslyFocused?.focus?.({ preventScroll: true });
     };
   }, [isOpen, onClose]);
-
-  // Main Links: Home, Menu, About, Locations, Contact + (Track Order only when active order exists)
-  const navItems = [
-    { id: 'home', label: t('nav.home') || (language === 'ka' ? 'მთავარი' : 'Home') },
-    { id: 'shop', label: t('nav.menu') || (language === 'ka' ? 'მენიუ' : 'Menu') },
-    { id: 'about', label: t('nav.about') || (language === 'ka' ? 'ჩვენ შესახებ' : 'About') },
-    { id: 'locations', label: t('nav.locations') || (language === 'ka' ? 'ფილიალები' : 'Locations') },
-    { id: 'contact', label: t('nav.contact') || (language === 'ka' ? 'კონტაქტი' : 'Contact') },
-  ];
-
-  if (hasActiveOrders) {
-    navItems.push({
-      id: 'track',
-      label: t('nav.track') || (language === 'ka' ? 'შეკვეთის თვალთვალი' : 'Track Order'),
-    });
-  }
 
   const primaryOrderNum = activeOrders[0]?.orderNumber;
   const trackRoute = primaryOrderNum ? `track/${primaryOrderNum}` : 'track';
 
-  const handleLinkClick = (route: string) => {
-    if (route === 'track') {
-      onNavigate(trackRoute);
-    } else {
-      onNavigate(route);
-    }
+  const go = (route: string) => {
+    onNavigate(route === 'track' ? trackRoute : route);
     onClose();
   };
 
-  const flagship = BUSINESS_CONTENT.locations[0];
-  const cleanedAddress = cleanPlaceholder(flagship.address);
-  const cleanedCity = cleanPlaceholder(flagship.cityStateZip);
+  const isActive = (id: string) =>
+    currentRoute === id || currentRoute.startsWith(`${id}/`) || (id === 'track' && currentRoute.startsWith('track'));
 
-  // Animation variants
-  const backdropVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.25 } },
-    exit: { opacity: 0, transition: { duration: 0.2 } },
+  // Home, Menu and Locations live in the bottom tab bar; only list the rest here
+  const links = [
+    { id: 'about', label: t('nav.about'), Icon: Info },
+    { id: 'contact', label: t('nav.contact'), Icon: MessageSquare },
+  ];
+
+  const flagship = LOCATIONS[0];
+
+  // Swipe the sheet header down to close (phones)
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartY.current === null) return;
+    if (e.changedTouches[0].clientY - touchStartY.current > 70) onClose();
+    touchStartY.current = null;
   };
 
-  const drawerVariants: Variants = {
-    hidden: { x: shouldReduceMotion ? 0 : '100%', opacity: shouldReduceMotion ? 0 : 1 },
-    visible: {
-      x: 0,
-      opacity: 1,
-      transition: { duration: shouldReduceMotion ? 0.15 : 0.25, ease: [0.16, 1, 0.3, 1] as const },
-    },
-    exit: {
-      x: shouldReduceMotion ? 0 : '100%',
-      opacity: shouldReduceMotion ? 0 : 1,
-      transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] as const },
-    },
-  };
+  const panelMotion = reduceMotion
+    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
+    : isMobile
+      ? {
+          initial: { y: '100%' },
+          animate: { y: 0 },
+          exit: { y: '100%' },
+          transition: { type: 'spring' as const, damping: 34, stiffness: 340 },
+        }
+      : {
+          initial: { x: '100%' },
+          animate: { x: 0 },
+          exit: { x: '100%' },
+          transition: { type: 'spring' as const, damping: 36, stiffness: 340 },
+        };
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className={styles.overlayRoot} role="dialog" aria-modal="true" aria-label="Mobile Navigation">
-          {/* Dimmed Blurred Backdrop */}
+        <div className={styles.overlayRoot}>
           <motion.div
             className={styles.backdrop}
             onClick={onClose}
-            variants={backdropVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
           />
 
-          {/* Sliding Drawer (86% width, max 360px) */}
           <motion.aside
             ref={drawerRef}
+            id="mobile-navigation-panel"
             className={styles.drawer}
-            variants={drawerVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
+            role="dialog"
+            aria-modal="true"
+            aria-label={ka ? 'მენიუ' : 'Menu'}
+            {...panelMotion}
           >
-            {/* Top Row: Logo on Left, 44px Close Icon on Right */}
-            <div className={styles.topRow}>
-              <button
-                type="button"
-                onClick={() => handleLinkClick('home')}
-                className={styles.logoBtn}
-                aria-label={`${t('common.brandName')} - ${t('nav.home')}`}
-              >
-                <span className={styles.logoText}>BUN & PATTY</span>
-              </button>
-
-              <button
-                ref={closeButtonRef}
-                type="button"
-                onClick={onClose}
-                className={styles.closeBtn}
-                aria-label={t('common.close') || 'Close menu'}
-              >
-                <CloseIcon size={20} aria-hidden="true" />
-              </button>
-            </div>
-
-            {/* Scrollable Content */}
-            <div className={styles.scrollContent}>
-              {/* Main Links (52px high row, thin divider, small chevron, 3px accent line on active) */}
-              <nav className={styles.navList} aria-label="Site pages">
-                {navItems.map((item, index) => {
-                  const isActive = currentRoute === item.id || (item.id === 'track' && currentRoute.startsWith('track'));
-                  return (
-                    <motion.button
-                      key={item.id}
-                      type="button"
-                      onClick={() => handleLinkClick(item.id)}
-                      className={`${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
-                      aria-current={isActive ? 'page' : undefined}
-                      initial={shouldReduceMotion ? false : { opacity: 0, x: 12 }}
-                      animate={shouldReduceMotion ? {} : { opacity: 1, x: 0 }}
-                      transition={{ delay: 0.05 + index * 0.03, duration: 0.2 }}
-                    >
-                      <div className={styles.navLabelGroup}>
-                        <span className={styles.navLabel}>{item.label}</span>
-                        {item.id === 'track' && hasInProgressOrder && (
-                          <span className={styles.trackMenuAccentDot} aria-hidden="true" />
-                        )}
-                      </div>
-                      <ChevronRight size={16} className={styles.chevron} aria-hidden="true" />
-                    </motion.button>
-                  );
-                })}
-              </nav>
-
-              {/* Full-Width Accent "Order Now" Button */}
-              <div className={styles.orderCtaWrap}>
+            {/* Header (drag handle on phones) */}
+            <div className={styles.topRow} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+              <span className={styles.dragHandle} aria-hidden="true" />
+              <div className={styles.topInner}>
                 <button
                   type="button"
-                  onClick={() => handleLinkClick('shop')}
-                  className={styles.orderNowBtn}
+                  onClick={() => go('home')}
+                  className={styles.logoBtn}
+                  aria-label={`${t('common.brandName')} - ${t('nav.home')}`}
                 >
-                  {language === 'ka' ? 'შეუკვეთე ონლაინ' : 'Order Now'}
+                  <span className={styles.logoText}>
+                    BUN <span className={styles.logoAmp}>&amp;</span> PATTY
+                  </span>
                 </button>
-              </div>
-
-              {/* Compact Info Card (Today's hours, phone, get directions - no placeholder) */}
-              <div className={styles.infoCard}>
-                <div className={styles.infoRow}>
-                  <Clock size={15} className={styles.infoIcon} aria-hidden="true" />
-                  <div className={styles.infoTextGroup}>
-                    <span className={styles.infoTitle}>
-                      {language === 'ka' ? 'დღევანდელი საათები' : "Today's Hours"}
-                    </span>
-                    <span className={styles.infoDesc}>{flagship.hoursDisplay}</span>
-                  </div>
-                </div>
-
-                <div className={styles.infoRow}>
-                  <Phone size={15} className={styles.infoIcon} aria-hidden="true" />
-                  <div className={styles.infoTextGroup}>
-                    <span className={styles.infoTitle}>
-                      {language === 'ka' ? 'ტელეფონი' : 'Direct Line'}
-                    </span>
-                    <a href={`tel:${flagship.phone}`} className={styles.infoLink}>
-                      {flagship.phone}
-                    </a>
-                  </div>
-                </div>
-
-                <div className={styles.infoRow}>
-                  <MapPin size={15} className={styles.infoIcon} aria-hidden="true" />
-                  <div className={styles.infoTextGroup}>
-                    <span className={styles.infoTitle}>{flagship.name}</span>
-                    <span className={styles.infoDesc}>
-                      {cleanedAddress}, {cleanedCity}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => handleLinkClick('locations')}
-                      className={styles.directionsBtn}
-                    >
-                      {language === 'ka' ? 'მარშრუტი და ლოკაციები →' : 'Get directions →'}
-                    </button>
-                  </div>
-                </div>
+                <button
+                  ref={closeButtonRef}
+                  type="button"
+                  onClick={onClose}
+                  className={styles.closeBtn}
+                  aria-label={t('common.close') || 'Close menu'}
+                >
+                  <CloseIcon size={20} aria-hidden="true" />
+                </button>
               </div>
             </div>
 
-            {/* Bottom Section: Full-Width 44px Language Switcher and Social Icons */}
-            <div className={styles.bottomArea}>
-              <LanguageSwitcher variant="mobile" />
+            <div className={styles.scrollContent}>
+              {/* Active order */}
+              {hasActiveOrders && (
+                <button type="button" onClick={() => go('track')} className={styles.trackCard}>
+                  <span className={styles.trackIcon}>
+                    <Clock size={18} aria-hidden="true" />
+                    {hasInProgressOrder && <span className={styles.trackDot} aria-hidden="true" />}
+                  </span>
+                  <span className={styles.trackText}>
+                    <span className={styles.trackTitle}>{t('nav.track')}</span>
+                    <span className={styles.trackSub}>#{primaryOrderNum}</span>
+                  </span>
+                  <ArrowUpRight size={18} aria-hidden="true" />
+                </button>
+              )}
 
-              <div className={styles.socialGroup}>
+              {/* Pages not in the bottom tab bar */}
+              <nav aria-label={ka ? 'გვერდები' : 'Pages'}>
+                <ul className={styles.linkList}>
+                  {links.map(({ id, label, Icon }) => (
+                    <li key={id}>
+                      <button
+                        type="button"
+                        onClick={() => go(id)}
+                        className={`${styles.linkRow} ${isActive(id) ? styles.linkActive : ''}`}
+                        aria-current={isActive(id) ? 'page' : undefined}
+                      >
+                        <Icon size={18} aria-hidden="true" className={styles.linkIcon} />
+                        <span>{label}</span>
+                        <ChevronRight size={16} aria-hidden="true" className={styles.linkChevron} />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+
+              {/* Order CTA */}
+              <button type="button" onClick={() => go('shop')} className={styles.orderNowBtn}>
+                <ShoppingBag size={18} aria-hidden="true" />
+                {ka ? 'შეუკვეთე ონლაინ' : 'Order now'}
+                <span className={styles.orderNowSub}>~20 {ka ? 'წთ' : 'min'}</span>
+              </button>
+
+              {/* Kitchens with live status */}
+              <section className={styles.section}>
+                <h2 className={styles.sectionTitle}>{ka ? 'ჩვენი ლოკაციები' : 'Our kitchens'}</h2>
+                <ul className={styles.kitchenList}>
+                  {LOCATIONS.map((loc) => {
+                    const open = openMap[loc.id];
+                    return (
+                      <li key={loc.id}>
+                        <button type="button" onClick={() => go(`locations/${loc.id}`)} className={styles.kitchenRow}>
+                          <span className={styles.kitchenInfo}>
+                            <span className={styles.kitchenName}>{loc.name}</span>
+                            <span className={styles.kitchenMeta}>
+                              {cleanPlaceholder(loc.address)} · {loc.hoursDisplay}
+                            </span>
+                          </span>
+                          {open !== undefined && (
+                            <span className={`${styles.status} ${open ? styles.statusOpen : styles.statusClosed}`}>
+                              <span className={styles.statusDot} aria-hidden="true" />
+                              {open ? (ka ? 'ღიაა' : 'Open') : ka ? 'დაკეტილია' : 'Closed'}
+                            </span>
+                          )}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+
+              {/* Quick actions */}
+              <div className={styles.quickRow}>
+                <a href={`tel:${flagship.phone.replace(/\s/g, '')}`} className={styles.quickBtn}>
+                  <Phone size={16} aria-hidden="true" />
+                  {ka ? 'დარეკვა' : 'Call'}
+                </a>
                 <a
                   href="https://instagram.com"
                   target="_blank"
                   rel="noreferrer"
-                  className={styles.socialIconBtn}
+                  className={styles.quickBtn}
                   aria-label="Instagram"
                 >
-                  <Instagram size={18} aria-hidden="true" />
+                  <Instagram size={16} aria-hidden="true" />
+                  Instagram
                 </a>
               </div>
+            </div>
+
+            {/* Language */}
+            <div className={styles.bottomArea}>
+              <span className={styles.bottomLabel}>{ka ? 'ენა' : 'Language'}</span>
+              <LanguageSwitcher variant="mobile" />
             </div>
           </motion.aside>
         </div>

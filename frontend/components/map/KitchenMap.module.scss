@@ -1,0 +1,164 @@
+@use '@/src/styles/abstracts' as *;
+
+.map {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: $paper-deep;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.tiles {
+  position: absolute;
+  inset: 0;
+  // Same warm tint as the canvas map
+  filter: saturate(0.45) sepia(0.22);
+}
+
+.tile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 256px;
+  height: 256px;
+  max-width: none;
+  pointer-events: none;
+}
+
+.pin {
+  @include button-reset;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.pinLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px 7px 7px;
+  background: $paper;
+  border: $rule-strong;
+  color: $ink;
+  @include display(18px, 800);
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba($ink, 0.18);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.pinNum {
+  @include mono(11px);
+  letter-spacing: 0;
+  background: $ink;
+  color: $paper;
+  padding: 3px 5px;
+}
+
+.pinStem {
+  width: 2px;
+  height: 14px;
+  background: $ink;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: $ink;
+    border: 2px solid $paper;
+    transform: translateX(-50%);
+  }
+}
+
+.pin:hover .pinLabel {
+  background: $paper-deep;
+}
+
+.pinOn {
+  .pinLabel {
+    background: $ink;
+    color: $paper;
+    border-color: $ink;
+    box-shadow: 0 8px 20px rgba($ink, 0.3);
+  }
+
+  .pinNum {
+    background: $red;
+  }
+
+  .pinStem,
+  .pinStem::after {
+    background: $red;
+  }
+
+  &:hover .pinLabel {
+    background: $ink;
+  }
+}
+
+.controls {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  border: $rule-strong;
+  background: $paper;
+
+  button {
+    @include button-reset;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    line-height: 1;
+    color: $ink;
+    border-top: $rule-soft;
+
+    &:first-child {
+      border-top: 0;
+    }
+
+    &:hover:not(:disabled) {
+      background: $ink;
+      color: $paper;
+    }
+
+    &:disabled {
+      color: $rule;
+      cursor: default;
+    }
+  }
+}
+
+.attribution {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 4;
+  padding: 3px 6px;
+  background: rgba($paper, 0.85);
+  @include mono(10px);
+  letter-spacing: 0;
+  text-transform: none;
+  color: $muted;
+}

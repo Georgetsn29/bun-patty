@@ -27,8 +27,8 @@ export const IngredientToggleIcon: React.FC<IngredientToggleIconProps> = ({
   // Selected, check, pastel green #A8E6C1
   // Required: slightly muted check
   // Removed, X, pastel red #F4A9A8
-  const checkColor = isRequired ? 'rgba(168, 230, 193, 0.55)' : '#A8E6C1';
-  const strokeColor = isIncluded ? checkColor : '#F4A9A8';
+  const checkColor = isRequired ? 'rgba(46, 122, 68, 0.45)' : '#2E7A44';
+  const strokeColor = isIncluded ? checkColor : '#C8321D';
 
   // Selected (check):
   // Short stick: x1=5, y1=12.5, x2=10, y2=17.5

@@ -1,0 +1,138 @@
+@use '@/src/styles/abstracts' as *;
+
+.panel {
+  border: $rule-strong;
+  background: $paper;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - var(--header-h, 80px) - 48px);
+}
+
+.head {
+  background: $ink;
+  color: $paper;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 20px 16px;
+}
+
+.title {
+  @include display(26px, 800);
+  line-height: 1;
+  margin: 0;
+}
+
+.count {
+  @include mono(12px);
+  color: $muted-on-ink;
+}
+
+.empty {
+  padding: 28px 20px;
+  font-size: 14px;
+  color: $muted;
+}
+
+.lines {
+  padding: 4px 20px;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.line {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 0;
+  border-bottom: $rule-soft;
+}
+
+.lineTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.lineName {
+  @include display(20px, 700);
+  line-height: 1.05;
+}
+
+.lineTotal {
+  @include mono(14px);
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.mods {
+  font-size: 13px;
+  color: $muted;
+}
+
+.qty {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  border: 1px solid $ink;
+
+  button {
+    @include button-reset;
+    width: 36px;
+    height: 32px;
+    text-align: center;
+    font-family: $font-mono;
+    font-size: 15px;
+
+    &:hover {
+      background: $paper-deep;
+    }
+  }
+
+  span {
+    @include mono(14px);
+    min-width: 24px;
+    text-align: center;
+  }
+}
+
+.upsell {
+  padding: 16px 20px;
+}
+
+.totals {
+  border-top: $rule-strong;
+  padding: 16px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: $muted;
+}
+
+.num {
+  @include mono(14px);
+  letter-spacing: 0;
+  color: $ink;
+}
+
+.grand {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0 10px;
+  @include display(28px, 800);
+  line-height: 1;
+}
+
+.checkout {
+  @include btn-red;
+  justify-content: space-between;
+  padding: 16px 20px;
+}

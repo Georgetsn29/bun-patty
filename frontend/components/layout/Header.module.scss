@@ -1,514 +1,406 @@
 @use '@/src/styles/abstracts' as *;
 
-// 1. Slim Announcement Bar
+$full-nav: 1180px; // below this the desktop link row collapses into the drawer
+
+/* ── 1. Announcement bar ─────────────────────────────── */
 .announcementBar {
   display: none;
 
-  @include respond-to('md') {
+  @media (min-width: $bp-md) {
     display: flex;
-    height: 32px;
-    min-height: 32px;
-    background-color: #131E21;
-    color: #8A9698;
-    font-family: $font-fira;
-    font-size: 12px;
-    font-weight: 500;
+    flex-wrap: wrap;
+    gap: 6px 24px;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    padding: 0 16px;
-    text-align: center;
-    width: 100%;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 8px $gutter;
+    background: $ink;
+    color: $paper;
+    @include mono(12px);
   }
 }
 
-.announcementAccent {
-  color: #E27344;
-  font-weight: 600;
-  margin-left: 4px;
-}
-
-// 2. Main Sticky Header (72px on desktop, 56px on mobile)
-.header {
-  position: sticky;
-  top: 0;
-  z-index: $z-header; // 100
-  width: 100%;
-  height: 72px;
-  min-height: 56px;
-  background-color: rgba(11, 20, 22, 0.96);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  font-family: $font-fira;
-  transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
-
-  @media (max-width: 767px) {
-    height: $mobile-header-height; // 56px
-  }
-
-  &.scrolled {
-    background-color: rgba(11, 20, 22, 0.96);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
-  }
-}
-
-// 1. Stop Overlapping: Three-part CSS grid: logo | navigation | actions
-// grid-template-columns: auto minmax(0, 1fr) auto with a gap of at least 32px.
-// Container aligned to the same width as the page: 1120px
-.inner {
-  max-width: $max-width-site; // 1120px
-  width: 100%;
-  height: 100%;
-  margin: 0 auto;
-  padding: 0 20px;
-  box-sizing: border-box;
-
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 32px; // at least 32px gap
-  align-items: center;
-
-  @media (max-width: 767px) {
-    padding: 0 $mobile-pad; // 16px
-    gap: 16px;
-  }
-}
-
-// Column 1: Logo (Left, single line, does not shrink or wrap)
-.logoButton {
-  @include button-reset;
-  grid-column: 1;
+.openStatus {
   display: inline-flex;
   align-items: center;
-  cursor: pointer;
-  white-space: nowrap;
-  flex-shrink: 0;
-  text-decoration: none;
-
-  &:focus-visible {
-    outline: 2px solid #E27344;
-    outline-offset: 4px;
-    border-radius: 4px;
-  }
+  gap: 8px;
+  min-width: 14ch;
 }
 
-.logoText {
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  color: #FFFFFF;
-  line-height: 1;
-  white-space: nowrap;
-  user-select: none;
-  transition: color 0.15s ease;
-
-  @media (max-width: 767px) {
-    font-size: 18px;
-  }
-
-  &:hover {
-    color: #F4EFE6;
-  }
-}
-
-// Column 2: Center Navigation
-// Center the navigation in its own column, keep every link on one line with white-space: nowrap.
-// Equal spacing between links: 28px.
-.navCenter {
-  grid-column: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 28px;
-  min-width: 0;
-  white-space: nowrap;
-}
-
-.navCenterHidden {
-  display: none !important;
-}
-
-.navCenterVisible {
-  display: flex !important;
-}
-
-// Nav links: muted grey (#8A9698), white on hover, white with 2px accent underline for current page.
-.navLink {
-  @include button-reset;
-  position: relative;
-  font-size: 15px;
-  font-weight: 500;
-  color: #8A9698;
-  white-space: nowrap;
-  padding: 8px 0;
-  cursor: pointer;
-  line-height: 1.4;
-  letter-spacing: 0;
-  text-transform: none;
-  transition: color 180ms ease;
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: transparent;
-    transition: background-color 180ms ease;
-  }
-
-  &:hover {
-    color: #FFFFFF;
-  }
-
-  &[aria-current="page"] {
-    color: #FFFFFF;
-    font-weight: 600;
-
-    &::after {
-      background-color: #E27344;
-    }
-  }
-
-  &:focus-visible {
-    outline: 2px solid #E27344;
-    outline-offset: 4px;
-    border-radius: 2px;
-  }
-}
-
-// Column 3: Actions Right
-// Keep the language switcher and cart together on the right with 12px between them.
-.actionsRight {
-  grid-column: 3;
-  justify-self: end;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-
-// Language switcher wrapper in header
-.desktopLangSwitcher {
-  display: none !important;
-
-  @include respond-to('md') {
-    display: inline-flex !important;
-    align-items: center;
-    flex-shrink: 0;
-  }
-}
-
-// Track order button for tablet/desktop: icon-only 44px square in every language
-// (label is exposed via aria-label and the title tooltip)
-.desktopTrackBtn {
-  display: none !important;
-
-  @include respond-to('md') {
-    @include button-reset;
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
-    padding: 0;
-    border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.05);
-    border: none;
-    color: #FFFFFF;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: all 180ms ease;
-
-    &:hover {
-      color: #E27344;
-      border-color: rgba(226, 115, 68, 0.4);
-      background-color: rgba(226, 115, 68, 0.08);
-    }
-
-    &.trackActive {
-      border-color: #E27344;
-      color: #E27344;
-      background-color: rgba(226, 115, 68, 0.12);
-    }
-
-    &:focus-visible {
-      outline: 2px solid #E27344;
-      outline-offset: 2px;
-    }
-  }
-}
-
-// In-progress accent dot on desktop Track button (top-right badge, like mobile)
-.desktopTrackAccentDot {
-  position: absolute;
-  top: 8px;
-  right: 8px;
+.statusDot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background-color: #E27344;
-  box-shadow: 0 0 0 2px #0B1416, 0 0 8px rgba(226, 115, 68, 0.85);
-  animation: accentDotPulse 2s infinite ease-in-out;
+  background: #5CC778;
+  flex: none;
 }
 
-// Mobile Track Icon (44px transparent icon button, matching mobileCartIconBtn)
-.mobileTrackIconBtn {
-  @include button-reset;
-  width: 44px;
-  height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  color: #FFFFFF;
-  background-color: transparent;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: color 0.15s ease, background-color 0.15s ease;
-
-  &:hover {
-    color: #E27344;
-    background-color: rgba(255, 255, 255, 0.05);
-  }
-
-  &.trackActive {
-    color: #E27344;
-  }
-
-  &:focus-visible {
-    outline: 2px solid #E27344;
-    outline-offset: 2px;
-  }
-
-  @include respond-to('md') {
-    display: none !important;
-  }
+.statusDotClosed {
+  background: $red;
 }
 
-// In-progress accent dot on mobile track icon button (top-right badge)
-.mobileTrackAccentDot {
-  position: absolute;
-  top: 9px;
-  right: 9px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background-color: #E27344;
-  box-shadow: 0 0 0 2px #0B1416, 0 0 8px rgba(226, 115, 68, 0.85);
-  animation: accentDotPulse 2s infinite ease-in-out;
-}
+.announcementMuted {
+  color: $muted-on-ink;
 
-@keyframes accentDotPulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.22);
-    opacity: 0.85;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .desktopTrackAccentDot,
-  .mobileTrackAccentDot {
-    animation: none;
-  }
-}
-
-// Cart button: icon and "კალათა" on one line, 44px high, without wrapping.
-.desktopCartButton {
-  display: none;
-
-  @include respond-to('md') {
-    @include button-reset;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    height: 44px;
-    min-height: 44px;
-    padding: 0 16px;
-    border-radius: 8px;
-    background-color: #E27344;
-    color: #FFFFFF;
-    font-size: 14px;
-    font-weight: 600;
-    white-space: nowrap;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: background-color 180ms ease, transform 150ms ease;
-
-    &:hover {
-      background-color: #F28555;
-    }
-
-    &:active {
-      transform: scale(0.98);
-    }
-
-    &:focus-visible {
-      outline: 2px solid #FFFFFF;
-      outline-offset: 3px;
-    }
-  }
-}
-
-.cartBagIcon {
-  flex-shrink: 0;
-}
-
-.cartLabel {
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.cartBadge {
-  background-color: rgba(0, 0, 0, 0.28);
-  color: #FFFFFF;
-  font-size: 12px;
-  font-weight: 800;
-  padding: 2px 7px;
-  border-radius: 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-}
-
-.cartTotal {
-  font-weight: 600;
-  white-space: nowrap;
-  opacity: 0.95;
-}
-
-// Mobile 44px Transparent Icon Button (Cart)
-.mobileCartIconBtn {
-  @include button-reset;
-  width: 44px;
-  height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  color: #FFFFFF;
-  background-color: transparent;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: color 0.15s ease, background-color 0.15s ease;
-
-  &:hover {
-    color: #E27344;
-    background-color: rgba(255, 255, 255, 0.05);
-  }
-
-  &:focus-visible {
-    outline: 2px solid #E27344;
-    outline-offset: 2px;
-  }
-
-  @include respond-to('md') {
+  @media (max-width: #{$bp-lg - 1px}) {
     display: none;
   }
 }
 
-.mobileCartBadge {
-  position: absolute;
-  top: 6px;
-  right: 5px;
-  min-width: 17px;
-  height: 17px;
-  padding: 0 4px;
-  border-radius: 9px;
-  background-color: #E27344;
-  color: #FFFFFF;
-  font-size: 10px;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
+/* ── 2. Header shell ─────────────────────────────────── */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: $z-header;
+  background: $paper;
+  border-bottom: $rule-strong;
+  transition: box-shadow 0.2s ease;
+  @include safe-area-top;
 }
 
-// Mobile/Responsive Menu Toggle: 44px transparent icon-button style
-.mobileMenuToggle {
+.scrolled {
+  box-shadow: 0 6px 20px rgba($ink, 0.08);
+}
+
+.logoAmp {
+  color: $logo-orange;
+}
+
+/* Mobile app bar */
+.appBar {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  gap: 12px;
+  height: $mobile-header-height;
+  padding: 0 $mobile-pad;
+
+  @media (min-width: $bp-md) {
+    display: none;
+  }
+}
+
+.appBarIconBtn {
   @include button-reset;
+  position: relative;
   width: 44px;
   height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #FFFFFF;
-  background-color: transparent;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: color 0.15s ease, background-color 0.15s ease;
-
-  &:hover {
-    color: #E27344;
-    background-color: rgba(255, 255, 255, 0.05);
-  }
-
-  &:focus-visible {
-    outline: 2px solid #E27344;
-    outline-offset: 2px;
-  }
-}
-
-// Hidden measurement element to accurately gauge natural links width
-.measureNav {
-  position: absolute;
-  visibility: hidden;
-  pointer-events: none;
-  top: -9999px;
-  left: -9999px;
   display: flex;
   align-items: center;
-  gap: 28px;
-  white-space: nowrap;
+  justify-content: center;
+  border: $rule-strong;
+  color: $ink;
 }
 
-.measureItem {
-  font-size: 15px;
-  font-weight: 500;
-  white-space: nowrap;
-  line-height: 1.4;
+.appBarBadge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  min-width: 20px;
+  padding: 1px 5px;
+  background: $red;
+  color: $paper;
+  text-align: center;
+  @include mono(11px);
   letter-spacing: 0;
-  padding: 8px 0;
 }
 
-// Pulse animation when item added
-@keyframes badgePulse {
-  0% {
-    transform: scale(1);
+.appBarLogo {
+  @include button-reset;
+  justify-self: center;
+  @include display(24px);
+  line-height: 1;
+  white-space: nowrap;
+  color: $ink;
+}
+
+/* Desktop bar */
+.inner {
+  display: none;
+
+  @media (min-width: $bp-md) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 32px;
+    padding: 14px $gutter;
   }
-  50% {
-    transform: scale(1.35);
+}
+
+.logoButton {
+  @include button-reset;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: none;
+  color: $ink;
+}
+
+.logoText {
+  @include display(34px);
+  letter-spacing: -0.01em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.logoTagline {
+  @include mono(10px);
+  line-height: 1.3;
+  color: $muted;
+
+  @media (max-width: #{$bp-lg - 1px}) {
+    display: none;
   }
-  100% {
-    transform: scale(1);
+}
+
+.navCenter {
+  display: none;
+
+  @media (min-width: $full-nav) {
+    display: flex;
+    align-items: center;
+    gap: 8px 36px;
+  }
+}
+
+.navLink {
+  @include button-reset;
+  position: relative;
+  padding: 12px 0;
+  font-family: $font-sans;
+  font-weight: 500;
+  font-size: 15px;
+  color: $ink;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: $red;
+  }
+
+  &[aria-current='page'] {
+    color: $ink;
+  }
+}
+
+.navUnderline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4px;
+  height: 2px;
+  background: $red;
+}
+
+.actionsRight {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex: none;
+}
+
+.textAction {
+  @include button-reset;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+  font-weight: 500;
+  font-size: 15px;
+  white-space: nowrap;
+  color: $ink;
+
+  &:hover {
+    color: $red;
+  }
+
+  @media (max-width: #{$bp-lg - 1px}) {
+    display: none;
+  }
+}
+
+.textActionActive {
+  box-shadow: inset 0 -2px 0 $red;
+}
+
+.liveDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: $red;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+.cartButton {
+  @include button-reset;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  font-weight: 500;
+  font-size: 15px;
+  color: $ink;
+  white-space: nowrap;
+
+  &:hover {
+    color: $red;
+  }
+}
+
+.cartBadge {
+  min-width: 22px;
+  padding: 2px 6px;
+  background: $red;
+  color: $paper;
+  text-align: center;
+  @include mono(11px);
+  letter-spacing: 0;
+}
+
+.orderButton {
+  @include btn-red;
+  font-size: 20px;
+  padding: 14px 20px 14px 24px;
+  white-space: nowrap;
+}
+
+.menuToggle {
+  @include button-reset;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: $rule-strong;
+  color: $ink;
+
+  @media (min-width: $full-nav) {
+    display: none;
   }
 }
 
 .badgePulsing {
-  animation: badgePulse 350ms ease-out;
+  animation: badgePop 0.4s ease;
+}
+
+/* ── 3. Mobile tab bar ───────────────────────────────── */
+.bottomNav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: $z-header;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  background: $paper;
+  border-top: $rule-strong;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  transition: transform 0.25s ease;
+
+  @media (min-width: $bp-md) {
+    display: none;
+  }
+}
+
+.bottomNavHidden {
+  transform: translateY(110%);
+}
+
+.tab {
+  @include button-reset;
+  position: relative;
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: $muted;
+  text-align: center;
+  transition: color 0.15s ease;
+}
+
+.tabActive {
+  color: $red;
+  box-shadow: inset 0 3px 0 $red;
+}
+
+.tabLabel {
+  @include mono(10px);
+}
+
+.tabDot {
+  position: absolute;
+  top: 9px;
+  left: 56%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: $red;
+}
+
+@keyframes badgePop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .liveDot,
   .badgePulsing {
     animation: none;
   }
+}
+
+/* ── 3b. Floating cart bar (phones) ─────────────────── */
+.cartBar {
+  @include button-reset;
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  z-index: $z-header;
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px 0 16px;
+  background: $ink;
+  color: $paper;
+  box-shadow: 0 8px 24px rgba($ink, 0.25);
+
+  @media (min-width: $bp-md) {
+    display: none;
+  }
+}
+
+.cartBarInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.cartBarMeta {
+  @include mono(11px);
+  color: $muted-on-ink;
+}
+
+.cartBarTotal {
+  @include display(22px, 800);
+  line-height: 1;
+}
+
+.cartBarCta {
+  background: $red;
+  padding: 13px 14px;
+  @include display(17px, 700);
+  line-height: 1;
+  white-space: nowrap;
 }

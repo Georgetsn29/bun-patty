@@ -36,7 +36,7 @@
   },
   "nav": {
     "menu": "მენიუ",
-    "about": "ჩვენ შესახებ",
+    "about": "ჩვენი სამზარეულო",
     "locations": "ფილიალები",
     "contact": "კონტაქტი",
     "home": "მთავარი",
@@ -241,7 +241,7 @@
     "practicalStripKicker": "ფლაგმანური ლოკაცია",
     "serviceHoursKicker": "სამუშაო საათები",
     "placeOrderOnlineBtn": "ონლაინ შეკვეთა",
-    "allLocationsBtn": "3 ლოკაცია თბილისში"
+    "allLocationsBtn": "4 ლოკაცია თბილისში"
   },
   "about": {
     "kicker": "იდეა და ხარისხი",

@@ -6,7 +6,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import styles from './LanguageSwitcher.module.scss';
 
 interface LanguageSwitcherProps {
-  variant?: 'desktop' | 'mobile';
+  variant?: 'desktop' | 'mobile' | 'onInk';
   className?: string;
 }
 
@@ -40,7 +40,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
       role="radiogroup"
       aria-label={t('common.langSwitcherLabel') || groupLabel}
       onKeyDown={handleKeyDown}
-      className={`${styles.container} ${variant === 'mobile' ? styles.mobileVariant : styles.desktopVariant} ${className}`}
+      className={`${styles.container} ${variant === 'mobile' ? styles.mobileVariant : variant === 'onInk' ? styles.onInkVariant : styles.desktopVariant} ${className}`}
     >
       {/* Sliding Active Pill */}
       <motion.span

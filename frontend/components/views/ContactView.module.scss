@@ -1,298 +1,327 @@
 @use '@/src/styles/abstracts' as *;
 
+$mq-phone: '(max-width: #{$bp-md - 1px})';
+
 .contact {
-  @include container;
-  padding-top: $space-8;
-  padding-bottom: $space-24;
-  color: $color-text;
-  display: flex;
-  flex-direction: column;
-  gap: $space-16;
-
-  @include respond-to('sm') {
-    padding-top: $space-16;
-  }
-}
-
-.header {
-  max-width: 48rem;
-  display: flex;
-  flex-direction: column;
-  gap: $space-3;
-  padding-bottom: $space-8;
-  border-bottom: 1px solid rgba($color-text, 0.15);
+  background: $paper;
+  color: $ink;
 }
 
 .kicker {
-  font-family: $font-mono;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: $color-text-muted;
-  display: block;
+  @include mono(12px);
+  color: $muted;
+}
+
+.dot {
+  color: $red;
+}
+
+.muted {
+  font-size: 14px;
+  line-height: 1.5;
+  color: $muted;
+}
+
+.hero {
+  padding: 56px $gutter;
+  border-bottom: $rule-strong;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  justify-content: space-between;
+  align-items: flex-end;
+
+  @media #{$mq-phone} {
+    padding: 28px $mobile-pad 32px;
+    gap: 20px;
+  }
+}
+
+.heroText {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .title {
-  font-family: $font-serif;
-  font-size: 2.25rem;
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  color: $color-text;
+  @include display(clamp(64px, 11.7vw, 168px));
+  margin: 0;
 
-  @include respond-to('sm') {
-    font-size: 3rem;
-  }
-
-  @include respond-to('lg') {
-    font-size: 3.75rem;
+  :global(html[lang='ka']) & {
+    font-size: clamp(44px, 7vw, 100px);
+    line-height: 1.05;
   }
 }
 
-.headerNote {
-  font-size: 0.875rem;
-  font-family: $font-sans;
-  color: rgba($color-text, 0.8);
-  line-height: 1.6;
-  max-width: 36rem;
+.lead {
+  width: 420px;
+  max-width: 100%;
+  font-size: 20px;
+  line-height: 1.5;
+
+  @media #{$mq-phone} {
+    font-size: 17px;
+  }
 }
 
-.contactGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: $space-12;
+.body {
+  padding: 72px $gutter 120px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 64px 80px;
   align-items: flex-start;
 
-  @include respond-to('lg') {
-    grid-template-columns: repeat(12, 1fr);
+  @media #{$mq-phone} {
+    padding: 32px $mobile-pad 64px;
+    gap: 48px;
   }
 }
 
-.directoryCol {
+.left {
+  flex: 999 1 520px;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: $space-8;
-  font-family: $font-mono;
-  font-size: 0.75rem;
-
-  @include respond-to('lg') {
-    grid-column: span 5;
-  }
+  gap: 56px;
 }
 
-.dirSection {
+.channels {
+  border-bottom: $rule-strong;
+}
+
+.channel {
   display: flex;
-  flex-direction: column;
-  gap: $space-4;
-  border-bottom: 1px solid rgba($color-text, 0.15);
-  padding-bottom: $space-8;
-
-  &:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
-}
-
-.dirLabel {
-  color: rgba($color-text, 0.5);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-size: 10px;
-  display: block;
-}
-
-.dirBody {
-  font-family: $font-sans;
-  font-size: 0.875rem;
-  color: $color-text;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.addressSub {
-  font-family: $font-mono;
-  font-size: 0.75rem;
-  color: $color-text-muted;
-  padding-top: 4px;
-}
-
-.contactList {
-  display: flex;
-  flex-direction: column;
-  gap: $space-2;
-}
-
-.contactLink {
-  text-decoration: underline;
-  font-weight: 600;
-  color: $color-text;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  align-items: center;
+  padding: 28px 0;
+  border-top: $rule-strong;
+  color: $ink;
+  transition: color 0.15s ease;
 
   &:hover {
-    color: $color-tomato;
+    color: $red;
+  }
+
+  > svg {
+    flex: none;
+  }
+
+  @media #{$mq-phone} {
+    padding: 20px 0;
+
+    > svg {
+      display: none;
+    }
   }
 }
 
-.contactSubLink {
-  text-decoration: underline;
-  color: $color-text-muted;
-
-  &:hover {
-    color: $color-text;
-  }
-}
-
-.scheduleList {
+.channelMeta {
+  width: 240px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  color: $color-text-muted;
+  gap: 6px;
 }
 
-.formCard {
-  border: 1px solid rgba($color-text, 0.2);
-  padding: $space-8;
-  background-color: rgba($color-bg-alt, 0.3);
+.channelLabel {
+  @include mono(12px);
+  color: $muted;
+}
+
+.channelLabelRed {
+  color: $red;
+}
+
+.channelSub {
+  font-size: 14px;
+  color: $muted;
+}
+
+.channelValue {
+  flex: 1 1 300px;
+  min-width: 0;
+  font-family: $font-display;
+  font-weight: 900;
+  font-size: clamp(26px, 3vw, 44px);
+  line-height: 1;
+  overflow-wrap: anywhere;
+}
+
+.hours {
   display: flex;
   flex-direction: column;
-  gap: $space-6;
+  gap: 20px;
+}
 
-  @include respond-to('sm') {
-    padding: 2.5rem;
+.hoursTitle {
+  @include display(32px, 800);
+  line-height: 1;
+  margin: 0;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    @include mono(12px);
+    color: $muted;
+    font-weight: 500;
+    text-align: left;
+    padding: 0 8px 10px 0;
+    border-bottom: $rule-strong;
   }
 
-  @include respond-to('lg') {
-    grid-column: span 7;
+  td {
+    @include mono(15px);
+    letter-spacing: 0;
+    padding: 14px 8px 14px 0;
+    border-bottom: $rule-soft;
+
+    @media #{$mq-phone} {
+      font-size: 12px;
+    }
   }
 }
 
-.formHeader {
-  border-bottom: 1px solid rgba($color-text, 0.15);
-  padding-bottom: $space-4;
+.kitchenCell {
+  a {
+    @include display(22px, 700);
+    color: $ink;
+
+    &:hover {
+      color: $red;
+    }
+  }
+}
+
+.open {
+  color: $open-green;
+}
+
+.closed {
+  color: $red;
+}
+
+.formPanel {
+  flex: 1 1 400px;
+  max-width: 560px;
+  background: $paper-deep;
+  border: $rule-strong;
+  padding: 36px;
+
+  @media #{$mq-phone} {
+    max-width: none;
+    padding: 24px 20px;
+  }
+}
+
+.form,
+.sent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sent {
+  align-items: flex-start;
+}
+
+.sentLabel {
+  @include mono(12px);
+  color: $open-green;
+}
+
+.formHead {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .formTitle {
-  font-family: $font-serif;
-  font-size: 1.5rem;
-  font-weight: 400;
-  color: $color-text;
+  @include display(48px);
+  margin: 0;
 }
 
-.formNote {
-  font-family: $font-mono;
-  font-size: 0.75rem;
-  color: $color-text-muted;
-  margin-top: 4px;
-}
-
-.successAlert {
-  padding: $space-4;
-  background-color: rgba($color-sage, 0.4);
-  border: 1px solid rgba($color-text, 0.2);
-  font-family: $font-mono;
-  font-size: 0.75rem;
-  color: $color-text;
-}
-
-.form {
+.row {
   display: flex;
-  flex-direction: column;
-  gap: $space-5;
-  font-family: $font-mono;
-  font-size: 0.75rem;
-}
+  flex-wrap: wrap;
+  gap: 16px;
 
-.formRow {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: $space-4;
-
-  @include respond-to('sm') {
-    grid-template-columns: 1fr 1fr;
+  > * {
+    flex: 1 1 200px;
   }
 }
 
-.formGroup {
+.field {
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 
-.formLabel {
-  display: block;
-  color: $color-text;
-  text-transform: uppercase;
-  font-size: 10px;
-  letter-spacing: 0.05em;
-  margin-bottom: 4px;
+.label {
+  @include mono(12px);
+  color: $muted;
 }
 
-.input,
-.select,
-.textarea {
+.input {
   width: 100%;
-  padding: 10px;
-  background-color: transparent;
-  border: 1px solid rgba($color-text, 0.3);
-  font-family: $font-mono;
-  font-size: 0.75rem;
-  color: $color-text;
-
-  &:focus {
-    border-color: $color-text;
-    outline: none;
-  }
+  min-height: 50px;
+  padding: 0 14px;
+  border: $rule-strong;
+  border-radius: 0;
+  background: $paper;
+  color: $ink;
+  font-size: 16px;
 
   &::placeholder {
-    color: rgba($color-text, 0.45);
+    color: $color-text-subtle;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $red;
+    box-shadow: inset 0 0 0 1px $red;
   }
 }
 
-.select {
-  cursor: pointer;
+select.input {
   appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  color-scheme: dark;
-  padding-right: 36px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23FFFFFF' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-image: linear-gradient(45deg, transparent 50%, $ink 50%), linear-gradient(135deg, $ink 50%, transparent 50%);
+  background-position: calc(100% - 20px) 50%, calc(100% - 14px) 50%;
+  background-size: 6px 6px;
   background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 12px 8px;
-
-  &::-ms-expand {
-    display: none;
-  }
-
-  option {
-    background-color: $color-bg;
-    color: $color-text;
-  }
+  padding-right: 40px;
 }
 
-.errorText {
-  color: $color-tomato;
-  font-size: 10px;
-  margin-top: 4px;
+.textarea {
+  padding: 12px 14px;
+  resize: vertical;
+  line-height: 1.5;
 }
 
-.submitBtn {
-  @include button-reset;
-  width: 100%;
-  padding: 14px;
-  background-color: $color-text;
-  color: $color-bg;
-  font-family: $font-mono;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-weight: 600;
-  text-align: center;
-  transition: background-color 0.2s ease;
+.inputError {
+  border-color: $red;
+}
 
-  &:hover {
-    background-color: $color-tomato;
-  }
+.error {
+  font-size: 13px;
+  color: $red;
+}
+
+.submit {
+  @include btn-red;
+  justify-content: space-between;
+  padding: 18px 20px;
 
   &:disabled {
-    opacity: 0.5;
+    opacity: 0.7;
+    cursor: wait;
   }
+}
+
+.btnOutline {
+  @include btn-outline;
+  font-size: 20px;
+  padding: 14px 20px;
 }
