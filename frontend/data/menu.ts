@@ -315,7 +315,7 @@ export const MENU_ITEMS: MenuItem[] = [
   // 1. Classic Double Cheeseburger
   {
     id: 'golden-double-classic',
-    estimatedMinutes: 30,
+    estimatedMinutes: 15,
     name: 'Classic Double Cheeseburger',
     category: 'Burgers',
     sortOrder: 1,
@@ -334,7 +334,7 @@ export const MENU_ITEMS: MenuItem[] = [
     allergens: ['Gluten', 'Dairy', 'Eggs, Mustard [Placeholder]'],
     tags: ['Standard', 'Popular'],
     nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.cheddarDouble, N.shavedOnion, N.pickles, N.secretSauce20),
-    prepTime: '5 min',
+    prepTime: '15 min',
     isBestseller: true,
     imageSlot: '/images/menu/golden-double-classic.jpg',
     imageLabel: 'Two-handed grip on classic double cheeseburger, melted cheddar corners',
@@ -359,7 +359,7 @@ export const MENU_ITEMS: MenuItem[] = [
   // 2. Double Smashed Bacon Burger
   {
     id: 'double-smashed-bacon-burger',
-    estimatedMinutes: 30,
+    estimatedMinutes: 19,
     name: 'Double Smashed Bacon Burger',
     category: 'Burgers',
     sortOrder: 2,
@@ -379,7 +379,7 @@ export const MENU_ITEMS: MenuItem[] = [
     allergens: ['Gluten', 'Dairy', 'Eggs, Mustard [Placeholder]'],
     tags: ['Double Smashed', 'Smoked Bacon', 'New'],
     nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.crispyBacon, N.cheddarSlice, N.pickles, N.shavedOnion, N.secretSauce20),
-    prepTime: '6 min',
+    prepTime: '19 min',
     isBestseller: true,
     imageSlot: '/images/menu/double-smashed-bacon.jpg',
     imageLabel: 'Double smashed beef patties with crispy bacon and melted cheddar',
@@ -407,7 +407,7 @@ export const MENU_ITEMS: MenuItem[] = [
   // 3. Bun & Patty Signature Burger
   {
     id: 'bun-patty-smash',
-    estimatedMinutes: 30,
+    estimatedMinutes: 23,
     name: 'Bun & Patty Signature Burger',
     category: 'Burgers',
     sortOrder: 3,
@@ -427,7 +427,7 @@ export const MENU_ITEMS: MenuItem[] = [
     allergens: ['Gluten', 'Dairy', 'Eggs', 'Mustard [Placeholder]'],
     tags: ['House Signature', 'Fried Eggs'],
     nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.americanCheese2, N.friedEgg, N.friedEgg, N.crispyBacon, N.pickles, N.specialSauce20),
-    prepTime: '7 min',
+    prepTime: '23 min',
     isBestseller: true,
     isChefSpecial: true,
     imageSlot: '/images/menu/bun-patty-signature.jpg',
@@ -454,7 +454,7 @@ export const MENU_ITEMS: MenuItem[] = [
   // 4. Sweet Heat Pickled Jalapeño
   {
     id: 'sweet-heat-jalapeno',
-    estimatedMinutes: 30,
+    estimatedMinutes: 15,
     name: 'Sweet Heat Pickled Jalapeño',
     category: 'Burgers',
     sortOrder: 4,
@@ -473,7 +473,7 @@ export const MENU_ITEMS: MenuItem[] = [
     allergens: ['Gluten', 'Dairy [Placeholder]'],
     tags: ['Spicy', 'Hot Honey'],
     nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.pepperJack, N.jalapenos, N.crispyShallots, N.hotHoney),
-    prepTime: '5 min',
+    prepTime: '15 min',
     isSpicy: true,
     imageSlot: '/images/menu/sweet-heat-jalapeno.jpg',
     imageLabel: 'Burger with glistening honey drizzle and vibrant green pickled peppers',
@@ -498,7 +498,7 @@ export const MENU_ITEMS: MenuItem[] = [
   // 5. Buttermilk Fried Chicken Sandwich
   {
     id: 'buttermilk-crispy-chicken',
-    estimatedMinutes: 30,
+    estimatedMinutes: 23,
     name: 'Buttermilk Fried Chicken Sandwich',
     category: 'Burgers',
     sortOrder: 5,
@@ -515,7 +515,7 @@ export const MENU_ITEMS: MenuItem[] = [
     allergens: ['Gluten', 'Dairy', 'Eggs, Mustard [Placeholder]'],
     tags: ['Crispy Chicken', 'Customer Favorite'],
     nutrition: sumNutrition(N.sesameBriocheBun, N.friedChickenThigh, N.cabbageSlaw, N.pickles, N.garlicAioli20),
-    prepTime: '7 min',
+    prepTime: '23 min',
     imageSlot: '/images/menu/buttermilk-crispy-chicken.jpg',
     imageLabel: 'Craggy golden brown fried chicken sandwich with crunchy purple cabbage slaw',
     imageStyle: 'scene',
@@ -537,7 +537,7 @@ export const MENU_ITEMS: MenuItem[] = [
   // 6. Mozzarella Burger
   {
     id: 'crispy-halloumi-mint',
-    estimatedMinutes: 30,
+    estimatedMinutes: 19,
     name: 'Mozzarella Burger',
     category: 'Burgers',
     sortOrder: 6,
@@ -557,7 +557,7 @@ export const MENU_ITEMS: MenuItem[] = [
     badge: 'Vegetarian',
     tags: ['Vegetarian', 'Fried Mozzarella'],
     nutrition: sumNutrition(N.burgerBun, N.friedMozzarella, N.cheddarSlice, N.cheeseSauce30, N.specialSauce20, N.iceberg, N.tomato),
-    prepTime: '6 min',
+    prepTime: '19 min',
     isVegetarian: true,
     imageSlot: '/images/menu/mozzarella-burger.jpg',
     imageLabel: 'Burger with a thick golden fried mozzarella patty and stretchy cheese pulling out',
@@ -582,7 +582,7 @@ export const MENU_ITEMS: MenuItem[] = [
   // 7. The Big One
   {
     id: 'the-big-one',
-    estimatedMinutes: 40,
+    estimatedMinutes: 35,
     name: 'The Big One',
     category: 'Burgers',
     sortOrder: 7,
@@ -604,7 +604,7 @@ export const MENU_ITEMS: MenuItem[] = [
     badge: 'Made for sharing',
     tags: ['Made for sharing', '750 g Beef', 'New'],
     nutrition: sumNutrition(N.largeSesameBun, N.beef750, N.cheddar6Layers, N.baconLayers2, N.saperaviOnions, N.iceberg, N.pickles, N.specialSauce40),
-    prepTime: '10 min',
+    prepTime: '35 min',
     isBestseller: true,
     isChefSpecial: true,
     imageSlot: '/images/menu/the-big-one.jpg',
@@ -633,7 +633,7 @@ export const MENU_ITEMS: MenuItem[] = [
   // 8. Truffle Forest Melt
   {
     id: 'truffle-forest-melt',
-    estimatedMinutes: 30,
+    estimatedMinutes: 19,
     name: 'Truffle Forest Melt',
     category: 'Burgers',
     sortOrder: 8,
@@ -651,7 +651,7 @@ export const MENU_ITEMS: MenuItem[] = [
     allergens: ['Gluten', 'Dairy', 'Eggs [Placeholder]'],
     tags: ['Truffle', 'Gruyère'],
     nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.gruyere, N.sauteedMushrooms, N.truffleAioli20),
-    prepTime: '6 min',
+    prepTime: '19 min',
     isChefSpecial: true,
     imageSlot: '/images/menu/truffle-forest-melt.jpg',
     imageLabel: 'Mushroom and melted gruyere burger on dark slate board',
