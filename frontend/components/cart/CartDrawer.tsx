@@ -19,7 +19,6 @@ import {
   Truck,
   X,
 } from 'lucide-react';
-import { Upsell } from './Upsell';
 import styles from './CartDrawer.module.scss';
 
 interface CartDrawerProps {
@@ -385,11 +384,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     })}
                   </AnimatePresence>
                 </ul>
-              )}
-              {items.length > 0 && (
-                <div className={styles.upsellWrap}>
-                  <Upsell limit={3} variant="tiles" />
-                </div>
               )}
             </div>
 

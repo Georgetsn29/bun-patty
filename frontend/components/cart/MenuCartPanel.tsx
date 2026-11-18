@@ -4,7 +4,6 @@ import React from 'react';
 import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { ArrowIcon } from '@/components/layout/Header';
-import { Upsell } from './Upsell';
 import styles from './MenuCartPanel.module.scss';
 
 interface MenuCartPanelProps {
@@ -64,10 +63,6 @@ export const MenuCartPanel: React.FC<MenuCartPanelProps> = ({ onCheckout }) => {
                 </div>
               );
             })}
-          </div>
-
-          <div className={styles.upsell}>
-            <Upsell limit={1} />
           </div>
 
           <div className={styles.totals}>
