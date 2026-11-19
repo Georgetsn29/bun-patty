@@ -1,3 +1,4 @@
+import { asset } from '@/lib/basePath';
 import { BUSINESS_CONTENT, BusinessLocation } from './businessContent';
 
 export interface LocationItem extends BusinessLocation {
@@ -9,10 +10,10 @@ export interface LocationItem extends BusinessLocation {
 }
 
 const LOCATION_IMAGES = [
-  '/images/location-west-village-flagship.jpg', // Vera
-  '/images/location-soho-cast-iron.jpg', // Vake
-  '/images/location-cobble-hill-parlour.jpg', // Sololaki
-  '/images/location-brooklyn-heights.jpg', // Nutsubidze [Placeholder photo]
+  asset('/images/location-west-village-flagship.jpg'), // Vera
+  asset('/images/location-soho-cast-iron.jpg'), // Vake
+  asset('/images/location-cobble-hill-parlour.jpg'), // Sololaki
+  asset('/images/location-brooklyn-heights.jpg'), // Nutsubidze [Placeholder photo]
 ];
 
 export const CONTACT_INFO = {

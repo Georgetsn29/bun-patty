@@ -1,3 +1,4 @@
+import { asset } from '@/lib/basePath';
 /**
  * MENU DEFINITIONS & INGREDIENT CUSTOMIZATION CONFIGURATION
  * Localized for Georgia (Tbilisi). All prices are in Georgian Lari (₾).
@@ -336,7 +337,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.cheddarDouble, N.shavedOnion, N.pickles, N.secretSauce20),
     prepTime: '15 min',
     isBestseller: true,
-    imageSlot: '/images/menu/golden-double-classic.jpg',
+    imageSlot: asset('/images/menu/golden-double-classic.jpg'),
     imageLabel: 'Two-handed grip on classic double cheeseburger, melted cheddar corners',
     imageStyle: 'scene',
     includedIngredients: [
@@ -381,7 +382,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.crispyBacon, N.cheddarSlice, N.pickles, N.shavedOnion, N.secretSauce20),
     prepTime: '19 min',
     isBestseller: true,
-    imageSlot: '/images/menu/double-smashed-bacon.jpg',
+    imageSlot: asset('/images/menu/double-smashed-bacon.jpg'),
     imageLabel: 'Double smashed beef patties with crispy bacon and melted cheddar',
     imageStyle: 'scene',
     imagePosition: 'center 55%',
@@ -430,7 +431,7 @@ export const MENU_ITEMS: MenuItem[] = [
     prepTime: '23 min',
     isBestseller: true,
     isChefSpecial: true,
-    imageSlot: '/images/menu/bun-patty-signature.jpg',
+    imageSlot: asset('/images/menu/bun-patty-signature.jpg'),
     imageLabel: 'Tall messy double smash burger with two runny fried eggs and melted cheese dripping down',
     imageStyle: 'scene',
     includedIngredients: [
@@ -475,7 +476,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.pepperJack, N.jalapenos, N.crispyShallots, N.hotHoney),
     prepTime: '15 min',
     isSpicy: true,
-    imageSlot: '/images/menu/sweet-heat-jalapeno.jpg',
+    imageSlot: asset('/images/menu/sweet-heat-jalapeno.jpg'),
     imageLabel: 'Burger with glistening honey drizzle and vibrant green pickled peppers',
     imageStyle: 'scene',
     includedIngredients: [
@@ -516,7 +517,7 @@ export const MENU_ITEMS: MenuItem[] = [
     tags: ['Crispy Chicken', 'Customer Favorite'],
     nutrition: sumNutrition(N.sesameBriocheBun, N.friedChickenThigh, N.cabbageSlaw, N.pickles, N.garlicAioli20),
     prepTime: '23 min',
-    imageSlot: '/images/menu/buttermilk-crispy-chicken.jpg',
+    imageSlot: asset('/images/menu/buttermilk-crispy-chicken.jpg'),
     imageLabel: 'Craggy golden brown fried chicken sandwich with crunchy purple cabbage slaw',
     imageStyle: 'scene',
     includedIngredients: [
@@ -559,7 +560,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.burgerBun, N.friedMozzarella, N.cheddarSlice, N.cheeseSauce30, N.specialSauce20, N.iceberg, N.tomato),
     prepTime: '19 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/mozzarella-burger.jpg',
+    imageSlot: asset('/images/menu/mozzarella-burger.jpg'),
     imageLabel: 'Burger with a thick golden fried mozzarella patty and stretchy cheese pulling out',
     imageStyle: 'scene',
     includedIngredients: [
@@ -607,7 +608,7 @@ export const MENU_ITEMS: MenuItem[] = [
     prepTime: '35 min',
     isBestseller: true,
     isChefSpecial: true,
-    imageSlot: '/images/menu/the-big-one.jpg',
+    imageSlot: asset('/images/menu/the-big-one.jpg'),
     imageLabel: 'Towering multi-layer smash burger with melted cheese ribbons and skewers',
     imageStyle: 'scene',
     imagePosition: 'center 45%',
@@ -653,7 +654,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.briocheBun, N.patty90, N.patty90, N.gruyere, N.sauteedMushrooms, N.truffleAioli20),
     prepTime: '19 min',
     isChefSpecial: true,
-    imageSlot: '/images/menu/truffle-forest-melt.jpg',
+    imageSlot: asset('/images/menu/truffle-forest-melt.jpg'),
     imageLabel: 'Mushroom and melted gruyere burger on dark slate board',
     imageStyle: 'scene',
     includedIngredients: [
@@ -697,7 +698,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.fries170),
     prepTime: '4 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/golden-crinkle-fries.jpg',
+    imageSlot: asset('/images/menu/golden-crinkle-fries.jpg'),
     imageLabel: 'Stainless steel wire basket overflowing with golden crinkle cut fries',
     imageStyle: 'isolated',
     includedIngredients: [
@@ -731,7 +732,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.fries170, N.parmesanSnow, N.truffleOil),
     prepTime: '4 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/parmesan-truffle-fries.jpg',
+    imageSlot: asset('/images/menu/parmesan-truffle-fries.jpg'),
     imageLabel: 'Dark ceramic bowl of golden truffle parmesan fries with fresh parsley',
     imageStyle: 'isolated',
     includedIngredients: [
@@ -767,7 +768,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.fries170, N.cheeseSauce80, N.baconBits, N.chives),
     prepTime: '4 min',
     isBestseller: true,
-    imageSlot: '/images/menu/fries-cheese-bacon.jpg',
+    imageSlot: asset('/images/menu/fries-cheese-bacon.jpg'),
     imageLabel: 'Crispy golden fries covered in molten cheese sauce and crisp chopped bacon',
     imageStyle: 'scene',
     includedIngredients: [
@@ -807,7 +808,7 @@ export const MENU_ITEMS: MenuItem[] = [
     tags: ['Loaded Bowl', 'Smashed Beef', 'New'],
     nutrition: sumNutrition(N.fries170, N.patty90, N.baconBits, N.iceberg, N.cheeseSauce60, N.bbqSauce, N.parmesanGrated),
     prepTime: '6 min',
-    imageSlot: '/images/menu/bowl-mix.jpg',
+    imageSlot: asset('/images/menu/bowl-mix.jpg'),
     imageLabel: 'Dark bowl of crispy fries loaded with chopped beef, bacon, iceberg, cheese sauce, BBQ sauce, and parmesan',
     imageStyle: 'scene',
     includedIngredients: [
@@ -848,7 +849,7 @@ export const MENU_ITEMS: MenuItem[] = [
     tags: ['Salad', 'Grilled Chicken', 'New'],
     nutrition: sumNutrition(N.romaine, N.grilledChicken, N.parmesanSnow, N.croutons, N.caesarDressing),
     prepTime: '5 min',
-    imageSlot: '/images/menu/caesar-salad.jpg',
+    imageSlot: asset('/images/menu/caesar-salad.jpg'),
     imageLabel: 'Elegant Caesar salad bowl with grilled chicken slices and shaved parmesan',
     imageStyle: 'scene',
     includedIngredients: [
@@ -887,7 +888,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.onionRings180),
     prepTime: '4 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/onion-rings.jpg',
+    imageSlot: asset('/images/menu/onion-rings.jpg'),
     imageLabel: 'Tower stack of thick golden panko onion rings on parchment paper',
     imageStyle: 'isolated',
     includedIngredients: [
@@ -920,7 +921,7 @@ export const MENU_ITEMS: MenuItem[] = [
     // Base is the plain wings + dip; the chosen glaze adds its own values
     nutrition: sumNutrition(N.chickenWings8, N.dippingSauce30),
     prepTime: '12 min',
-    imageSlot: '/images/menu/chicken-wings.jpg',
+    imageSlot: asset('/images/menu/chicken-wings.jpg'),
     imageLabel: 'Crispy glossy chicken wings with a creamy dip on a dark serving tray',
     imageStyle: 'scene',
     includedIngredients: [
@@ -965,7 +966,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.cheeseSauce80),
     prepTime: '1 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/cheese-sauce.jpg',
+    imageSlot: asset('/images/menu/cheese-sauce.jpg'),
     imageLabel: 'Small ceramic cup of smooth hot cheddar cheese sauce on dark slate',
     imageStyle: 'isolated',
     includedIngredients: [
@@ -993,7 +994,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.ketchup30),
     prepTime: '1 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/ketchup.jpg',
+    imageSlot: asset('/images/menu/ketchup.jpg'),
     imageLabel: 'Small bowl of glossy red tomato ketchup on a dark background',
     imageStyle: 'isolated',
     includedIngredients: [
@@ -1022,7 +1023,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.cheeseSauce60),
     prepTime: '2 min',
     isBestseller: true,
-    imageSlot: '/images/menu/cheese-injection.jpg',
+    imageSlot: asset('/images/menu/cheese-injection.jpg'),
     imageLabel: 'Stainless steel three-ring culinary injector on a rustic wooden board beside a pool of cheese sauce',
     imageStyle: 'scene',
     imagePosition: 'center 58%',
@@ -1059,7 +1060,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.secretSauce80),
     prepTime: '1 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/sauce-house-secret.jpg',
+    imageSlot: asset('/images/menu/sauce-house-secret.jpg'),
     imageLabel: 'White porcelain ramekin of orange-tinted house burger sauce with cracked pepper',
     imageStyle: 'isolated',
     includedIngredients: [
@@ -1091,7 +1092,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.truffleAioli80),
     prepTime: '1 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/sauce-truffle-aioli.jpg',
+    imageSlot: asset('/images/menu/sauce-truffle-aioli.jpg'),
     imageLabel: 'Small black ceramic dipping dish of creamy flecked truffle aioli',
     imageStyle: 'isolated',
     includedIngredients: [
@@ -1123,7 +1124,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.baconJam80),
     prepTime: '1 min',
     isBestseller: true,
-    imageSlot: '/images/menu/smoky-bourbon-bacon-jam.jpg',
+    imageSlot: asset('/images/menu/smoky-bourbon-bacon-jam.jpg'),
     imageLabel: 'Dark ramekin of chunky smoky onion and bourbon bacon jam with wooden paddle',
     imageStyle: 'isolated',
     includedIngredients: [
@@ -1156,7 +1157,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.fudgeBrownie, N.bourbonCaramel),
     prepTime: '4 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/warm-bourbon-caramel-brownie.jpg',
+    imageSlot: asset('/images/menu/warm-bourbon-caramel-brownie.jpg'),
     imageLabel: 'Cast-iron mini skillet with dark chocolate brownie and caramel pool',
     imageStyle: 'scene',
     includedIngredients: [
@@ -1192,7 +1193,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.lavaCake, N.cocoaDusting),
     prepTime: '5 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/lava-cake.jpg',
+    imageSlot: asset('/images/menu/lava-cake.jpg'),
     imageLabel: 'Warm dark chocolate lava cake cut open with rich chocolate flowing on black plate',
     imageStyle: 'scene',
     imagePosition: 'center 60%',
@@ -1227,7 +1228,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.basqueCheesecake),
     prepTime: '3 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/cheesecake.jpg',
+    imageSlot: asset('/images/menu/cheesecake.jpg'),
     imageLabel: 'Generous rustic Basque cheesecake on crumpled parchment paper with dark caramelized top',
     imageStyle: 'scene',
     imagePosition: 'center 60%',
@@ -1266,7 +1267,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.pepsi330, N.lemonWedge),
     prepTime: '1 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/pepsi.jpg',
+    imageSlot: asset('/images/menu/pepsi.jpg'),
     imageLabel: 'Chilled 330 ml Pepsi can with water droplets beside ice and lemon glass',
     imageStyle: 'isolated',
     imagePosition: 'center 60%',
@@ -1301,7 +1302,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.zeroSugar330, N.lemonWedge),
     prepTime: '1 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/pepsi-zero-sugar.jpg',
+    imageSlot: asset('/images/menu/pepsi-zero-sugar.jpg'),
     imageLabel: 'Chilled black 330 ml Pepsi Zero Sugar can with condensation beside a glass of ice and lemon',
     imageStyle: 'isolated',
     includedIngredients: [
@@ -1335,7 +1336,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.cocaCola330, N.lemonWedge),
     prepTime: '1 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/coca-cola.jpg',
+    imageSlot: asset('/images/menu/coca-cola.jpg'),
     imageLabel: 'Chilled red 330 ml Coca-Cola can with condensation beside a glass of ice and lemon',
     imageStyle: 'isolated',
     includedIngredients: [
@@ -1369,7 +1370,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.zeroSugar330, N.lemonWedge),
     prepTime: '1 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/coca-cola-zero-sugar.jpg',
+    imageSlot: asset('/images/menu/coca-cola-zero-sugar.jpg'),
     imageLabel: 'Chilled red 330 ml Coca-Cola Zero Sugar can with black logo and condensation beside a glass of cola over ice',
     imageStyle: 'isolated',
     includedIngredients: [
@@ -1403,7 +1404,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.lemonWedge),
     prepTime: '1 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/water.jpg',
+    imageSlot: asset('/images/menu/water.jpg'),
     imageLabel: 'Clean unbranded 500 ml glass water bottle with fresh water droplets',
     imageStyle: 'isolated',
     includedIngredients: [
@@ -1448,7 +1449,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: placeholderNutrition(0, 0, 0, 0),
     prepTime: '2 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/natural-juice.jpg',
+    imageSlot: asset('/images/menu/natural-juice.jpg'),
     imageLabel: 'Freshly squeezed natural fruit juice in tall glass with orange, apple, and pomegranate',
     imageStyle: 'scene',
     includedIngredients: [
@@ -1494,7 +1495,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.frozenCustardShake, N.whippedCream),
     prepTime: '3 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/roasted-vanilla-bean-shake.jpg',
+    imageSlot: asset('/images/menu/roasted-vanilla-bean-shake.jpg'),
     imageLabel: 'Heavy glass diner tumbler filled with thick vanilla shake and cream crown',
     imageStyle: 'isolated',
     imagePosition: 'center 45%',
@@ -1531,7 +1532,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.coldBrewTeaHoney, N.lemonJuice),
     prepTime: '2 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/cold-steeped-lemon-ceylon-tea.jpg',
+    imageSlot: asset('/images/menu/cold-steeped-lemon-ceylon-tea.jpg'),
     imageLabel: 'Tall ribbed glass of amber iced Ceylon tea with lemon wheel and thyme sprig',
     imageStyle: 'isolated',
     includedIngredients: [
@@ -1563,7 +1564,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.espressoShot),
     prepTime: '2 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/espresso.jpg',
+    imageSlot: asset('/images/menu/espresso.jpg'),
     imageLabel: 'Dark ceramic espresso cup with golden crema on a slate board with coffee beans',
     imageStyle: 'scene',
     includedIngredients: [
@@ -1593,7 +1594,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.espressoShot, N.espressoShot),
     prepTime: '2 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/americano.jpg',
+    imageSlot: asset('/images/menu/americano.jpg'),
     imageLabel: 'Dark mug of americano coffee on a slate board',
     imageStyle: 'scene',
     includedIngredients: [
@@ -1624,7 +1625,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.espressoShot, N.milk150, N.milkFoam),
     prepTime: '3 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/cappuccino.jpg',
+    imageSlot: asset('/images/menu/cappuccino.jpg'),
     imageLabel: 'Cappuccino with thick milk foam in a dark ceramic cup',
     imageStyle: 'scene',
     includedIngredients: [
@@ -1657,7 +1658,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.espressoShot, N.milk250, N.milkFoam),
     prepTime: '3 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/latte.jpg',
+    imageSlot: asset('/images/menu/latte.jpg'),
     imageLabel: 'Latte with latte art in a tall glass',
     imageStyle: 'scene',
     includedIngredients: [
@@ -1690,7 +1691,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.espressoShot, N.espressoShot, N.milk150),
     prepTime: '3 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/iced-coffee.jpg',
+    imageSlot: asset('/images/menu/iced-coffee.jpg'),
     imageLabel: 'Tall glass of iced coffee with milk swirling over ice',
     imageStyle: 'scene',
     includedIngredients: [
@@ -1723,7 +1724,7 @@ export const MENU_ITEMS: MenuItem[] = [
     nutrition: sumNutrition(N.espressoShot, N.espressoShot, N.vanillaIceCreamScoop),
     prepTime: '3 min',
     isVegetarian: true,
-    imageSlot: '/images/menu/glace.jpg',
+    imageSlot: asset('/images/menu/glace.jpg'),
     imageLabel: 'Tall glass of iced coffee topped with a scoop of vanilla ice cream',
     imageStyle: 'scene',
     includedIngredients: [

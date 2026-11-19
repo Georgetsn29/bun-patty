@@ -3,10 +3,18 @@ import {PHASE_DEVELOPMENT_SERVER} from 'next/constants';
 
 export default function nextConfig(phase: string): NextConfig {
   const isDev = phase === PHASE_DEVELOPMENT_SERVER;
+  // Sub-path the static site is served from, e.g. "/bun-patty" on GitHub Pages.
+  const basePath = isDev ? '' : (process.env.PAGES_BASE_PATH ?? '');
 
   return {
     distDir: isDev ? '.next-dev' : '.next',
-    output: isDev ? undefined : 'standalone',
+    // Static HTML export (written to ./out) so it can be hosted on GitHub Pages.
+    output: isDev ? undefined : 'export',
+    basePath,
+    trailingSlash: true,
+    env: {
+      NEXT_PUBLIC_BASE_PATH: basePath,
+    },
     reactStrictMode: true,
     eslint: {
       ignoreDuringBuilds: true,
@@ -19,6 +27,7 @@ export default function nextConfig(phase: string): NextConfig {
     },
     // Allow access to remote image placeholder.
     images: {
+      unoptimized: true,
       remotePatterns: [
         {
           protocol: 'https',
@@ -29,17 +38,8 @@ export default function nextConfig(phase: string): NextConfig {
       ],
     },
 
-    // Redirect old Journal, Blog, and FAQ paths to Home
-    async redirects() {
-      return [
-        { source: '/journal', destination: '/', permanent: false },
-        { source: '/journal/:slug*', destination: '/', permanent: false },
-        { source: '/blog', destination: '/', permanent: false },
-        { source: '/blog/:slug*', destination: '/', permanent: false },
-        { source: '/faq', destination: '/', permanent: false },
-        { source: '/faq/:slug*', destination: '/', permanent: false },
-      ];
-    },
+    // Note: redirects() is not supported with a static export. Old /journal, /blog
+    // and /faq URLs fall through to the 404 page, which links back home.
 
     webpack: (config, {dev}) => {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.

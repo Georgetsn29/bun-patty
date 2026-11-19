@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { asset } from '@/lib/basePath';
 import { motion, useReducedMotion } from 'motion/react';
 import { MENU_ITEMS, MenuItem, MenuCategory, getMenuItemById } from '@/data/menu';
 import { PRESS_QUOTES } from '@/data/testimonials';
@@ -171,7 +172,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenProductMod
         <button type="button" onClick={() => onOpenProductModal(classic)} className={styles.appPromo}>
           <span className={styles.appPromoMedia}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/hero-burger-table.jpg" alt="" />
+            <img src={asset('/images/hero-burger-table.jpg')} alt="" />
             <span className={styles.appSticker} aria-hidden="true">
               {ka ? '28 დღით დაძველებული' : (
                 <>
@@ -288,7 +289,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenProductMod
           <motion.div {...fadeUp(0.1)} className={styles.heroMedia}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/images/hero-burger-table.jpg"
+              src={asset('/images/hero-burger-table.jpg')}
               alt={ka ? 'ორმაგი სმაშ-ჩიზბურგერი კარტოფილით ხის მაგიდაზე' : 'Double smash cheeseburger with fries on a wooden table'}
               className={styles.heroImage}
               fetchPriority="high"
@@ -384,7 +385,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, onOpenProductMod
         <div className={styles.kitchenGrid}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/images/menu/the-big-one.jpg"
+            src={asset('/images/menu/the-big-one.jpg')}
             alt={ka ? 'მაღალი ბურგერი დნობადი ჩედერით' : 'A tall stack of smashed patties and melted cheddar'}
             className={styles.kitchenImage}
             loading="lazy"

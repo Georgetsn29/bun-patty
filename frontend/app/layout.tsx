@@ -10,6 +10,7 @@ import '@fontsource/fira-sans-extra-condensed/latin-800.css';
 import '@fontsource/fira-sans-extra-condensed/latin-900.css';
 import fs from 'node:fs';
 import path from 'node:path';
+import { asset } from '@/lib/basePath';
 import { IntroCover } from '@/components/layout/IntroCover';
 import { introCoverScript } from '@/components/layout/introCoverScript';
 import { INTRO_COVER_SETTINGS } from '@/data/settings';
@@ -54,7 +55,7 @@ function findBrandLogo(): string | null {
     const dir = path.join(process.cwd(), 'public', 'images', 'brand');
     const svgs = fs.readdirSync(dir).filter((f) => f.toLowerCase().endsWith('.svg'));
     const pick = svgs.find((f) => f.toLowerCase().includes('logo')) ?? svgs[0];
-    return pick ? `/images/brand/${pick}` : null;
+    return pick ? asset(`/images/brand/${pick}`) : null;
   } catch {
     return null;
   }

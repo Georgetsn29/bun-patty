@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { asset } from '@/lib/basePath';
 import { useLanguage } from '@/context/LanguageContext';
 import { ArrowIcon } from '@/components/layout/Header';
 import styles from './AboutView.module.scss';
@@ -26,21 +27,21 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigate }) => {
       d: ka
         ? 'რვა ბურგერი, ყველა ერთსა და იმავე სმაშზე აგებული. ფირმულს ემატება ორი შემწვარი კვერცხი და ბეკონი; „დიდი“ 750 გრამია და გასაყოფადაა.'
         : 'Eight burgers, all built on the same smash. The Signature adds two fried eggs and bacon; the Big One is 750 g and meant for sharing.',
-      img: '/images/menu/bun-patty-signature.jpg',
+      img: asset('/images/menu/bun-patty-signature.jpg'),
     },
     {
       t: ka ? 'გარნირები' : 'Sides',
       d: ka
         ? 'ხელით დაჭრილი კარტოფილი, ორჯერ შემწვარი სუფთა ზეთში — პარმეზანით, ტრიუფელით ან ყველის სოუსითა და ბეკონით.'
         : 'Hand-cut fries double-fried in clean oil, finished with aged parmesan, truffle, or cheese sauce and bacon.',
-      img: '/images/menu/parmesan-truffle-fries.jpg',
+      img: asset('/images/menu/parmesan-truffle-fries.jpg'),
     },
     {
       t: ka ? 'შეიქები' : 'Shakes',
       d: ka
         ? 'მკვრივი გაყინული კასტარდი მთლიანი რძით, კვერცხის გულითა და ნამდვილი ვანილით. იმდენად სქელი, რომ კოვზი დაგჭირდება.'
         : 'Dense frozen custard spun with whole milk, egg yolk and real vanilla bean. Thick enough to need a spoon.',
-      img: '/images/menu/roasted-vanilla-bean-shake.jpg',
+      img: asset('/images/menu/roasted-vanilla-bean-shake.jpg'),
     },
   ];
 
@@ -65,7 +66,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigate }) => {
 
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/images/about-kitchen-plancha.jpg"
+        src={asset('/images/about-kitchen-plancha.jpg')}
         alt={ka ? 'სამზარეულოს პლანჩა' : 'The plancha in the Vera kitchen'}
         className={styles.wideImage}
       />
