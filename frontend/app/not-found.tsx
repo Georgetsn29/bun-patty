@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { TrackPathRedirect } from '@/components/layout/TrackPathRedirect';
 
 export default function NotFound() {
   return (
@@ -16,6 +17,7 @@ export default function NotFound() {
         textAlign: 'center',
       }}
     >
+      <TrackPathRedirect />
       <h1 style={{ fontSize: '4rem', fontWeight: 800, margin: '0 0 12px 0', color: '#E27344' }}>
         404
       </h1>

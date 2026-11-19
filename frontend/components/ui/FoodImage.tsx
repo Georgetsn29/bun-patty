@@ -2,6 +2,9 @@
 
 import React, { useState } from 'react';
 import styles from './FoodImage.module.scss';
+import { asset } from '@/lib/basePath';
+
+const FALLBACK_SRC = asset('/images/hero-burger-table.jpg');
 
 interface FoodImageProps {
   src: string;
@@ -17,7 +20,7 @@ export const FoodImage: React.FC<FoodImageProps> = ({
   aspectRatio = 'aspect-[16/9]',
   className = '',
 }) => {
-  const [imgSrc, setImgSrc] = useState(src || '/images/hero-burger-table.jpg');
+  const [imgSrc, setImgSrc] = useState(src || FALLBACK_SRC);
 
   // Map aspect ratio string to SCSS module class
   let ratioClass = styles.aspect169;
@@ -31,8 +34,8 @@ export const FoodImage: React.FC<FoodImageProps> = ({
 
   const handleError = () => {
     // If specific file fails, gracefully fallback to primary real smash burger hero photo
-    if (imgSrc !== '/images/hero-burger-table.jpg') {
-      setImgSrc('/images/hero-burger-table.jpg');
+    if (imgSrc !== FALLBACK_SRC) {
+      setImgSrc(FALLBACK_SRC);
     }
   };
 
