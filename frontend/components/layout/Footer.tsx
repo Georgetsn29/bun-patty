@@ -90,7 +90,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       </div>
 
       <div className={styles.bottom}>
-        <span>{t('footer.copyright')}</span>
+        <span>{t('footer.copyright')} <a href="https://github.com/Georgetsn29" target='_blank'>Giorgi</a></span>
         <span>{ka ? 'ფასები ლარში' : 'Prices in Georgian lari'}</span>
       </div>
     </footer>
